@@ -4,7 +4,7 @@
 #include <QtGui/QKeyEvent>
 class GameWindow : public QWidget { //Qt graphic interface 
 public:
-    GameWindow();
+    explicit GameWindow(QWidget* parent = nullptr);
 private:
 
 

@@ -127,10 +127,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnubisBaboon.h" />
+    <ClInclude Include="BaisicMonkey.h" />
+    <ClInclude Include="CapuchinMonkey.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Gorilla.h" />
+    <ClInclude Include="HowlerMonkey.h" />
+    <ClInclude Include="Orangutan.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnubisBaboon.cpp" />
+    <ClCompile Include="BaisicMonkey.cpp" />
+    <ClCompile Include="CapuchinMonkey.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Gorilla.cpp" />
+    <ClCompile Include="HowlerMonkey.cpp" />
+    <ClCompile Include="Orangutan.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

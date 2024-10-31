@@ -18,9 +18,45 @@
     <ClInclude Include="Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Orangutan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gorilla.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HowlerMonkey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapuchinMonkey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnubisBaboon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BaisicMonkey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Orangutan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gorilla.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HowlerMonkey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CapuchinMonkey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnubisBaboon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaisicMonkey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "GameWindow.h"
 
-GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
+GameWindow::GameWindow()
 {
 	setFixedSize(400, 300);
 	setFocusPolicy(Qt::StrongFocus);

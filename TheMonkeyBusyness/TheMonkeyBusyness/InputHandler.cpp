@@ -1,32 +1,43 @@
 #include "InputHandler.h"
+#include "Vector2.h"
+InputHandler::InputHandler(QWidget* parent) : QWidget(parent) {
 
-InputHandler::InputHandler(QWidget* parent) : QWidget(parent) {}
+}
 
 // Override the eventFilter to handle key events
 bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
     // Check if the event is a key press
-    if (event->type() == QEvent::KeyPress) {
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-
-        // Check which key was pressed
-        switch (keyEvent->key()) {
-        case Qt::Key_A:
-            qDebug() << "Key A was pressed";
-            break;
-        case Qt::Key_S:
-            qDebug() << "Key S was pressed";
-            break;
-        case Qt::Key_D:
-            qDebug() << "Key D was pressed";
-            break;
-        case Qt::Key_W:
-            qDebug() << "Key W was pressed";
-            break;
-        default:
-            break;
+        int key = keyEvent->key();
+     
+        if (event->type() == QEvent::KeyPress) {
+            keyStates[key] = true; // Mark the key as pressed
         }
-        
-        return true; // Indicate that the event was handled
+        else if (event->type() == QEvent::KeyRelease) {
+            keyStates[key] = false; // Mark the key as released
+        }
+
+        direction.x = 0;
+        direction.y = 0;
+
+        if (keyStates[Qt::Key_W]) {
+            direction.y -= 1;
+        }
+        if (keyStates[Qt::Key_A]) {
+            direction.x -= 1;
+        }
+        if (keyStates[Qt::Key_S]) {
+            direction.y += 1;
+        }
+        if (keyStates[Qt::Key_D]) {
+            direction.x += 1;
+        }
+
+
+        direction.Normalize();
+        return true;
+       // Indicate that the event was handled
     }
 
     // Pass the event on to the base class

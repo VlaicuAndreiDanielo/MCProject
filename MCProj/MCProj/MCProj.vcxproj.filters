@@ -33,7 +33,7 @@
     <ClInclude Include="AnubisBaboon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BaisicMonkey.h">
+    <ClInclude Include="BasicMonkey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClCompile Include="AnubisBaboon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BaisicMonkey.cpp">
+    <ClCompile Include="BasicMonkey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

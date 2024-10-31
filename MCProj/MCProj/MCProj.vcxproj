@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnubisBaboon.h" />
-    <ClInclude Include="BaisicMonkey.h" />
+    <ClInclude Include="BasicMonkey.h" />
     <ClInclude Include="CapuchinMonkey.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Gorilla.h" />
@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnubisBaboon.cpp" />
-    <ClCompile Include="BaisicMonkey.cpp" />
+    <ClCompile Include="BasicMonkey.cpp" />
     <ClCompile Include="CapuchinMonkey.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Gorilla.cpp" />

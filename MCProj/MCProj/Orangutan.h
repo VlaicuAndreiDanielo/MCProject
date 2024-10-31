@@ -4,8 +4,9 @@
 class Orangutan : public Character
 {
 public:
-	void activateSpecialAbility();
-	void monkeyEvolution();
+	Orangutan();
+	void activateSpecialAbility()const override;
+	void monkeyEvolution() override;
 	~Orangutan() = default;
 private:
 

@@ -1,13 +1,14 @@
 #pragma once
 #include "Character.h"
 
-class HowlerMonkey : public Character
+class BasicMonkey : public Character
 {
 public:
-	HowlerMonkey();
+	BasicMonkey();
 	void activateSpecialAbility() const override;
 	void monkeyEvolution() override;
-	~HowlerMonkey() = default;
+	~BasicMonkey() = default;
 private:
+
 };
 

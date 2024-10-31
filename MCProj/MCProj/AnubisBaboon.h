@@ -4,8 +4,9 @@
 class AnubisBaboon : public Character
 {
 public:
-	void activateSpecialAbility();
-	void monkeyEvolution();
+	AnubisBaboon();
+	void activateSpecialAbility()const override;
+	void monkeyEvolution() override;
 	~AnubisBaboon() = default;
 private:
 

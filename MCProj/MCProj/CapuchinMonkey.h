@@ -4,8 +4,9 @@
 class CapuchinMonkey : public Character
 {
 public:
-	void activateSpecialAbility();
-	void monkeyEvolution();
+	CapuchinMonkey();
+	void activateSpecialAbility() const override;
+	void monkeyEvolution() override;
 	~CapuchinMonkey() = default;
 private:
 

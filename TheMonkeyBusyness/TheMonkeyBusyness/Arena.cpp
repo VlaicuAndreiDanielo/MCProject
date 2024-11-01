@@ -22,6 +22,38 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
         mapa[dim - 1][j].setType(TileType::IndestructibleWall);
     }
 
+    srand(static_cast<unsigned>(time(0)));
+
+    for (int y = 0; y < dim; ++y) {
+        for (int x = 0; x < dim; ++x) {
+            if (mapa[y][x].getType() == TileType::Empty && (rand() % 100 < 20)) { // Probabilitate de 20%
+                TileType obstacleType = static_cast<TileType>(2 + rand() % 6); // Apa, iarba, zid destructibil, zid indestructibil, teleporter, lava
+                mapa[y][x].setType(obstacleType);
+            }
+        }
+    }
+
+    // Spawn-urile
+    std::vector<std::pair<int, int>> spawnPositions = { {1, 1}, {1, dim - 2}, {dim - 2, 1}, {dim - 2, dim - 2} };
+    for (int i = 0; i < numSpawns && i < 4; ++i) {
+        int x = spawnPositions[i].first;
+        int y = spawnPositions[i].second;
+
+        // Golim o zona de 3x3 in jurul spawn-ului
+        for (int dy = -1; dy <= 1; ++dy) {
+            for (int dx = -1; dx <= 1; ++dx) {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                // Asiguram ca nu incercam sa accesam bordura
+                if (nx > 0 && nx < dim - 1 && ny > 0 && ny < dim - 1) {
+                    mapa[ny][nx].setType(TileType::Empty);
+                }
+            }
+        }
+        // Setam tile-ul de spawn
+        mapa[y][x].setType(TileType::Spawn);
+    }
     return mapa;
 }
 

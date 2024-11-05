@@ -30,6 +30,18 @@
     <ClCompile Include="Vector2.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arena.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -42,6 +54,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vector2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Arena.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponsConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

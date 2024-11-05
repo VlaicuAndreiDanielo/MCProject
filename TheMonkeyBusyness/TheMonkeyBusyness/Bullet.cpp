@@ -32,7 +32,7 @@ public:
         //std::cout << "Bullet collided with player! Damage dealt: " << damage << ". Player health: " << player->health << std::endl;
     }
 
-    virtual ~Bullet();
+    virtual ~Bullet(){};
 
     // checks if the current bullet collided with a player
     bool checkCollision(const Player& player)

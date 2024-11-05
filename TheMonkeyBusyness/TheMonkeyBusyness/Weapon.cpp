@@ -22,11 +22,11 @@ public:
         for (auto bullet : bullets)
         {
             //bullet->move();  // TO DO add bullet header and uncomment
-            for (auto& player : players)
-            {
-                //if (bullet->checkCollision(player))  // TO DO add bullet header and uncomment
-                    //bullet->collide(player);  // TO DO add bullet header and uncomment
-            }
+            //for (auto& player : players)
+            //{
+            //    //if (bullet->checkCollision(player))  // TO DO add bullet header and uncomment
+            //        //bullet->collide(player);  // TO DO add bullet header and uncomment
+            //}
         }
     }
 

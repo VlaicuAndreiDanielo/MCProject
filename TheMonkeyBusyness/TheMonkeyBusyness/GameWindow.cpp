@@ -10,6 +10,7 @@ GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
 	timer = new QTimer(this);
 	QObject::connect(timer, &QTimer::timeout, [this]() {
 		player.UpdatePosition(player.ReturnInputHandler()->direction);
+		player.UpdateRotation(player.ReturnInputHandler()->mousePosition);
 		update();
 		});
 	timer->start(16);

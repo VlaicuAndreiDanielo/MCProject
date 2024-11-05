@@ -1,6 +1,11 @@
 #include "Vector2.h"
-#include "cmath"
+#include <cmath>
 #include <stdexcept>
+
+#ifndef M_PI
+#define M_PI 3.14159
+#endif
+
 Vector2::Vector2(float x, float y) : x(x), y(y)
 {}
 
@@ -35,7 +40,6 @@ Vector2& Vector2::operator*=(const float scalar)
 }
 
 
-
 Vector2 Vector2::operator/(const float scalar) const {
 
 	if (scalar != 0) {
@@ -53,6 +57,24 @@ Vector2& Vector2::operator/=(const float scalar)
 	this->x /= scalar;
 	this->y /= scalar;
 	return *this;
+}
+
+float Vector2::GetAngleFromNormalizedVector() const
+{
+	float angleInRadians = atan2(this->y, this->x);
+
+	// Convert radians to degrees
+	float angleInDegrees = (float)(angleInRadians * (180.0f / M_PI));
+
+	// Adjust the angle: since (0, -1) is 0 degrees, we need to shift by 90 degrees
+	angleInDegrees = fmod(angleInDegrees + 90.0f, 360.0f);
+
+	// If angle is negative, make it positive
+	if (angleInDegrees < 0) {
+		angleInDegrees += 360.0f;
+	}
+
+	return angleInDegrees;
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector2& vector) 

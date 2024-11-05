@@ -11,13 +11,13 @@ public:
 public slots:
 	void UpdatePosition(const Vector2 &vector);
 	void UpdatePosition(const float x, const float y);
-	void UpdateRotation(const Vector2& rotationVector);
-	void UpdateRotation(const float x, const float y);
+	void UpdateRotation(const Vector2& mousePos);
 
 private:
 	 InputHandler inputHandler;
 	 Vector2 position;
+	 Vector2 direction;
 	 float rotationAngle{ 0 };
 	 float size{ 10 };
-	 
+
 };

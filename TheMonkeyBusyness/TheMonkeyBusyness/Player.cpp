@@ -12,7 +12,7 @@ InputHandler* Player::ReturnInputHandler()
 
 Vector2 Player::Forward()
 const {
-	return rotationAngle;
+	return this->direction;
 }
 
 void Player::draw(QPainter& painter) const
@@ -43,14 +43,17 @@ void Player::UpdatePosition(const Vector2& direction)
 
 void Player::UpdatePosition(const float x, const float y)
 {
+	this->position.x += x;
+	this->position.y += y;
 }
 
-void Player::UpdateRotation(const Vector2& rotationVector)
+void Player::UpdateRotation(const Vector2& mousePos)
 {
-
+	direction.x = mousePos.x - position.x;
+	direction.y = mousePos.y - position.y;
+	direction.Normalize();
+	this->rotationAngle = direction.GetAngleFromNormalizedVector();
+	std::cout << rotationAngle << std::endl;
 }
 
-void Player::UpdateRotation(const float x, const float y)
-{
 
-}

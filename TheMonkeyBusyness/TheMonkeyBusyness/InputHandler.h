@@ -8,6 +8,7 @@ class InputHandler : public QWidget { //this class reads key input
 public:
     explicit InputHandler(QWidget* parent = nullptr);
     Vector2 direction;
+    Vector2 mousePosition;
 private:
     std::unordered_map<int, bool> keyStates;
 protected:

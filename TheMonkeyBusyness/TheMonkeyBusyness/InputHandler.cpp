@@ -20,7 +20,7 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
 
         direction.x = 0;
         direction.y = 0;
-
+        
         if (keyStates[Qt::Key_W]) {
             direction.y -= 1;
         }
@@ -39,7 +39,14 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
         return true;
        // Indicate that the event was handled
     }
-
+    if (event->type() == QEvent::MouseMove) {
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        QPoint mousePoint = mouseEvent->pos();
+        mousePosition.x = mousePoint.x();
+        mousePosition.y = mousePoint.y();
+        std::cout << mousePosition;
+        std::cout << std::endl;
+    }
     // Pass the event on to the base class
     return QObject::eventFilter(obj, event);
 }

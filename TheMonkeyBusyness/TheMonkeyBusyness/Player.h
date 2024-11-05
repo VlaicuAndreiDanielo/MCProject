@@ -6,11 +6,14 @@ class Player : public QObject{ // this is the player, he calls for input and oth
 public:
 	explicit Player(float x=0, float y=0);
 	InputHandler* ReturnInputHandler();
-	float Forward() const;
+	Vector2 Forward() const;
 	void draw(QPainter& painter)const;
 public slots:
 	void UpdatePosition(const Vector2 &vector);
 	void UpdatePosition(const float x, const float y);
+	void UpdateRotation(const Vector2& rotationVector);
+	void UpdateRotation(const float x, const float y);
+
 private:
 	 InputHandler inputHandler;
 	 Vector2 position;

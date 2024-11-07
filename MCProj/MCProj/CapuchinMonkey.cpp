@@ -1,9 +1,8 @@
 #include "CapuchinMonkey.h"
 
 CapuchinMonkey::CapuchinMonkey()
-{
-	//TODO: implement function
-}
+	: Character(400, 8, 15, 0)
+{}
 
 void CapuchinMonkey::activateSpecialAbility() const
 {
@@ -12,5 +11,8 @@ void CapuchinMonkey::activateSpecialAbility() const
 
 void CapuchinMonkey::monkeyEvolution()
 {
-	//TODO: implement function
+	std::cout << "CapuchinMonkey is evolving...\n";
+	HP += 75;     // Crestem viata
+	speed += 3;   // Crestem viteza
+	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
 }

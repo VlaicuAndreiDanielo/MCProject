@@ -1,9 +1,8 @@
 #include "BasicMonkey.h"
 
 BasicMonkey::BasicMonkey() 
-{
-	//TODO: implement function
-}
+	: Character(500, 10, 12, 0)
+{}
 
 void BasicMonkey::activateSpecialAbility() const
 {
@@ -12,5 +11,8 @@ void BasicMonkey::activateSpecialAbility() const
 
 void BasicMonkey::monkeyEvolution()
 {
-	//TODO: implement function
+	std::cout << "BasicMonkey is evolving...\n";
+	HP += 75;     // Crestem viata
+	speed += 3;   // Crestem viteza
+	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
 }

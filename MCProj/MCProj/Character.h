@@ -1,9 +1,11 @@
 #pragma once
+#include <iostream>
 class Character
 {
 public:
 	Character();
-	Character(int hp, int speed,float cooldown , float remainingtime);
+	Character(int hp, int speed,float cooldown , float remainingtime)
+		: HP(hp), speed(speed), cooldownTime(cooldown), remainingTime(remainingtime) {};
 	virtual void attack() const;
 
 	virtual void activateSpecialAbility() const = 0;
@@ -11,7 +13,7 @@ public:
 
 	virtual ~Character() = default;
 	
-private:
+protected:
 	int HP;
 	int speed;
 	float cooldownTime;

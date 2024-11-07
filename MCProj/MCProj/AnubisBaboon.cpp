@@ -1,9 +1,8 @@
 #include "AnubisBaboon.h"
 
 AnubisBaboon::AnubisBaboon()
-{
-	//TODO: implement function
-}
+	: Character(800, 6, 30, 0)
+{}
 
 void AnubisBaboon::activateSpecialAbility() const
 {
@@ -12,5 +11,8 @@ void AnubisBaboon::activateSpecialAbility() const
 
 void AnubisBaboon::monkeyEvolution()
 {
-	//TODO: implement function
+	std::cout << "AnubisBaboon is evolving...\n";
+	HP += 50;     // Crestem viata
+	speed += 2;   // Crestem viteza
+	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
 }

@@ -5,7 +5,7 @@ class Gorilla : public Character
 {
 public:
 	Gorilla();
-	void activateSpecialAbility() const override;
+	void activateSpecialAbility() override;
 	void monkeyEvolution() override;
 	~Gorilla() = default;
 private:

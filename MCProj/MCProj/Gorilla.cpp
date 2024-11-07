@@ -4,7 +4,7 @@ Gorilla::Gorilla()
 	: Character(1500, 4, 20, 0)
 {}
 
-void Gorilla::activateSpecialAbility() const
+void Gorilla::activateSpecialAbility() 
 {
 	//TODO: implement function
 }
@@ -20,6 +20,6 @@ void Gorilla::monkeyEvolution()
 		std::cout << "Evolution Level: " << evolutionLevel << "\n";
 	}
 	else {
-		std::cout << "BasicMonkey has reached the maximum evolution level (5)!\n";
+		std::cout << "Gorilla has reached the maximum evolution level (5)!\n";
 	}
 }

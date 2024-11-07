@@ -4,7 +4,7 @@ CapuchinMonkey::CapuchinMonkey()
 	: Character(400, 8, 15, 0)
 {}
 
-void CapuchinMonkey::activateSpecialAbility() const
+void CapuchinMonkey::activateSpecialAbility() 
 {
 	//TODO: implement function
 }
@@ -20,6 +20,6 @@ void CapuchinMonkey::monkeyEvolution()
 		std::cout << "Evolution Level: " << evolutionLevel << "\n";
 	}
 	else {
-		std::cout << "BasicMonkey has reached the maximum evolution level (5)!\n";
+		std::cout << "CapuchinMonkey has reached the maximum evolution level (5)!\n";
 	}
 }

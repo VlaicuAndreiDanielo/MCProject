@@ -4,9 +4,9 @@ HowlerMonkey::HowlerMonkey()
 	: Character(600, 6, 30, 0)
 {}
 
-void HowlerMonkey::activateSpecialAbility() const
+void HowlerMonkey::activateSpecialAbility()
 {
-	//TODO: implement function
+	
 }
 
 void HowlerMonkey::monkeyEvolution()

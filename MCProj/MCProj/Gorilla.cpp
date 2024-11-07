@@ -11,8 +11,15 @@ void Gorilla::activateSpecialAbility() const
 
 void Gorilla::monkeyEvolution()
 {
-	std::cout << "Gorilla is evolving...\n";
-	HP += 75;     // Crestem viata
-	speed += 3;   // Crestem viteza
-	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+	if(evolutionLevel < 5){
+		std::cout << "Gorilla is evolving...\n";
+		HP += 30;     // Crestem viata
+		speed += 1;   // Crestem viteza
+		evolutionLevel++;
+		std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+		std::cout << "Evolution Level: " << evolutionLevel << "\n";
+	}
+	else {
+		std::cout << "BasicMonkey has reached the maximum evolution level (5)!\n";
+	}
 }

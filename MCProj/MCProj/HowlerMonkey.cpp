@@ -11,8 +11,15 @@ void HowlerMonkey::activateSpecialAbility() const
 
 void HowlerMonkey::monkeyEvolution()
 {
-	std::cout << "HowlerMonkey is evolving...\n";
-	HP += 60;     // Crestem viata
-	speed += 2;   // Crestem viteza
-	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+	if (evolutionLevel < 5)
+	{
+		std::cout << "HowlerMonkey is evolving...\n";
+		HP += 60;     // Crestem viata
+		speed += 2;   // Crestem viteza
+		evolutionLevel++ ;
+		std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+		std::cout << "Evolution Level: " << evolutionLevel << "\n";
+	}else {
+		std::cout << "HowlerMonkey has reached the maximum evolution level (5)!\n";
+	}
 }

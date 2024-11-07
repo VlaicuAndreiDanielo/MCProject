@@ -18,5 +18,6 @@ protected:
 	int speed;
 	float cooldownTime;
 	float remainingTime;
+	int evolutionLevel = 0;
 };
 

@@ -11,8 +11,15 @@ void Orangutan::activateSpecialAbility() const
 
 void Orangutan::monkeyEvolution()
 {
-	std::cout << "Orangutan is evolving...\n";
-	HP += 50;     // Crestem viata
-	speed += 1;   // Crestem viteza
-	std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+	if(evolutionLevel<5){
+		std::cout << "Orangutan is evolving...\n";
+		HP += 50;     // Crestem viata
+		speed += 2;   // Crestem viteza
+		evolutionLevel++;
+		std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
+		std::cout << "Evolution Level: " << evolutionLevel << "\n";
+	}
+	else {
+		std::cout << "Orangutan has reached the maximum evolution level (5)!\n";
+	}
 }

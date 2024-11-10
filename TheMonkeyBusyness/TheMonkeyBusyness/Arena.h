@@ -1,10 +1,9 @@
 ﻿#pragma once
-#include <iostream>
 #include <vector>
-#include <cstdlib>
 #include <ctime>
 #include <algorithm>
-#include "Tile.h"
+import Tile;
+import TileType;
 
 class Arena
 {
@@ -19,4 +18,6 @@ public:
     std::vector<std::vector<Tile>> generate_map(int dim, int numSpawns);
 
     void print_map() const;
+
+    void generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
 };

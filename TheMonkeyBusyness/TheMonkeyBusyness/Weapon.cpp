@@ -1,70 +1,50 @@
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <math.h>
+#include "Weapon.h"
 
-#include "weaponsConfig.h"
+Weapon::Weapon(float damage, float fireRate, float speed)
+	: m_damage{ damage }, m_fireRate{ fireRate }, m_speed{ speed }, m_timeSinceLastShot(0.0f) {}
 
-class Player; // TODO include actual player class
-class Bullet; // TO DO make bullet class a header and include it
-
-// Base class for Weapons
-class Weapon
+//
+void Weapon::Shoot(const Vector2& position, const Vector2& direction)
 {
-protected:
-    std::vector<Bullet*> bullets; // all bullets shot by the weapon
+	/*
+	TODO
 
-public:
-    virtual void shoot() = 0;
+	Bullets are stored in a vector in the weapon class
+	Now the bullets are created and deleted very often.
+	To make this more efficient, create a lot of bullets and use them instead of creating and deleting constantly
+	- either have two vectors: unusedBullets and firedBullets and use move semantics to efficiently "shoot" bullets
+	- or have one vector and add a flag to each bullet like isAlive. When the weapon fires, just set the bullet flag to true
 
-    void updateBullets(std::vector<Player>& players)
-    {
-        for (auto bullet : bullets)
-        {
-            //bullet->move();  // TO DO add bullet header and uncomment
-            //for (auto& player : players)
-            //{
-            //    //if (bullet->checkCollision(player))  // TO DO add bullet header and uncomment
-            //        //bullet->collide(player);  // TO DO add bullet header and uncomment
-            //}
-        }
-    }
+	I think having two vectors and using move semantics is better, but check when implementing that.
+	The vector/vectors will be stored in the player class
+	*/
+}
 
-    virtual ~Weapon()
-    {
-        for (auto bullet : bullets)
-            delete bullet;
-    }
-};
-
-// Derived class for weapons with limited ammo
-class LimitedAmmoWeapon : public Weapon
+void Weapon::Update()
 {
-protected:
-    int ammoCount;
-    virtual Bullet* createBullet() = 0; // will be implemented in each type of weapon so that it creates its own type of bullet
+	m_timeSinceLastShot += 1.0f / 60.0f;
+}
 
-public:
-    LimitedAmmoWeapon(int initialAmmo) : ammoCount(initialAmmo) {}
+float Weapon::GetDamage() const {
+	return m_damage;
+}
 
-    void shoot() override
-    {
-        if (ammoCount > 0)
-        {
-            bullets.push_back(createBullet()); // Create a specific type of bullet
-            ammoCount--;
-            std::cout << "Shooting a bullet! Shots left: " << ammoCount << std::endl;
-        }
-        else
-        {
-            std::cout << "Out of ammo!" << std::endl;
-            /*
-            TODO delete the weapon from the player once it has 0 bullets left
-            (unless we decide to add ammo crates, but it would cluster the menu by having too many guns
-            if the player opens multiple boxes, so I think we should let the player have only one type of special weapon
-            If he opens a box and he already has a special weapon, either add bullets to the current one or give the
-            new type of weapon drawn from the box)
-            */
-        }
-    }
-};
+void Weapon::SetDamage(float damage) {
+	m_damage = damage;
+}
+
+float Weapon::GetFireRate() const {
+	return m_fireRate;
+}
+
+void Weapon::SetFireRate(float fireRate) {
+	m_fireRate = fireRate;
+}
+
+float Weapon::GetSpeed() const {
+	return m_speed;
+}
+
+void Weapon::SetSpeed(float speed) {
+	m_speed = speed;
+}

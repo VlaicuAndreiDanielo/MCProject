@@ -24,13 +24,16 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
         mapa[dim - 1][j].setType(TileType::IndestructibleWall);
     }
 
+    generateBigLiquid(mapa, dim);
+    generateSmallLiquid(mapa, dim);
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 100);
 
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 35 && mapa[y][x].getType()==TileType::Empty) { // 35% sanse pentru ziduri initiale
+            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
                 mapa[y][x].setType(TileType::DestructibleWall);
             }
         }
@@ -46,7 +49,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
                 if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::DestructibleWall) {
                     continue;  // Skip further processing for this tile
                 }
-                
+
                 int wallCount = 0;
                 // Numara peretii vecini
                 for (int dy = -1; dy <= 1; ++dy) {
@@ -83,74 +86,34 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     return mapa;
 }
 
-void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
+
+
+void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
 
-    int centerX = dim / 2;
-    int centerY = dim / 2;
+    // Determinam locatia spre margine
+    int startX = (rand() % 2 == 0) ? (rand() % (dim / 4)) : (dim - 1 - rand() % (dim / 4));
+    int startY = (rand() % 2 == 0) ? (rand() % (dim / 4)) : (dim - 1 - rand() % (dim / 4));
 
-    // Rau sau lac mare
-    bool isRiver = rand() % 2 == 0;
+    int lakeRadius = rand() % (dim / 10) + 1; // raza mica pentru lac
 
-    if (isRiver) {
-        // Start the river from one edge and span to the opposite edge
-        int startX = (rand() % 2 == 0) ? 1 : dim - 2; // Start from left or right edge
-        int startY = (rand() % 2 == 0) ? 1 : dim - 2; // Start from top or bottom edge
-        int endX = dim - startX - 1;
-        int endY = dim - startY - 1;
-
-        int x = startX;
-        int y = startY;
-
-        int width = 3;  // River width
-        bool gapAdded = false;  // Track if a gap has been added
-
-        while ((x != endX || y != endY) && x > 0 && x < dim - 1 && y > 0 && y < dim - 1) {
-            // Add the river tiles along the current position
-            for (int dx = -width / 2; dx <= width / 2; ++dx) {
-                for (int dy = -width / 2; dy <= width / 2; ++dy) {
-                    int nx = x + dx;
-                    int ny = y + dy;
-
-                    if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1) {
-                        // Create a gap if it's not yet added and a random condition is met
-                        if (!gapAdded && rand() % 100 < 10) {
-                            gapAdded = true;
-                        }
-                        else {
-                            mapa[ny][nx].setType(type);
-                        }
-                    }
-                }
-            }
-
-            // Randomly adjust the direction slightly to create curvature
-            x += (rand() % 3) - 1;  // -1, 0, or 1
-            y += (rand() % 3) - 1;  // -1, 0, or 1
-
-            // Ensure we continue moving toward the target end edge
-            if (x < endX) x++;
-            if (x > endX) x--;
-            if (y < endY) y++;
-            if (y > endY) y--;
-        }
-    }
-    else {
-        // Generam un lac mare central
-        int lakeRadius = dim / 6 + rand() % (dim / 8); // raza lacului
-
-        for (int dy = -lakeRadius; dy <= lakeRadius; ++dy) {
-            for (int dx = -lakeRadius; dx <= lakeRadius; ++dx) {
-                int x = centerX + dx;
-                int y = centerY + dy;
-                if (x >= 1 && x < dim - 1 && y >= 1 && y < dim - 1) {
-                    if (std::sqrt(dx * dx + dy * dy) <= lakeRadius) {
-                        mapa[y][x].setType(type);
-                    }
+    for (int dy = -lakeRadius; dy <= lakeRadius; ++dy) {
+        for (int dx = -lakeRadius; dx <= lakeRadius; ++dx) {
+            int x = startX + dx;
+            int y = startY + dy;
+            if (x >= 1 && x < dim - 1 && y >= 1 && y < dim - 1) {
+                if (std::sqrt(dx * dx + dy * dy) <= lakeRadius) {
+                    mapa[y][x].setType(type);
                 }
             }
         }
     }
+}
+
+TileType Arena::getRandomLiquid()
+{
+    std::srand(std::time(0));
+    return (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
 }
 
 // Afisarea hartii in consola

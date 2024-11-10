@@ -20,4 +20,6 @@ public:
     void print_map() const;
 
     void generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
+    void generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
+    TileType getRandomLiquid();
 };

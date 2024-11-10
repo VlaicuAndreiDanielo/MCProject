@@ -1,42 +1,52 @@
-#include <iostream>
-#include <utility>
+#include "Bullet.h"
 
-#include "weaponsConfig.h"
+Bullet::Bullet(const Vector2& position, const Vector2& direction, float speed, float damage)
+	: m_position{ position }, m_direction{ direction }, m_speed{ speed }, m_damage{ damage } {}
 
-class Player; // TODO include actual player class
+void Bullet::Update() {
+	// TODO: uncomment the next lines after overloading += in Vector2 class
+	Vector2 newPosition = m_position;
+	//newPosition += GetDirection() * GetSpeed();
 
-class Bullet // Base class for Bullets
-{
-    // TODO add getters and setters
-    // TODO add logic so the bullet doesn't travel too many blocks. If it doesn't hit a player or a wall,I think it still shouldn't travel across the whole map
-protected:
-    float speed;
-    int damage;
-    std::pair<float, float> position;
-    std::pair<float, float> direction;
+	SetPosition(newPosition);
+}
 
-public:
-    Bullet(float spd, int dmg, std::pair<float, float> pos, std::pair<float, float> dir)
-        : speed(spd), damage(dmg), position(pos), direction(dir) {}
+bool Bullet::CheckCollision(const Vector2& enemyPosition, float enemyRadius) const {
+	// TODO: uncomment the next two lines after overloading - and adding a method for getting the length of a vector
+	//float distance = (enemyPosition - m_position).Length()
+	//return distance < enemyRadius;
+	return true;  //temporary line
+}
 
-    virtual void move()
-    {
-        position.first += speed * direction.first;
-        position.second += speed * direction.second;
-        std::cout << "Bullet moved to position: (" << position.first << ", " << position.second << ")" << std::endl;
-    }
+Vector2 Bullet::GetPosition() const {
+	return m_position;
+}
 
-    virtual void collide(Player& player)
-    {
-        //player->health -= damage;  //TO DO include player class and subtract damage from health
-        //std::cout << "Bullet collided with player! Damage dealt: " << damage << ". Player health: " << player->health << std::endl;
-    }
+void Bullet::SetPosition(const Vector2& position) {
+	// TODO: after finishing map logic, implement checks so the bullet position can't be set in wrong places like outside of the map
+	m_position = position;
+}
 
-    virtual ~Bullet(){};
+Vector2 Bullet::GetDirection() const {
+	return m_direction;
+}
 
-    // checks if the current bullet collided with a player
-    bool checkCollision(const Player& player)
-    {
-        //TODO IMPLEMENT CHECK COLLISION LOGIC
-    }
-};
+void Bullet::SetDirection(const Vector2& direction) {
+	m_direction = direction;
+}
+
+float Bullet::GetSpeed() const {
+	return m_speed;
+}
+
+void Bullet::SetSpeed(float speed) {
+	m_speed = speed;
+}
+
+float Bullet::GetDamage() const {
+	return m_damage;
+}
+
+void Bullet::SetDamage(float damage) {
+	m_damage = damage;
+}

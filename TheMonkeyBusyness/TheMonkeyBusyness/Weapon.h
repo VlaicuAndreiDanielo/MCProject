@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Vector2.h";
-#include "Bullet.h";
+#include "Vector2.h"
+#include "Bullet.h"
+#include <vector>
 
 class Weapon
 {
@@ -10,6 +11,7 @@ public:
 
 	void Shoot(const Vector2& position, const Vector2& direction);
 	void Update();
+	void DrawBullets(QPainter& painter) const; //TODO temporary for draw methods
 
 	float GetDamage() const;
 	float GetFireRate() const;
@@ -25,4 +27,6 @@ private:
 	float m_speed;
 
 	float m_timeSinceLastShot;
+	std::vector<Bullet> m_activeBullets;
+	std::vector<Bullet> m_inactiveBullets;
 };

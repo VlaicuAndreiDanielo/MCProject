@@ -2,13 +2,28 @@
 
 #include "Vector2.h"
 
+#include <QPainter>  //TODO temporary for draw methods
+#include <QBrush>  //TODO temporary for draw methods
+#include <QPen>  //TODO temporary for draw methods
+
+
 class Bullet
 {
 public:
 	Bullet(const Vector2& position, const Vector2& direction, float speed, float damage);
 
+	Bullet(Bullet&& other) noexcept;
+	Bullet& operator=(Bullet&& other) noexcept;
+
+	Bullet(const Bullet& other) = default;     //TODO think if I should leave the default or delete it
+	Bullet& operator=(const Bullet& other) = default; //TODO maybe I don't want to allow copying of bullets
+
+	~Bullet() = default;
+
+
 	void Update();
 	bool CheckCollision(const Vector2& enemyPosition, float enemyRadius) const;
+	void Draw(QPainter& painter) const;  //TODO temporary for draw methods
 
 	Vector2 GetPosition() const;
 	Vector2 GetDirection() const;

@@ -1,12 +1,28 @@
-#include "Gorilla.h"
+﻿#include "Gorilla.h"
 
 Gorilla::Gorilla()
 	: Character(1500, 4, 20, 0)
 {}
 
 void Gorilla::activateSpecialAbility() 
-{
-	//TODO: implement function
+{   //Protection
+    if (remainingCooldown <= 0) {
+        std::cout << "Gorilla activates Shield!\n";
+
+        // Activăm scutul de 50 de puncte
+        shieldPoints = 50;
+        shieldActive = true;
+        abilityStartTime = std::chrono::steady_clock::now();
+
+        std::cout << "Gorilla gains a shield of 50 points!\n";
+        std::cout << "Current Shield: " << shieldPoints << "\n";
+
+        // Setăm cooldown-ul abilității la 20 de secunde
+        remainingCooldown = cooldownTime;
+    }
+    else {
+        std::cout << "Ability is on cooldown. Time left: " << remainingCooldown << " seconds\n";
+    }
 }
 
 void Gorilla::monkeyEvolution()

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <chrono>
 class Character
 {
 public:
@@ -12,6 +13,10 @@ public:
 	virtual void monkeyEvolution() = 0; 
 
 	virtual ~Character() = default;
+
+	int getHealth() const { return HP; }
+	int getSpeed() const { return speed; }
+	float getCooldownTime() const { return cooldownTime; }
 	
 protected:
 	int HP;

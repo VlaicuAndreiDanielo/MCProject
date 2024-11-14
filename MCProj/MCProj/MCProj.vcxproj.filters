@@ -36,6 +36,9 @@
     <ClInclude Include="BasicMonkey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Username.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Character.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mainForTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Username.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

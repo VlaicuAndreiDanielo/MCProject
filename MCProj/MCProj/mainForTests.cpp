@@ -7,7 +7,7 @@
 #include "BasicMonkey.h"
 
 int main() {
-    // Creăm instanțe pentru fiecare tip de maimuță
+    // Cream instanțte pentru fiecare tip de maimuta
     CapuchinMonkey capuchin;
     HowlerMonkey howler;
     Orangutan orangutan;

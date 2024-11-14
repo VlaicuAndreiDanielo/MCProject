@@ -6,7 +6,7 @@ HowlerMonkey::HowlerMonkey()
 {}
 
 void HowlerMonkey::activateSpecialAbility()
-{
+{   //Sound Barrier
     if (!isInvulnerable && remainingCooldown <= 0) {
         std::cout << "HowlerMonkey activates Sound Barrier! It's now invulnerable for 5 seconds.\n";
         isInvulnerable = true;

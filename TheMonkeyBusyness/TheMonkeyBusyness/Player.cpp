@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "iostream"
-Player::Player(float x, float y)
+Player::Player(float x, float y) //sets spawn of the player 
 {
 	this->position.x = x;
 	this->position.y = y;
@@ -53,7 +53,7 @@ void Player::UpdateRotation(const Vector2& mousePos)
 	direction.y = mousePos.y - position.y;
 	direction.Normalize();
 	this->rotationAngle = direction.GetAngleFromNormalizedVector();
-	std::cout << rotationAngle << std::endl;
+	//std::cout << rotationAngle << std::endl;
 }
 
 

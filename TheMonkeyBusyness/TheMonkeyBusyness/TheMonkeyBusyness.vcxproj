@@ -150,6 +150,7 @@ Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ConstantValues.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="Vector2.h" />

@@ -1,31 +1,32 @@
 ﻿#include "Arena.h"
-import TileType;
+#include "TileType.h"
+#include "Tile.h"
 #include <random>
 #include <queue>
 #include <iostream>
 
 Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
 {
-    this->m_mapa = generate_map(dim, numSpawns);
+    this->m_map = generate_map(dim, numSpawns);
 }
 
 std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
 {
     // Initializare harta cu spatii goale
-    std::vector<std::vector<Tile>> mapa(dim, std::vector<Tile>(dim, Tile(TileType::Empty)));
+    std::vector<std::vector<Tile>> map(dim, std::vector<Tile>(dim, Tile(TileType::Empty)));
 
     for (int i = 0; i < dim; i++) {
-        mapa[i][0].setType(TileType::IndestructibleWall);
-        mapa[i][dim - 1].setType(TileType::IndestructibleWall);
+        map[i][0].setType(TileType::IndestructibleWall);
+        map[i][dim - 1].setType(TileType::IndestructibleWall);
     }
 
     for (int j = 0; j < dim; j++) {
-        mapa[0][j].setType(TileType::IndestructibleWall);
-        mapa[dim - 1][j].setType(TileType::IndestructibleWall);
+        map[0][j].setType(TileType::IndestructibleWall);
+        map[dim - 1][j].setType(TileType::IndestructibleWall);
     }
 
-    generateBigLiquid(mapa, dim);
-    generateSmallLiquid(mapa, dim);
+    generateBigLiquid(map, dim);
+    generateSmallLiquid(map, dim);
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -33,8 +34,8 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
 
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
-                mapa[y][x].setType(TileType::DestructibleWall);
+            if (distrib(gen) < 35 && map[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
+                map[y][x].setType(TileType::DestructibleWall);
             }
         }
     }
@@ -42,11 +43,11 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     // Iteratii de Cellular Automata
     int iterations = 2;
     for (int it = 0; it < iterations; ++it) {
-        std::vector<std::vector<Tile>> newMap = mapa;
+        std::vector<std::vector<Tile>> newMap = map;
 
         for (int y = 1; y < dim - 1; ++y) {
             for (int x = 1; x < dim - 1; ++x) {
-                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::DestructibleWall) {
+                if (map[y][x].getType() != TileType::Empty && map[y][x].getType() != TileType::DestructibleWall) {
                     continue;  // Skip further processing for this tile
                 }
 
@@ -55,7 +56,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
                 for (int dy = -1; dy <= 1; ++dy) {
                     for (int dx = -1; dx <= 1; ++dx) {
                         if (dx == 0 && dy == 0) continue;
-                        if (mapa[y + dy][x + dx].getType() == TileType::DestructibleWall) {
+                        if (map[y + dy][x + dx].getType() == TileType::DestructibleWall) {
                             wallCount++;
                         }
                     }
@@ -70,25 +71,30 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
                 }
             }
         }
-        mapa = newMap;
+        map = newMap;
     }
 
     //transforma peretii destructibili in indestructibili
     int indestructibleWallProbability = 20; // 20% sansa de a transforma in perete indestructibil
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
-            if (mapa[y][x].getType() == TileType::DestructibleWall && distrib(gen) < indestructibleWallProbability) {
-                mapa[y][x].setType(TileType::IndestructibleWall);
+            if (map[y][x].getType() == TileType::DestructibleWall && distrib(gen) < indestructibleWallProbability) {
+                map[y][x].setType(TileType::IndestructibleWall);
             }
         }
     }
 
-    return mapa;
+    return map;
 }
 
 
 
-void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
+void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& map, int dim)
+{
+
+}
+
+void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& map, int dim) {
     TileType type = getRandomLiquid();
 
     // Determinam locatia spre margine
@@ -103,7 +109,7 @@ void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
             int y = startY + dy;
             if (x >= 1 && x < dim - 1 && y >= 1 && y < dim - 1) {
                 if (std::sqrt(dx * dx + dy * dy) <= lakeRadius) {
-                    mapa[y][x].setType(type);
+                    map[y][x].setType(type);
                 }
             }
         }
@@ -116,10 +122,19 @@ TileType Arena::getRandomLiquid()
     return (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
 }
 
+void Arena::draw(QPainter& painter) const
+{
+    painter.save();
+
+    
+
+    painter.restore();
+}
+
 // Afisarea hartii in consola
 void Arena::print_map() const
 {
-    for (const auto& row : m_mapa) {
+    for (const auto& row : m_map) {
         for (const auto& tile : row) {
             switch (tile.getType()) {
             case TileType::Empty: std::cout << ' '; break;
@@ -135,3 +150,4 @@ void Arena::print_map() const
         std::cout << '\n';
     }
 }
+

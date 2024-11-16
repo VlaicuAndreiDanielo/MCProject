@@ -9,7 +9,7 @@
 int main(int argc, char* argv[]) {
 	QApplication app(argc, argv);
 	GameWindow gameWindow;
-	gameWindow.show();
+	gameWindow.showFullScreen();
 
 
 	return app.exec();

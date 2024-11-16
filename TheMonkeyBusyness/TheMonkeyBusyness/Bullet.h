@@ -2,9 +2,9 @@
 
 #include "Vector2.h"
 
-#include <QPainter>  //TODO temporary for draw methods
-#include <QBrush>  //TODO temporary for draw methods
-#include <QPen>  //TODO temporary for draw methods
+#include <QtGui\QPainter>  //TODO temporary for draw methods
+#include <QtGui\QBrush>  //TODO temporary for draw methods
+#include <QtGui\QPen>  //TODO temporary for draw methods
 
 
 class Bullet

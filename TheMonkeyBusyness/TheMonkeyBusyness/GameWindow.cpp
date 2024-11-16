@@ -3,7 +3,7 @@
 #include <QtCore/qobject.h>
 GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
 {
-	setFixedSize(800, 800);
+	arena.generate_map(300,1);
 	setMouseTracking(true);
 	setFocusPolicy(Qt::StrongFocus);
 	this->installEventFilter(player.ReturnInputHandler());
@@ -24,6 +24,9 @@ void GameWindow::paintEvent(QPaintEvent* event)
 
     // Save the painter's current state
     painter.save();
+
+
+	arena.draw(painter);
 
     player.draw(painter);
 

@@ -9,6 +9,7 @@ public:
     explicit InputHandler(QWidget* parent = nullptr);
     Vector2 direction;
     Vector2 mousePosition;
+    bool is_shooting;
 private:
     std::unordered_map<int, bool> keyStates;
 protected:

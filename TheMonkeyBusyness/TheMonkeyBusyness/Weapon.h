@@ -7,7 +7,7 @@
 class Weapon
 {
 public:
-	Weapon(float damage, float fireRate, float speed);
+	Weapon(float damage=10, float fireRate=1, float speed=1);
 
 	void Shoot(const Vector2& position, const Vector2& direction);
 	void Update();

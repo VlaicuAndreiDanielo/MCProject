@@ -50,7 +50,7 @@ void Weapon::Update()
 
 void Weapon::DrawBullets(QPainter& painter) const { //TODO temporary for draw methods
 	for (const Bullet& bullet : m_activeBullets) {
-		bullet.Draw(painter);
+		bullet.draw(painter);
 	}
 }
 

@@ -11,6 +11,7 @@ GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
 	QObject::connect(timer, &QTimer::timeout, [this]() {
 		player.UpdatePosition(player.ReturnInputHandler()->direction);
 		player.UpdateRotation(player.ReturnInputHandler()->mousePosition, width(), height());
+        player.Shoot(player.ReturnInputHandler()->mousePosition, width(), height());
 		update();
 		});
 	timer->start(16);
@@ -38,6 +39,8 @@ void GameWindow::paintEvent(QPaintEvent* event)
     // Translate the painter's coordinate system to shift the map, centering the player
     painter.translate(screenWidth / 2 - playerX, screenHeight / 2 - playerY);
 	arena.draw(painter);
+   
+    player.weapon.DrawBullets(painter);
 
     player.draw(painter);
 

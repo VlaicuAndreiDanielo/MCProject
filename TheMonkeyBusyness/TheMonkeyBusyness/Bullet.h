@@ -23,7 +23,7 @@ public:
 
 	void Update();
 	bool CheckCollision(const Vector2& enemyPosition, float enemyRadius) const;
-	void Draw(QPainter& painter) const;  //TODO temporary for draw methods
+	void draw(QPainter& painter) const;  //TODO temporary for draw methods
 
 	Vector2 GetPosition() const;
 	Vector2 GetDirection() const;

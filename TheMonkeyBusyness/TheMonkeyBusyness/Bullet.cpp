@@ -25,12 +25,14 @@ void Bullet::Update()
 {
 	// TODO: uncomment the next lines after overloading += in Vector2 class
 	Vector2 newPosition = m_position;
-	//newPosition += m_direction * m_speed;
+	newPosition.x += m_direction.x * m_speed;
+	newPosition.y += m_direction.y * m_speed;
 
 	SetPosition(newPosition);
 }
 
-void Bullet::Draw(QPainter& painter) const { //TODO temporary for draw methods
+void Bullet::draw(QPainter& painter) const { //TODO temporary for draw methods
+	painter.save();
 	QPen pen(Qt::black);
 	QBrush brush(Qt::red);
 
@@ -40,6 +42,7 @@ void Bullet::Draw(QPainter& painter) const { //TODO temporary for draw methods
 	const float bulletRadius = 5.0f;
 
 	painter.drawEllipse(QPointF(m_position.x, m_position.y), bulletRadius, bulletRadius);
+	painter.restore();
 }
 
 

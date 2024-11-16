@@ -1,6 +1,6 @@
 #include "InputHandler.h"
 #include "Vector2.h"
-InputHandler::InputHandler(QWidget* parent) : QWidget(parent) {
+InputHandler::InputHandler(QWidget* parent) : QWidget(parent), is_shooting(false) {
 
 }
 
@@ -46,6 +46,12 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
         mousePosition.y = mousePoint.y();
         /*std::cout << mousePosition;
         std::cout << std::endl;*/
+    }
+    if (event->type() == QEvent::MouseButtonPress) {
+        is_shooting = true;
+    }
+    if (event->type() == QEvent::MouseButtonRelease) {
+        is_shooting = false;
     }
     // Pass the event on to the base class
     return QObject::eventFilter(obj, event);

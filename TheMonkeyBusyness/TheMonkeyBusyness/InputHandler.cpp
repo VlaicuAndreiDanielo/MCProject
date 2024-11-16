@@ -44,8 +44,8 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
         QPoint mousePoint = mouseEvent->pos();
         mousePosition.x = mousePoint.x();
         mousePosition.y = mousePoint.y();
-        std::cout << mousePosition;
-        std::cout << std::endl;
+        /*std::cout << mousePosition;
+        std::cout << std::endl;*/
     }
     // Pass the event on to the base class
     return QObject::eventFilter(obj, event);

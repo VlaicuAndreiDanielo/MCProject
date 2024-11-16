@@ -10,7 +10,7 @@ GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
 	timer = new QTimer(this);
 	QObject::connect(timer, &QTimer::timeout, [this]() {
 		player.UpdatePosition(player.ReturnInputHandler()->direction);
-		player.UpdateRotation(player.ReturnInputHandler()->mousePosition);
+		player.UpdateRotation(player.ReturnInputHandler()->mousePosition, width(), height());
 		update();
 		});
 	timer->start(16);
@@ -24,8 +24,19 @@ void GameWindow::paintEvent(QPaintEvent* event)
 
     // Save the painter's current state
     painter.save();
+    int screenWidth = width();
+    int screenHeight = height();
 
+    // Player's position 
+    int playerX = player.GetPosition().x;
+    int playerY = player.GetPosition().y;
 
+    // Define the size of the visible area 
+    int viewWidth = screenWidth;
+    int viewHeight = screenHeight;
+
+    // Translate the painter's coordinate system to shift the map, centering the player
+    painter.translate(screenWidth / 2 - playerX, screenHeight / 2 - playerY);
 	arena.draw(painter);
 
     player.draw(painter);

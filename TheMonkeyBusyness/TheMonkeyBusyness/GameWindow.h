@@ -8,7 +8,6 @@ class GameWindow : public QWidget { //Qt graphic interface
 public:
     explicit GameWindow(QWidget* parent = nullptr);
 private:
-    std::vector<QColor> squareColors{ Qt::green, Qt::black, Qt::red, Qt::yellow, Qt::blue, Qt::darkGreen, Qt::darkRed, Qt::magenta };
     void paintEvent(QPaintEvent* event) override;
     Arena arena;
     Player player;

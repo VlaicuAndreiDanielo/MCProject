@@ -34,6 +34,11 @@ void Player::draw(QPainter& painter) const
 	painter.restore();
 }
 
+Vector2 Player::GetPosition() const
+{
+	return position;
+}
+
 void Player::UpdatePosition(const Vector2& direction)
 {
 	this->position.x += direction.x;
@@ -47,10 +52,12 @@ void Player::UpdatePosition(const float x, const float y)
 	this->position.y += y;
 }
 
-void Player::UpdateRotation(const Vector2& mousePos)
+void Player::UpdateRotation(const Vector2& mousePos, const int screenW, const int screenH)
 {
-	direction.x = mousePos.x - position.x;
-	direction.y = mousePos.y - position.y;
+	int mouseOffsetX = mousePos.x - (screenW/2-position.x);
+	int mouseOffsetY = mousePos.y - (screenH/2-position.y);
+	direction.x = mouseOffsetX - position.x;
+	direction.y = mouseOffsetY - position.y;
 	direction.Normalize();
 	this->rotationAngle = direction.GetAngleFromNormalizedVector();
 	//std::cout << rotationAngle << std::endl;

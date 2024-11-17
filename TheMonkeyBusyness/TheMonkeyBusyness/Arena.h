@@ -23,4 +23,5 @@ public:
     void generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
     TileType getRandomLiquid();
     void generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int dim, int numSpawns);
+    void generateGrass(std::vector<std::vector<Tile>>& mapa);
 };

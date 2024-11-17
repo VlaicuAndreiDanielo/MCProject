@@ -82,6 +82,15 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
         }
     }
 
+    for (int y = 1; y < dim - 1; ++y) {
+        for (int x = 1; x < dim - 1; ++x) {
+            if (distrib(gen) < 15 && mapa[y][x].getType() == TileType::Empty) { // 15% chance for grass
+                mapa[y][x].setType(TileType::Grass);
+            }
+        }
+    }
+    generateGrass(mapa);
+
     generateInitialSpawns(mapa, numSpawns, 8);
 
     return mapa;
@@ -293,6 +302,52 @@ void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numS
         spawnPositions.emplace_back(x, y);
     }
 }
+
+void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
+    // Define the number of iterations for cellular automata
+    int iterations = 3;
+
+    // Perform Cellular Automata to add grass
+    for (int it = 0; it < iterations; ++it) {
+        std::vector<std::vector<Tile>> newMap = mapa;
+
+        for (int y = 1; y < m_dim - 1; ++y) {
+            for (int x = 1; x < m_dim - 1; ++x) {
+                // Skip tiles that are already obstacles or spawn points
+                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::Grass) {
+                    continue;
+                }
+
+                int grassCount = 0;
+
+                // Count adjacent grass tiles
+                for (int dy = -1; dy <= 1; ++dy) {
+                    for (int dx = -1; dx <= 1; ++dx) {
+                        if (dx == 0 && dy == 0) continue; // Skip the center tile
+                        int nx = x + dx;
+                        int ny = y + dy;
+
+                        if (nx >= 0 && nx < m_dim && ny >= 0 && ny < m_dim &&
+                            mapa[ny][nx].getType() == TileType::Grass) {
+                            ++grassCount;
+                        }
+                    }
+                }
+
+                // Apply Cellular Automata rules for grass growth
+                if (mapa[y][x].getType() == TileType::Empty && grassCount >= 3) {
+                    newMap[y][x].setType(TileType::Grass); // Empty tiles with enough grass neighbors become grass
+                }
+                else if (mapa[y][x].getType() == TileType::Grass && grassCount < 2) {
+                    newMap[y][x].setType(TileType::Empty); // Grass with too few neighbors reverts to empty
+                }
+            }
+        }
+
+        mapa = newMap; // Update the map for the next iteration
+    }
+}
+
 
 // Afisarea hartii in consola
 void Arena::print_map() const

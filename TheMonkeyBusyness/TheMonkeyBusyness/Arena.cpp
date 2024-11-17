@@ -1,7 +1,7 @@
 ﻿#include "Arena.h"
-#include <random>
 #include <queue>
 #include <iostream>
+#include <functional>
 
 Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
 {
@@ -92,6 +92,8 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     generateGrass(mapa);
 
     generateInitialSpawns(mapa, numSpawns, 8);
+
+    placeTeleporters(mapa);
 
     return mapa;
 }
@@ -348,6 +350,102 @@ void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
     }
 }
 
+std::pair<int, int> Arena::getConnectedTeleporter(int x, int y) const {
+    auto it = m_teleporterConnections.find({ x, y });
+    if (it != m_teleporterConnections.end()) {
+        return it->second;
+    }
+    return { -1, -1 }; // Return an invalid location if no connection exists
+}
+
+void Arena::placeTeleporters(std::vector<std::vector<Tile>>& mapa) {
+    // Random number generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> countDistrib(0, 2); // 0, 2, or 4 teleporters (in pairs)
+    std::uniform_int_distribution<> borderOffsetDistrib(1, 8); // Distance from the border (1 to 8)
+
+    int numTeleporters = countDistrib(gen) * 2; // Ensure an even number (0, 2, or 4)
+    if (numTeleporters == 0) return;
+
+    std::vector<std::pair<int, int>> teleporters;
+
+    // Borders: 0 = top, 1 = bottom, 2 = left, 3 = right
+    std::vector<int> borders = { 0, 1, 2, 3 };
+    std::shuffle(borders.begin(), borders.end(), gen); // Randomize borders
+
+    for (int i = 0; i < numTeleporters / 2; ++i) {
+        if (borders.size() < 2) break; // Ensure enough distinct borders
+
+        // Pick two distinct borders
+        int border1 = borders.back();
+        borders.pop_back();
+        int border2 = borders.back();
+        borders.pop_back();
+
+        // Place teleporter on the first border
+        std::pair<int, int> teleporter1 = generateTeleporterPosition(mapa, border1, borderOffsetDistrib(gen), gen);
+        teleporters.push_back(teleporter1);
+        mapa[teleporter1.second][teleporter1.first].setType(TileType::Teleporter);
+
+        // Place teleporter on the second border
+        std::pair<int, int> teleporter2 = generateTeleporterPosition(mapa, border2, borderOffsetDistrib(gen), gen);
+        teleporters.push_back(teleporter2);
+        mapa[teleporter2.second][teleporter2.first].setType(TileType::Teleporter);
+    }
+
+    // Pair the teleporters
+    pairTeleporters(teleporters);
+}
+
+std::pair<int, int> Arena::generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen) {
+    std::uniform_int_distribution<> dimDistrib(1, m_dim - 2); // Avoid corners
+    int x = 0, y = 0;
+
+    switch (border) {
+    case 0: // Top border
+        x = offset;
+        y = 1;
+        break;
+    case 1: // Bottom border
+        x = offset;
+        y = m_dim - 2;
+        break;
+    case 2: // Left border
+        x = 1;
+        y = offset;
+        break;
+    case 3: // Right border
+        x = m_dim - 2;
+        y = offset;
+        break;
+    }
+
+    // Ensure the chosen tile is empty
+    while (mapa[y][x].getType() != TileType::Empty) {
+        offset = dimDistrib(gen);
+        switch (border) {
+        case 0: y = 1; x = offset; break;      // Top border
+        case 1: y = m_dim - 2; x = offset; break; // Bottom border
+        case 2: x = 1; y = offset; break;      // Left border
+        case 3: x = m_dim - 2; y = offset; break; // Right border
+        }
+    }
+
+    return { x, y };
+}
+
+void Arena::pairTeleporters(const std::vector<std::pair<int, int>>& teleporters) {
+    if (teleporters.size() < 2) return;
+
+    // Create teleporter connections
+    for (size_t i = 0; i < teleporters.size(); i += 2) {
+        auto t1 = teleporters[i];
+        auto t2 = teleporters[i + 1];
+        m_teleporterConnections[t1] = t2;
+        m_teleporterConnections[t2] = t1;
+    }
+}
 
 // Afisarea hartii in consola
 void Arena::print_map() const

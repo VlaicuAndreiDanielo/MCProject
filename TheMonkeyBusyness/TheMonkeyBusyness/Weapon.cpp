@@ -2,7 +2,7 @@
 #include "weaponsConfig.h"
 
 Weapon::Weapon(float damage, float fireRate, float speed)
-	: m_damage{ damage }, m_fireRate{ fireRate }, m_speed{ speed }, m_timeSinceLastShot{ 0.0f }
+	: m_damage{ damage }, m_fireRate{ fireRate }, m_speed{ speed }, m_timeSinceLastShot{ 0.0f }, m_damageIncreaseTimer{ 0.0f }, m_speedIncreaseTimer{ 0.0f }
 {
 	/*
 	the number of bullets that can exist at one time is limited by the fireRate
@@ -34,13 +34,17 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction)
 		m_inactiveBullets.back().SetDirection(direction);
 		m_activeBullets.push_back(std::move(m_inactiveBullets.back()));
 		m_inactiveBullets.pop_back();
+
 		m_timeSinceLastShot = 0.0f;
+
+		if (hasActivePowerup)
+			activatePowerupOnBullet(m_activeBullets.back());
 	}
 }
 
 void Weapon::Update()
 {
-	m_timeSinceLastShot += 1.0f / 60.0f;
+	m_timeSinceLastShot += WeaponConfig::frameTime; //TODO check if I should replace frameTime from constexpr to DEFIN
 
 	for (auto& bullet : m_activeBullets) {
 		bullet.Update();
@@ -52,6 +56,37 @@ void Weapon::DrawBullets(QPainter& painter) const { //TODO temporary for draw me
 	for (const Bullet& bullet : m_activeBullets) {
 		bullet.draw(painter);
 	}
+}
+
+void Weapon::ActivateDamagePowerup(float duration)
+{
+	m_damageIncreaseTimer += duration;
+}
+
+void Weapon::ActivateSpeedPowerup(float duration)
+{
+	m_speedIncreaseTimer += duration;
+}
+
+bool Weapon::hasActivePowerup() const
+{
+	return m_damageIncreaseTimer > 0 || m_speedIncreaseTimer > 0;
+}
+
+void Weapon::activatePowerupOnBullet(Bullet& bullet)
+{
+	if (m_damageIncreaseTimer)
+		bullet.SetDamage(bullet.GetDamage() + WeaponConfig::DamagePowerupIncreasePercent);
+	if (m_speedIncreaseTimer)
+		bullet.SetSpeed(bullet.GetSpeed() + WeaponConfig::speedPowerupIncreasePercent);
+}
+
+void Weapon::updatePowerupTimers()
+{
+	if (m_damageIncreaseTimer > 0)
+		m_damageIncreaseTimer -= WeaponConfig::frameTime; //TODO check if I should replace frameTime from constexpr to DEFINE
+	if (m_speedIncreaseTimer > 0)
+		m_speedIncreaseTimer -= WeaponConfig::frameTime; //TODO same as above
 }
 
 float Weapon::GetDamage() const {

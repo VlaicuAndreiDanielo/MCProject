@@ -1,12 +1,12 @@
-﻿#include "username.h"
+﻿#include "user.h"
 #include <regex>
 #include <algorithm>
 #include <ctime>
 
-std::vector<std::string> Username::takenUsernames;
-std::vector<std::string> Username::userPasswords;
+std::vector<std::string> User::takenUsernames;
+std::vector<std::string> User::userPasswords;
 
-Username::Username(const std::string& username, const std::string& password) {
+User::User(const std::string& username, const std::string& password) {
     this->validUsername = isValidUsername(username);
     this->validPassword = isValidPassword(password);
 
@@ -21,25 +21,27 @@ Username::Username(const std::string& username, const std::string& password) {
         this->validUsername = false;
         this->validPassword = false;
     }
+    score = 0;
+    upgradePoints = 0;
 }
 
-std::string Username::getUsername() const {
+std::string User::getUsername() const {
     return username;
 }
 
-std::string Username::getPassword() const {
+std::string User::getPassword() const {
     return password;
 }
 
-bool Username::isUsernameValid() const {
+bool User::isUsernameValid() const {
     return validUsername;
 }
 
-bool Username::isPasswordValid() const {
+bool User::isPasswordValid() const {
     return validPassword;
 }
 
-bool Username::setUsername(const std::string& newUsername) {
+bool User::setUsername(const std::string& newUsername) {
     if (isValidUsername(newUsername) && std::find(takenUsernames.begin(), takenUsernames.end(), newUsername) == takenUsernames.end()) {
         username = newUsername;
         takenUsernames.push_back(newUsername);  
@@ -48,7 +50,7 @@ bool Username::setUsername(const std::string& newUsername) {
     return false;
 }
 
-bool Username::setPassword(const std::string& newPassword) {
+bool User::setPassword(const std::string& newPassword) {
     if (isValidPassword(newPassword) && checkPasswordStrength(newPassword)) {
         password = newPassword;
         return true;
@@ -56,11 +58,11 @@ bool Username::setPassword(const std::string& newPassword) {
     return false;
 }
 
-std::time_t Username::getAccountCreationTime() const {
+std::time_t User::getAccountCreationTime() const {
     return accountCreated;
 }
 
-bool Username::authenticate(const std::string& inputPassword) {
+bool User::authenticate(const std::string& inputPassword) {
    
     auto it = std::find(takenUsernames.begin(), takenUsernames.end(), username);
     if (it != takenUsernames.end()) {
@@ -70,7 +72,7 @@ bool Username::authenticate(const std::string& inputPassword) {
     return false;
 }
 
-bool Username::resetPassword(const std::string& oldPassword, const std::string& newPassword) {
+bool User::resetPassword(const std::string& oldPassword, const std::string& newPassword) {
     if (authenticate(oldPassword) && isValidPassword(newPassword)) {
         password = newPassword;
         
@@ -84,7 +86,7 @@ bool Username::resetPassword(const std::string& oldPassword, const std::string& 
     return false;
 }
 
-bool Username::checkPasswordStrength(const std::string& password) const {
+bool User::checkPasswordStrength(const std::string& password) const {
     bool hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
     std::regex specialChars("[!@#$%^&*(),.?\":{}|<>]");
 
@@ -98,12 +100,30 @@ bool Username::checkPasswordStrength(const std::string& password) const {
     return hasUpper && hasLower && hasDigit && hasSpecial;
 }
 
-bool Username::isValidUsername(const std::string& name) {
+int User::getScore() const
+{
+    return 0;
+}
+
+int User::getUpgratePoints() const
+{
+    return 0;
+}
+
+void User::setScore()
+{
+}
+
+void User::setUpgradePoints()
+{
+}
+
+bool User::isValidUsername(const std::string& name) {
     std::regex pattern("^[a-zA-Z0-9_-.]{5,}$");
     return std::regex_match(name, pattern);
 }
 
-bool Username::isValidPassword(const std::string& password) {
+bool User::isValidPassword(const std::string& password) {
     std::regex pattern("^.{8,}$");
     return std::regex_match(password, pattern);
 }

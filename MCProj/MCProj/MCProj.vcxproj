@@ -134,7 +134,8 @@
     <ClInclude Include="Gorilla.h" />
     <ClInclude Include="HowlerMonkey.h" />
     <ClInclude Include="Orangutan.h" />
-    <ClInclude Include="Username.h" />
+    <ClInclude Include="UserDatabase.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnubisBaboon.cpp" />
@@ -150,7 +151,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Orangutan.cpp" />
-    <ClCompile Include="Username.cpp" />
+    <ClCompile Include="UserDatabase.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

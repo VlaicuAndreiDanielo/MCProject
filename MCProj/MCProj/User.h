@@ -3,7 +3,7 @@
 #include <vector>
 #include <ctime>
 
-class Username
+class User
 {
     static std::vector<std::string> takenUsernames;  // Lista de nume de utilizatori deja folosite
     static std::vector<std::string> userPasswords;   // Lista de parole pentru utilizatori
@@ -14,9 +14,11 @@ private:
     bool validUsername;
     bool validPassword;
     std::time_t accountCreated;
+    int score;
+    int upgradePoints;
 
 public:
-    Username(const std::string& username, const std::string& password);
+    User(const std::string& username, const std::string& password);
 
     std::string getUsername() const;
     std::string getPassword() const;
@@ -31,6 +33,12 @@ public:
     static bool isValidUsername(const std::string& name);  
     static bool isValidPassword(const std::string& password);  
     bool checkPasswordStrength(const std::string& password) const;  
+
+    int getScore() const;
+    int getUpgratePoints() const;
+
+    void setScore();
+    void setUpgradePoints();
 };
 
 

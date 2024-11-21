@@ -1,4 +1,4 @@
-﻿#include "user.h"
+﻿#include "User.h"
 #include <regex>
 #include <algorithm>
 #include <ctime>
@@ -102,20 +102,22 @@ bool User::checkPasswordStrength(const std::string& password) const {
 
 int User::getScore() const
 {
-    return 0;
+    return score;
 }
 
-int User::getUpgratePoints() const
+int User::getUpgradePoints() const
 {
-    return 0;
+    return upgradePoints;
 }
 
-void User::setScore()
+void User::setScore(const int &scr)
 {
+    score = scr;
 }
 
-void User::setUpgradePoints()
+void User::setUpgradePoints(const int& upt)
 {
+    upgradePoints = upt;
 }
 
 bool User::isValidUsername(const std::string& name) {

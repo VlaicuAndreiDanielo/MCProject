@@ -35,10 +35,10 @@ public:
     bool checkPasswordStrength(const std::string& password) const;  
 
     int getScore() const;
-    int getUpgratePoints() const;
+    int getUpgradePoints() const;
 
-    void setScore();
-    void setUpgradePoints();
+    void setScore(const int& scr);
+    void setUpgradePoints(const int& upt);
 };
 
 

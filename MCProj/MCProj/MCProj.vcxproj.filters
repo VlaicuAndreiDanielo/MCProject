@@ -74,5 +74,8 @@
     <ClCompile Include="UserDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainForDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

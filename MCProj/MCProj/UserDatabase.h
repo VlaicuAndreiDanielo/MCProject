@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <sqlite3.h>
+#include "User.h"
 
 class UserDatabase {
 public:
@@ -9,7 +10,7 @@ public:
     ~UserDatabase();
 
     void createTable();
-    void addUser(const std::string& username, const std::string& password, int score, int upgradePoints);
+    void addUser(const User& user);
     void updateUserScore(const std::string& username, int newScore);
     void updateUserUpgradePoints(const std::string& username, int newPoints);
     void getUserInfo(const std::string& username);

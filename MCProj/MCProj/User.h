@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <iostream>
+
 
 class User
 {
@@ -18,7 +20,7 @@ private:
     int upgradePoints;
 
 public:
-    User(const std::string& username, const std::string& password);
+    User(const std::string& username, const std::string& password,int scr , int uppt );
 
     std::string getUsername() const;
     std::string getPassword() const;
@@ -37,8 +39,8 @@ public:
     int getScore() const;
     int getUpgradePoints() const;
 
-    void setScore(const int& scr);
-    void setUpgradePoints(const int& upt);
+    void setScore(int scr);
+    void setUpgradePoints(int upt);
 };
 
 

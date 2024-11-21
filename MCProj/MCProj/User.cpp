@@ -6,24 +6,28 @@
 std::vector<std::string> User::takenUsernames;
 std::vector<std::string> User::userPasswords;
 
-User::User(const std::string& username, const std::string& password) {
+User::User(const std::string& username, const std::string& password, int scr = 0, int uppt = 0) :
+    score(scr), upgradePoints(scr)
+{
+    std::cout << "Validating username: " << username << std::endl;
     this->validUsername = isValidUsername(username);
+    std::cout << "Validating password: " << password << std::endl;
     this->validPassword = isValidPassword(password);
 
     if (validUsername && validPassword && std::find(takenUsernames.begin(), takenUsernames.end(), username) == takenUsernames.end()) {
         this->username = username;
-        this->password = password;  
+        this->password = password;
         takenUsernames.push_back(username);
-        userPasswords.push_back(password);  
+        userPasswords.push_back(password);
         this->accountCreated = std::time(0);
     }
     else {
+        std::cerr << "Invalid username or password, or username already taken." << std::endl;
         this->validUsername = false;
         this->validPassword = false;
     }
-    score = 0;
-    upgradePoints = 0;
 }
+
 
 std::string User::getUsername() const {
     return username;
@@ -110,22 +114,34 @@ int User::getUpgradePoints() const
     return upgradePoints;
 }
 
-void User::setScore(const int &scr)
+void User::setScore(int scr)
 {
     score = scr;
 }
 
-void User::setUpgradePoints(const int& upt)
+void User::setUpgradePoints(int upt)
 {
     upgradePoints = upt;
 }
 
 bool User::isValidUsername(const std::string& name) {
-    std::regex pattern("^[a-zA-Z0-9_-.]{5,}$");
-    return std::regex_match(name, pattern);
+    try {
+        std::regex pattern(" ^ [a - zA - Z0 - 9_.] {3, 30}$");
+        return std::regex_match(name, pattern);
+    }
+    catch (const std::regex_error& e) {
+        std::cerr << "Regex error in username validation: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 bool User::isValidPassword(const std::string& password) {
-    std::regex pattern("^.{8,}$");
-    return std::regex_match(password, pattern);
+    try {
+        std::regex pattern("^[a-zA-Z0-9!@#$%^&*()_+={}\[\]:;<>,.?/\\|`~-]{8,20}$");
+        return std::regex_match(password, pattern);
+    }
+    catch (const std::regex_error& e) {
+        std::cerr << "Regex error in password validation: " << e.what() << std::endl;
+        return false;
+    }
 }

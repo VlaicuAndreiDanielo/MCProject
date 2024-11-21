@@ -13,8 +13,9 @@ public:
     void addUser(const User& user);
     void updateUserScore(const std::string& username, int newScore);
     void updateUserUpgradePoints(const std::string& username, int newPoints);
-    void getUserInfo(const std::string& username);
+    User getUserInfo(const std::string& username);
     void deleteUser(const std::string& username);
+    void showAllUsers();
 
 private:
     sqlite3* db;

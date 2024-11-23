@@ -37,8 +37,8 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction)
 
 		m_timeSinceLastShot = 0.0f;
 
-		if (hasActivePowerup)
-			activatePowerupOnBullet(m_activeBullets.back());
+		/*if (hasActivePowerup)
+			activatePowerupOnBullet(m_activeBullets.back());*/
 	}
 }
 

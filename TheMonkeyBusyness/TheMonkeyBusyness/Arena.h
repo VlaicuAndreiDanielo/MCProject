@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <unordered_map>
 #include<random>
-
-import Tile;
-import TileType;
+#include "Tile.h"
+#include "TileType.h"
+#include <QtGui/qpainter.h>
+#include <cstdint>
+#include "ConstantValues.h"
 
 class Arena
 {
@@ -21,9 +23,11 @@ private:
         }
     };
     std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> m_teleporterConnections;
+    //temporary color squares for the tiles;
+    std::vector<QColor> squareColors{ Qt::green, Qt::black, Qt::red, Qt::yellow, Qt::blue, Qt::darkGreen, Qt::darkRed, Qt::magenta };
 public:
 
-    Arena(int dim, int numSpawns);
+    Arena(int dim = 100, int numSpawn = 1);
 
     std::vector<std::vector<Tile>> generate_map(int dim, int numSpawns);
 
@@ -39,4 +43,5 @@ public:
     void pairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
     void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
+    void draw(QPainter& painter)const;
 };

@@ -447,6 +447,25 @@ void Arena::pairTeleporters(const std::vector<std::pair<int, int>>& teleporters)
     }
 }
 
+void Arena::draw(QPainter& painter) const
+{
+    painter.save();
+    painter.setPen(Qt::NoPen);
+    for (int row = 0; row < m_dim; ++row) {
+        for (int col = 0; col < m_dim; ++col) {
+            uint8_t squareType = (uint8_t)m_mapa[row][col].getType();
+            QColor color = squareColors[squareType];
+            int x = col * SQUARE_SIZE;
+            int y = row * SQUARE_SIZE;
+            painter.setBrush(color);
+
+            painter.drawRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
+        }
+    }
+
+    painter.restore();
+}
+
 // Afisarea hartii in consola
 void Arena::print_map() const
 {

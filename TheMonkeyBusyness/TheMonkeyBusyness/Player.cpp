@@ -39,6 +39,11 @@ Vector2 Player::GetPosition() const
 	return position;
 }
 
+void Player::SetSpawn(Vector2 location)
+{
+	position = location;
+}
+
 void Player::UpdatePosition(const Vector2& direction)
 {
 	this->position.x += direction.x;

@@ -59,6 +59,18 @@ Vector2& Vector2::operator/=(const float scalar)
 	return *this;
 }
 
+Vector2 Vector2::operator+(const Vector2& vector)
+{
+	return Vector2(this->x + vector.x,this->y + vector.y);
+}
+
+Vector2& Vector2::operator+=(const Vector2& vector)
+{
+	this->x += vector.x;
+	this->y += vector.y;
+	return *this; // Return the current object by reference
+}
+
 float Vector2::GetAngleFromNormalizedVector() const
 {
 	float angleInRadians = atan2(this->y, this->x);

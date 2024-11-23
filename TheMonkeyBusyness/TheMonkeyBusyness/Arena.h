@@ -3,7 +3,7 @@
 #include <ctime>
 #include <algorithm>
 #include <unordered_map>
-#include<random>
+#include <random>
 #include "Tile.h"
 #include "TileType.h"
 #include <QtGui/qpainter.h>
@@ -16,6 +16,7 @@ private:
     int m_dim;
     std::vector<std::vector<Tile>> m_mapa;
     int m_numSpawns;
+    std::vector<std::pair<int, int>> m_spawnPositions;
     struct pair_hash {
         template <class T1, class T2>
         std::size_t operator()(const std::pair<T1, T2>& pair) const {
@@ -29,10 +30,21 @@ public:
 
     Arena(int dim = 100, int numSpawn = 1);
 
+    //Forcing Singleton pattern, that means that only 1 arena can ever exist during runtime
+    Arena(const Arena&) = delete;
+    Arena& operator=(const Arena&) = delete;
+
+    // Static function to get the single instance of Arena
+    static Arena& Instance() {
+        static Arena instance; // The single instance
+        return instance;
+    }
+
+
+
     std::vector<std::vector<Tile>> generate_map(int dim, int numSpawns);
 
     void print_map() const;
-
 
     void generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
     void generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
@@ -44,4 +56,7 @@ public:
     void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
     void draw(QPainter& painter)const;
+
+    static Tile GetTile(int line, int col);
+    std::pair<int, int> GetSpawn();
 };

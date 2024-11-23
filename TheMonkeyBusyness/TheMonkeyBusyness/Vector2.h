@@ -12,6 +12,8 @@ public:
 	Vector2& operator*=(const float scalar);
 	Vector2 operator/(const float scalar)const;
 	Vector2& operator/=(const float scalar);
+	Vector2 operator+(const Vector2& vector);
+	Vector2& operator+=(const Vector2& vector);
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& vector); 
 	float GetAngleFromNormalizedVector() const;
 };

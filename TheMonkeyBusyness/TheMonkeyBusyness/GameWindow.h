@@ -4,13 +4,13 @@
 #include <QtGui/QKeyEvent>
 #include "Player.h"
 #include "Arena.h"
+#include "Raycast.h";
 class GameWindow : public QWidget { //Qt graphic interface 
 public:
     explicit GameWindow(QWidget* parent = nullptr);
 private:
     void paintEvent(QPaintEvent* event) override;
-    Arena arena;
     Player player;
     QTimer* timer;
-
+    void CycleBullets(Player& player);
 };

@@ -141,6 +141,7 @@ Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -152,6 +153,7 @@ Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ConstantValues.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="Vector2.h" />

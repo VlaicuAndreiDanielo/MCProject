@@ -10,6 +10,7 @@ public:
 	Vector2 Forward() const;
 	void draw(QPainter& painter)const;
 	Vector2 GetPosition()const;
+	void SetSpawn(Vector2 location);
 	Weapon weapon;
 public slots:
 	void UpdatePosition(const Vector2 &vector);

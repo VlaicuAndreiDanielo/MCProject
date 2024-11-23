@@ -98,6 +98,16 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     return mapa;
 }
 
+Tile Arena::GetTile(int line, int col)
+{
+    return Instance().m_mapa[line][col];
+}
+
+std::pair<int, int> Arena::GetSpawn()
+{
+    return m_spawnPositions[0];
+}
+
 void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
 
@@ -303,6 +313,8 @@ void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numS
         mapa[y][x].setType(TileType::Spawn);
         spawnPositions.emplace_back(x, y);
     }
+
+    m_spawnPositions = spawnPositions;
 }
 
 void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {

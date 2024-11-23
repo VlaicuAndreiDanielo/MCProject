@@ -19,10 +19,15 @@ public:
 	float GetDamage() const;
 	float GetFireRate() const;
 	float GetSpeed() const;
-
+	
 	void SetDamage(float damage);
 	void SetFireRate(float fireRate);
 	void SetSpeed(float speed);
+
+	std::vector<Bullet>& getBullets() { // temporary getter
+		return m_activeBullets;
+	}
+
 
 private:
 	float m_damage;

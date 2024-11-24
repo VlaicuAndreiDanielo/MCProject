@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include <vector>
 #include "weaponsConfig.h"
+
 class Weapon
 {
 public:

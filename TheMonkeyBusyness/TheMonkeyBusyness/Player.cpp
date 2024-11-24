@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "iostream"
+
 Player::Player(float x, float y) //sets spawn of the player 
 {
 	this->position.x = x;
@@ -64,13 +65,18 @@ void Player::UpdateRotation(const Vector2& mousePos, const int screenW, const in
 	//std::cout << rotationAngle << std::endl;
 }
 
-void Player::Shoot(const Vector2& mousePos, const int screenW, const int screenH)
+void Player::Shoot(const Vector2& mousePosition, const int screenW, const int screenH)
 {
-	if (inputHandler.is_shooting) {
-		weapon.Shoot(position, CalculateLookAtDirection(mousePos, screenW, screenH));
+	if (inputHandler.is_shooting)
+	{
+		Vector2 bulletSpawnPosition = CalculateBulletSpawnPosition();
+;		Vector2 shootDirection = CalculateLookAtDirection(mousePosition, screenW, screenH);
+
+		weapon.Shoot(bulletSpawnPosition, shootDirection);
 	}
 	weapon.Update();
 }
+
 
 Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos, const int screenW, const int screenH)
 {
@@ -82,4 +88,12 @@ Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos, const int scre
 	return direction;
 }
 
+Vector2 Player::CalculateBulletSpawnPosition() const
+{
+	float offsetX = cos((rotationAngle - 90) * M_PI / 180.0f) * (kPlayerSize / 2.0f);
+	float offsetY = sin((rotationAngle - 90) * M_PI / 180.0f) * (kPlayerSize / 2.0f);
+
+
+	return position + Vector2{ offsetX, offsetY };
+}
 

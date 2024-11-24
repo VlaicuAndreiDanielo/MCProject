@@ -3,6 +3,8 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qpainter.h>
 #include "Weapon.h"
+#include "ConstantValues.h"
+
 class Player : public QObject{ // this is the player, he calls for input and other actions
 public:
 	explicit Player(float x=0, float y=0);
@@ -22,7 +24,7 @@ private:
 	Vector2 position;
 	Vector2 direction;
 	float rotationAngle{ 0 };
-	float size{ 30 };
+	float size{ kPlayerSize };
 	Vector2 CalculateLookAtDirection(const Vector2& mousePos, const int screenW, const int screenH);
-
+	Vector2 CalculateBulletSpawnPosition() const;
 };

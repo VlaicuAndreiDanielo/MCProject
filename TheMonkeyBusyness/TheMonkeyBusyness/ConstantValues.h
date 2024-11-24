@@ -2,5 +2,6 @@
 #define CONSTANTS_H
 
 constexpr int SQUARE_SIZE = 40;
+constexpr int kPlayerSize = 30;
 
 #endif // CONSTANTS_H

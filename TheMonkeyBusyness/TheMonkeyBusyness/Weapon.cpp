@@ -1,5 +1,6 @@
 #include "Weapon.h"
 #include "weaponsConfig.h"
+#include "ConstantValues.h"
 
 Weapon::Weapon(float damage, float fireRate, float speed)
 	: m_damage{ damage }, m_fireRate{ fireRate }, m_speed{ speed }, m_timeSinceLastShot{ 0.0f }, m_damageIncreaseTimer{ 0.0f }, m_speedIncreaseTimer{ 0.0f }

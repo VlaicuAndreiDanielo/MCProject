@@ -59,7 +59,7 @@ Vector2& Vector2::operator/=(const float scalar)
 	return *this;
 }
 
-Vector2 Vector2::operator+(const Vector2& vector)
+Vector2 Vector2::operator+(const Vector2& vector) const
 {
 	return Vector2(this->x + vector.x,this->y + vector.y);
 }

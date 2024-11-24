@@ -14,6 +14,7 @@ public:
 	Vector2 GetPosition()const;
 	void SetSpawn(Vector2 location);
 	Weapon weapon;
+
 public slots:
 	void UpdatePosition(const Vector2 &vector);
 	void UpdatePosition(const float x, const float y);

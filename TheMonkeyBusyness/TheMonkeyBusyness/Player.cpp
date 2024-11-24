@@ -70,7 +70,7 @@ void Player::Shoot(const Vector2& mousePosition, const int screenW, const int sc
 	if (inputHandler.is_shooting)
 	{
 		Vector2 bulletSpawnPosition = CalculateBulletSpawnPosition();
-;		Vector2 shootDirection = CalculateLookAtDirection(mousePosition, screenW, screenH);
+ 		Vector2 shootDirection = CalculateLookAtDirection(mousePosition, screenW, screenH);
 
 		weapon.Shoot(bulletSpawnPosition, shootDirection);
 	}
@@ -92,7 +92,6 @@ Vector2 Player::CalculateBulletSpawnPosition() const
 {
 	float offsetX = cos((rotationAngle - 90) * M_PI / 180.0f) * (kPlayerSize / 2.0f);
 	float offsetY = sin((rotationAngle - 90) * M_PI / 180.0f) * (kPlayerSize / 2.0f);
-
 
 	return position + Vector2{ offsetX, offsetY };
 }

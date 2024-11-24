@@ -38,14 +38,17 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction)
 
 		m_timeSinceLastShot = 0.0f;
 
-		/*if (hasActivePowerup)
-			activatePowerupOnBullet(m_activeBullets.back());*/
+		if (hasActivePowerup())
+			activateBulletPowerup(m_activeBullets.back());
 	}
 }
 
 void Weapon::Update()
 {
-	m_timeSinceLastShot += WeaponConfig::frameTime; //TODO check if I should replace frameTime from constexpr to DEFIN
+	m_timeSinceLastShot += WeaponConfig::frameTime; //TODO check if I should replace frameTime from constexpr to DEFINE
+
+	if (hasActivePowerup())
+		updatePowerups();
 
 	for (auto& bullet : m_activeBullets) {
 		bullet.Update();
@@ -74,20 +77,44 @@ bool Weapon::hasActivePowerup() const
 	return m_damageIncreaseTimer > 0 || m_speedIncreaseTimer > 0;
 }
 
-void Weapon::activatePowerupOnBullet(Bullet& bullet)
+void Weapon::activateBulletPowerup(Bullet& bullet)
 {
 	if (m_damageIncreaseTimer)
-		bullet.SetDamage(bullet.GetDamage() + WeaponConfig::DamagePowerupIncreasePercent);
+		bullet.SetDamage(bullet.GetDamage() * (1 + WeaponConfig::kDamagePowerupIncreasePercent / 100.0f));
 	if (m_speedIncreaseTimer)
-		bullet.SetSpeed(bullet.GetSpeed() + WeaponConfig::speedPowerupIncreasePercent);
+		bullet.SetSpeed(bullet.GetSpeed() * (1 + WeaponConfig::kSpeedPowerupIncreasePercent / 100.0f));
 }
 
-void Weapon::updatePowerupTimers()
+void Weapon::deactivateBulletsPowerup()
+{
+	for(Bullet& bullet : m_activeBullets)
+	{
+		bullet.SetDamage(m_damage);
+		bullet.SetSpeed(m_speed);
+	}
+
+	for (Bullet& bullet : m_inactiveBullets)
+	{
+		bullet.SetDamage(m_damage);
+		bullet.SetSpeed(m_speed);
+	}
+}
+
+void Weapon::updatePowerups()
 {
 	if (m_damageIncreaseTimer > 0)
+	{
 		m_damageIncreaseTimer -= WeaponConfig::frameTime; //TODO check if I should replace frameTime from constexpr to DEFINE
+		if (m_damageIncreaseTimer <= 0)  // if the powerup is finished, set bullets back to base values
+			deactivateBulletsPowerup();
+	}
+
 	if (m_speedIncreaseTimer > 0)
+	{
 		m_speedIncreaseTimer -= WeaponConfig::frameTime; //TODO same as above
+		if (m_speedIncreaseTimer <= 0)  // if the powerup is finished, set bullets back to base values
+			deactivateBulletsPowerup();
+	}
 }
 
 float Weapon::GetDamage() const {

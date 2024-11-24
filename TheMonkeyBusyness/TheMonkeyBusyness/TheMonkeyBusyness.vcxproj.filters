@@ -68,9 +68,6 @@
     <ClInclude Include="Arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="weaponsConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ConstantValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>

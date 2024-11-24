@@ -1,5 +1,4 @@
 #include "Weapon.h"
-#include "weaponsConfig.h"
 #include "ConstantValues.h"
 
 Weapon::Weapon(float damage, float fireRate, float speed)
@@ -26,7 +25,7 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction)
 
 void Weapon::Update()
 {
-	m_timeSinceLastShot += WeaponConfig::frameTime;
+	m_timeSinceLastShot += frameTime;
 
 	if (hasActivePowerup())
 		updatePowerups();
@@ -94,14 +93,14 @@ void Weapon::updatePowerups()
 {
 	if (m_damageIncreaseTimer > 0)
 	{
-		m_damageIncreaseTimer -= WeaponConfig::frameTime;
+		m_damageIncreaseTimer -= frameTime;
 		if (m_damageIncreaseTimer <= 0)
 			deactivateBulletsPowerup();
 	}
 
 	if (m_speedIncreaseTimer > 0)
 	{
-		m_speedIncreaseTimer -= WeaponConfig::frameTime;
+		m_speedIncreaseTimer -= frameTime;
 		if (m_speedIncreaseTimer <= 0)
 			deactivateBulletsPowerup();
 	}

@@ -3,7 +3,7 @@
 #include <vector>
 #include "Vector2.h"
 #include "Bullet.h"
-#include "weaponsConfig.h"
+#include "ConstantValues.h"
 
 class Weapon
 {

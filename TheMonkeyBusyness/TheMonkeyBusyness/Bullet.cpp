@@ -23,7 +23,6 @@ Bullet& Bullet::operator=(Bullet&& other) noexcept
 
 void Bullet::Update()
 {
-	// TODO: uncomment the next lines after overloading += in Vector2 class
 	Vector2 newPosition = m_position;
 	newPosition.x += m_direction.x * m_speed;
 	newPosition.y += m_direction.y * m_speed;
@@ -31,7 +30,8 @@ void Bullet::Update()
 	SetPosition(newPosition);
 }
 
-void Bullet::draw(QPainter& painter) const { //TODO temporary for draw methods
+void Bullet::draw(QPainter& painter) const
+{
 	painter.save();
 	QPen pen(Qt::black);
 	QBrush brush(Qt::red);
@@ -43,15 +43,6 @@ void Bullet::draw(QPainter& painter) const { //TODO temporary for draw methods
 
 	painter.drawEllipse(QPointF(m_position.x, m_position.y), bulletRadius, bulletRadius);
 	painter.restore();
-}
-
-
-bool Bullet::CheckCollision(const Vector2& enemyPosition, float enemyRadius) const
-{
-	// TODO: uncomment the next two lines after overloading - and adding a method for getting the length of a vector
-	//float distance = (enemyPosition - m_position).Length()
-	//return distance < enemyRadius;
-	return true;  //temporary line
 }
 
 Vector2 Bullet::GetPosition() const {

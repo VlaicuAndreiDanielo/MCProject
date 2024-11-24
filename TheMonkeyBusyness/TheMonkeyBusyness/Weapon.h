@@ -51,8 +51,9 @@ private:
 	float m_speedIncreaseTimer;
 
 	// Private Helpers
+	void initializeBullets();
 	bool hasActivePowerup() const;                  // Checks if any power-up is active
-	void activateBulletPowerup(Bullet& bullet);     // Applies power-up effects to a bullet if shot when power-ups are active
+	void activateBulletPowerup(Bullet& bullet) const;     // Applies power-up effects to a bullet if shot when power-ups are active
 	void deactivateBulletsPowerup();          // Resets the bullet to default values when power-up is finished
 	void updatePowerups();                          // Updates power-ups state
 };

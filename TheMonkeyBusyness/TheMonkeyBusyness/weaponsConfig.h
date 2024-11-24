@@ -10,5 +10,5 @@ namespace WeaponConfig
     constexpr float kSpeedPowerupIncreasePercent = 100;
     constexpr float kDamagePowerupIncreasePercent = 100;
 
-    constexpr float frameTime = 1.0f / 60.0f;  //TODO probably better to use DEFINE instead of constexpr,check later.ALSO MOVE IT TO ANOTHER CONSTANT VALUES FILE
+    constexpr float frameTime = 1.0f / 60.0f;  //TODO move this to a file with constant values
 }

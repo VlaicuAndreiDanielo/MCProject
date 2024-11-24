@@ -1,4 +1,5 @@
 ﻿#include "Arena.h"
+#include "FastNoiseLite.h"
 #include <queue>
 #include <iostream>
 #include <functional>
@@ -199,46 +200,22 @@ void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
         }
     }
     else {
-        FastNoiseLite noise;
-        noise.SetSeed(static_cast<int>(time(0)));
-        noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
+        // Generate a large lake with deformations
+        int baseRadius = dim / 6 + rand() % (dim / 8);  // Base radius for the lake
 
-        // Decide the liquid type (either Water or Lava) for the entire feature
-        TileType liquidType = (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
+        for (int dy = -baseRadius; dy <= baseRadius; ++dy) {
+            for (int dx = -baseRadius; dx <= baseRadius; ++dx) {
+                // Calculate the deformed radius by adding a small random amount
+                int deformation = (rand() % 5) - 1; // Random value between -2 and 2
+                int adjustedRadius = baseRadius + deformation;
 
-        // Randomly choose the center point for the lake
-        int centerX = dim / 5 + rand() % (dim / 2);
-        int centerY = dim / 5 + rand() % (dim / 2);
+                int x = centerX + dx;
+                int y = centerY + dy;
 
-        // Define the maximum radius of the lake
-        int maxRadius = dim / 7 + rand() % (dim / 8);
-
-        // Generate the lake
-        for (int y = 0; y < dim; ++y) {
-            for (int x = 0; x < dim; ++x) {
-                // Calculate distance from the center
-                float distance = std::sqrt(std::pow(x - centerX, 2) + std::pow(y - centerY, 2));
-
-                // Add Perlin noise to the distance calculation
-                float noiseValue = noise.GetNoise((float)x, (float)y);
-
-                // Base condition for being part of the lake
-                if (distance + noiseValue * maxRadius / 4.0f <= maxRadius) {
-                    // Ensure we don't overwrite existing important tiles
-                    if (mapa[y][x].getType() == TileType::Empty) {
-                        mapa[y][x].setType(liquidType);
-                    }
-                }
-
-                // Add fragmentation if it's lava and near the edge of the lake
-                if (liquidType == TileType::Lava) {
-                    float edgeDistance = maxRadius - distance;
-                    if (edgeDistance >= 0 && edgeDistance < 3.0f) { // Edge threshold for fragmentation
-                        if (noise.GetNoise((float)x, (float)y) > 0.6f) { // Add jagged noise
-                            if (mapa[y][x].getType() == TileType::Empty) {
-                                mapa[y][x].setType(TileType::Lava); // Add lava fragments
-                            }
-                        }
+                // Check if within bounds and if the point is within the deformed radius
+                if (x >= 1 && x < dim - 1 && y >= 1 && y < dim - 1) {
+                    if (std::sqrt(dx * dx + dy * dy) <= adjustedRadius) {
+                        mapa[y][x].setType(type);
                     }
                 }
             }

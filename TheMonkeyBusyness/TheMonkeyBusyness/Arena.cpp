@@ -33,7 +33,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
 
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 35 && mapa[y][x].getType()==TileType::Empty) { // 35% sanse pentru ziduri initiale
+            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
                 mapa[y][x].setType(TileType::DestructibleWall);
             }
         }
@@ -49,7 +49,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
                 if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::DestructibleWall) {
                     continue;  // Skip further processing for this tile
                 }
-                
+
                 int wallCount = 0;
                 // Numara peretii vecini
                 for (int dy = -1; dy <= 1; ++dy) {
@@ -73,12 +73,17 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
         mapa = newMap;
     }
 
-    //transforma peretii destructibili in indestructibili
-    int indestructibleWallProbability = 20; // 20% sansa de a transforma in perete indestructibil
+    // Transform some destructible walls into indestructible or fake destructible walls
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
-            if (mapa[y][x].getType() == TileType::DestructibleWall && distrib(gen) < indestructibleWallProbability) {
-                mapa[y][x].setType(TileType::IndestructibleWall);
+            if (mapa[y][x].getType() == TileType::DestructibleWall) {
+                int randomValue = distrib(gen);
+                if (randomValue < 10) {
+                    mapa[y][x].setType(TileType::IndestructibleWall); // 10% chance for indestructible wall
+                }
+                else if (randomValue < 20) {
+                    mapa[y][x].setType(TileType::FakeDestructibleWall); // 10% chance for fake destructible wall
+                }
             }
         }
     }
@@ -457,6 +462,22 @@ void Arena::pairTeleporters(const std::vector<std::pair<int, int>>& teleporters)
         auto t2 = teleporters[i + 1];
         m_teleporterConnections[t1] = t2;
         m_teleporterConnections[t2] = t1;
+    }
+}
+
+void Arena::triggerExplosion(int x, int y) {
+    std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+
+    for (const auto& [dx, dy] : directions) {
+        int nx = x + dx;
+        int ny = y + dy;
+
+        if (nx >= 0 && nx < m_dim && ny >= 0 && ny < m_dim) {
+            Tile& neighbor = m_mapa[ny][nx];
+            if (neighbor.getType() == TileType::DestructibleWall) {
+                neighbor.takeDamage(3); // Fully destroy adjacent destructible walls
+            }
+        }
     }
 }
 

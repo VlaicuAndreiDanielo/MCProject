@@ -59,4 +59,5 @@ public:
 
     static Tile GetTile(int line, int col);
     std::pair<int, int> GetSpawn();
+    void triggerExplosion(int x, int y);
 };

@@ -5,7 +5,7 @@ class Tile
 {
 private:
 	TileType m_tileType;
-	bool playerOccupied;
+	bool m_playerOccupied;
 public:
 	Tile(TileType type);
 	void setType(TileType type);

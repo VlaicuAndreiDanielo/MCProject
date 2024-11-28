@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -18,15 +18,24 @@ private slots:
     void showSignInForm();
 
 private:
-    QWidget* mainWidget;
+    QWidget* centralWidget;
     QVBoxLayout* layout;
+
+    // Prima interfață
     QPushButton* loginButton;
     QPushButton* signInButton;
 
-    // Form elements
+    // Elemente pentru formular
+    QLabel* usernameLabel;
+    QLabel* passwordLabel;
+    QLabel* confirmPasswordLabel;
     QLineEdit* usernameField;
     QLineEdit* passwordField;
     QLineEdit* confirmPasswordField;
+    QPushButton* submitButton;
+
+    // Funcție de resetare
+    void clearLayout();
 };
 
 #endif // MAINWINDOW_H

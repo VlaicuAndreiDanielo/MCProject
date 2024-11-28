@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 #include <sqlite3.h>
@@ -16,6 +16,10 @@ public:
     User getUserInfo(const std::string& username);
     void deleteUser(const std::string& username);
     void showAllUsers();
+    void clearTable();
+    bool userExists(const std::string& username);
+    int getUserIdByUsername(const std::string& username);
+
 
 private:
     sqlite3* db;

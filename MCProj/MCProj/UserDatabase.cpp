@@ -33,8 +33,30 @@ void UserDatabase::createTable()
     executeSQL(createTableSQL);
 }
 
-void UserDatabase::addUser(const User &user)
+void UserDatabase::addUser(const User& user)
 {
+    if (!user.isUsernameValid() || !user.isPasswordValid()) {
+        std::cerr << "Invalid user. Cannot add to database." << std::endl;
+        return;
+    }
+    if (userExists(user.getUsername())) {
+        std::cerr << "User with username '" << user.getUsername() << "' already exists!" << std::endl;
+        return;
+    }
+    const std::string& username = user.getUsername();
+    const std::string& password = user.getPassword();
+
+    if (username.empty() || password.empty()) {
+        std::cerr << "Username or password is empty. Cannot add user." << std::endl;
+        return;
+    }
+
+    // Debugging: Afișează valorile utilizatorului
+    std::cout << "Adding User - Username: " << user.getUsername()
+        << ", Password: " << user.getPassword()
+        << ", Score: " << user.getScore()
+        << ", Upgrade Points: " << user.getUpgradePoints() << std::endl;
+
     const std::string insertSQL = "INSERT INTO User (username, password, score, upgradePoints) VALUES (?, ?, ?, ?);";
 
     sqlite3_stmt* stmt;
@@ -53,10 +75,13 @@ void UserDatabase::addUser(const User &user)
     if (rc != SQLITE_DONE) {
         std::cerr << "Execution failed: " << sqlite3_errmsg(db) << std::endl;
     }
-    std::cout << "User added with succes!\n";
-    sqlite3_finalize(stmt);
+    else {
+        std::cout << "User added successfully!" << std::endl;
+    }
 
+    sqlite3_finalize(stmt);
 }
+
 
 void UserDatabase::updateUserScore(const std::string& username, int newScore)
 {
@@ -166,19 +191,42 @@ void UserDatabase::showAllUsers()
 
     // Parcurge rezultatele interogării
     while (sqlite3_step(stmt) == SQLITE_ROW) {
-        // Extrage valorile din fiecare coloană
-        std::string username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));  // Coloana 1 - username
-        std::string password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));  // Coloana 2 - password
-        int score = sqlite3_column_int(stmt, 3);    // Coloana 3 - score
-        int upgradePoints = sqlite3_column_int(stmt, 4); // Coloana 4 - upgradePoints
+        int id = sqlite3_column_int(stmt, 0);         // Coloana 0: id
+        const char* username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)); // Coloana 1: username
+        const char* password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)); // Coloana 2: password
+        int score = sqlite3_column_int(stmt, 3);      // Coloana 3: score
+        int upgradePoints = sqlite3_column_int(stmt, 4); // Coloana 4: upgradePoints
 
-        // Afișează datele
-        std::cout << "Username: " << username << ", Password: " << password
-            << ", Score: " << score << ", Upgrade Points: " << upgradePoints << "\n";
+        std::cout << "ID: " << id
+            << ", Username: " << (username ? username : "NULL")
+            << ", Password: " << (password ? password : "NULL")
+            << ", Score: " << score
+            << ", Upgrade Points: " << upgradePoints << "\n";
     }
 
     // Finalizează interogarea pentru a elibera resursele
     sqlite3_finalize(stmt);
+}
+
+bool UserDatabase::userExists(const std::string& username)
+{
+    const std::string querySQL = "SELECT COUNT(*) FROM User WHERE username = ?;";
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, querySQL.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+    int exists = 0;
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        exists = sqlite3_column_int(stmt, 0);
+    }
+
+    sqlite3_finalize(stmt);
+    return exists > 0;
 }
 
 void UserDatabase::executeSQL(const std::string& sql)
@@ -192,4 +240,58 @@ void UserDatabase::executeSQL(const std::string& sql)
     else {
         std::cout << "SQL executed successfully!" << std::endl;
     }
+}
+void UserDatabase::clearTable()
+{
+    const std::string clearTableSQL = "DELETE FROM User;";
+    char* errMsg = nullptr;
+
+    int rc = sqlite3_exec(db, clearTableSQL.c_str(), nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL Error while clearing table: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+    }
+    else {
+        std::cout << "All rows deleted from the table successfully!" << std::endl;
+    }
+
+    // Opțional: Resetează cheia primară
+    const std::string resetAutoincrementSQL = "DELETE FROM sqlite_sequence WHERE name='User';";
+    rc = sqlite3_exec(db, resetAutoincrementSQL.c_str(), nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL Error while resetting autoincrement: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+    }
+    else {
+        std::cout << "Autoincrement reset successfully!" << std::endl;
+    }
+}
+int UserDatabase::getUserIdByUsername(const std::string& username)
+{
+    const std::string querySQL = "SELECT id FROM User WHERE username = ?;";
+    sqlite3_stmt* stmt;
+
+    // Pregătește interogarea SQL
+    int rc = sqlite3_prepare_v2(db, querySQL.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return -1; // Returnează -1 în caz de eroare
+    }
+
+    // Bind pentru username
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+
+    // Execută interogarea și returnează ID-ul dacă este găsit
+    int userId = -1; // Default: -1 indică faptul că utilizatorul nu a fost găsit
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        userId = sqlite3_column_int(stmt, 0); // Obține ID-ul din prima coloană
+    }
+    else {
+        std::cerr << "Username not found: " << username << std::endl;
+    }
+
+    // Finalizează interogarea
+    sqlite3_finalize(stmt);
+
+    return userId;
 }

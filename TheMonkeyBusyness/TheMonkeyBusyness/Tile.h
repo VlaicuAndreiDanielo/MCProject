@@ -1,7 +1,8 @@
 #pragma once
 #include "TileType.h"
 #include <string>
-class Tile
+#include "GameObject.h"
+class Tile : public GameObject
 {
 private:
     TileType m_tileType;
@@ -10,7 +11,7 @@ private:
 
 public:
     Tile(TileType type);
-
+    ~Tile();
     void setType(TileType type);
     TileType getType() const;
 

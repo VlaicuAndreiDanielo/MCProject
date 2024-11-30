@@ -141,6 +141,7 @@ Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CapuchinMonkey.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="GameObject.h" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="Gorilla.cpp" />
     <ClCompile Include="HowlerMonkey.cpp" />

@@ -11,8 +11,8 @@
 #include "Orangutan.h"
 #include "CapuchinMonkey.h"
 #include "Gorilla.h"
-
-class Player : public QObject{ // this is the player, he calls for input and other actions
+#include "GameObject.h"
+class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
 	explicit Player(float x=0, float y=0);
 	InputHandler* ReturnInputHandler();

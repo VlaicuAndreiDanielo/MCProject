@@ -72,6 +72,9 @@
     <ClCompile Include="AnubisBaboon.cpp">
       <Filter>Source Files\Monkeys</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputHandler.h">

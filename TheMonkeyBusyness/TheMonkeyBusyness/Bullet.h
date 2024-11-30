@@ -5,9 +5,9 @@
 #include <QtGui\QPainter>
 #include <QtGui\QBrush>
 #include <QtGui\QPen>
+#include "GameObject.h"
 
-
-class Bullet
+class Bullet : public GameObject
 {
 public:
 	Bullet(const Vector2& position, const Vector2& direction, float speed, float damage);

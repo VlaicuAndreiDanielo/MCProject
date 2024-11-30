@@ -57,7 +57,7 @@ public:
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
     void draw(QPainter& painter)const;
 
-    static Tile GetTile(int line, int col);
+    static Tile& GetTile(int line, int col);
     std::pair<int, int> GetSpawn();
     void triggerExplosion(int x, int y);
 };

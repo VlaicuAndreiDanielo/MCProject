@@ -104,7 +104,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     return mapa;
 }
 
-Tile Arena::GetTile(int line, int col)
+Tile& Arena::GetTile(int line, int col)
 {
     return Instance().m_mapa[line][col];
 }

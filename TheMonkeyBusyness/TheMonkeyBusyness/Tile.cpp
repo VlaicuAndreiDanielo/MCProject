@@ -6,6 +6,10 @@ Tile::Tile(TileType type) : m_tileType{ type }, m_hp{ 0 }, m_playerOccupied{ fal
 		m_hp = 3; // Default HP for destructible walls
 	}
 }
+Tile::~Tile()
+{
+
+}
 void Tile::setType(TileType type) {
 	m_tileType = type;
 	if (type == TileType::DestructibleWall) {

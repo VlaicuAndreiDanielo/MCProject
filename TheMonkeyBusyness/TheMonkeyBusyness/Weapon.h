@@ -15,7 +15,7 @@ public:
 	// Primary Actions
 	void Shoot(const Vector2& position, const Vector2& direction); // Fires a bullet
 	void Update();                                                 // Updates weapon and bullets
-	void DrawBullets(QPainter& painter) const;                     // Renders bullets
+	//void DrawBullets(QPainter& painter) const;                     // Renders bullets
 
 	// Power-up Management
 	void ActivateDamagePowerup(float duration);

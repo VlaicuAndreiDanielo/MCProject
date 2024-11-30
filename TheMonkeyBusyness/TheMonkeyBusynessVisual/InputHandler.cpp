@@ -1,8 +1,13 @@
 #include "InputHandler.h"
-#include "Vector2.h"
 
 InputHandler::InputHandler(QWidget* parent) : QWidget(parent), is_shooting(false) {
 
+}
+
+void InputHandler::Normalize(QPoint &point)
+{
+    float magnitude = (float)std::sqrt(pow(point.x(), 2) + pow(point.y(), 2));
+    if (!magnitude == 0)  (point /= magnitude);
 }
 
 // Override the eventFilter to handle key events
@@ -19,32 +24,31 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
             keyStates[key] = false; // Mark the key as released
         }
 
-        m_direction.x = 0;
-        m_direction.y = 0;
+        m_direction.setX(0);
+        m_direction.setY(0);
         
         if (keyStates[Qt::Key_W]) {
-            m_direction.y -= 1;
+            m_direction.setY(m_direction.y()-1);
         }
         if (keyStates[Qt::Key_A]) {
-            m_direction.x -= 1;
+            m_direction.setX(m_direction.x() - 1);
         }
         if (keyStates[Qt::Key_S]) {
-            m_direction.y += 1;
+            m_direction.setY(m_direction.y() + 1);
         }
         if (keyStates[Qt::Key_D]) {
-            m_direction.x += 1;
+            m_direction.setX(m_direction.x() + 1);
         }
 
 
-        m_direction.Normalize();
+        Normalize(m_direction);
         return true;
        // Indicate that the event was handled
     }
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint mousePoint = mouseEvent->pos();
-        m_mousePosition.x = mousePoint.x();
-        m_mousePosition.y = mousePoint.y();
+        m_mousePosition = mousePoint;
         /*std::cout << mousePosition;
         std::cout << std::endl;*/
     }

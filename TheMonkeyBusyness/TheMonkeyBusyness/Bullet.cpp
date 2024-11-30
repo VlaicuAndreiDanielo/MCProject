@@ -30,20 +30,20 @@ void Bullet::Update()
 	SetPosition(newPosition);
 }
 
-void Bullet::draw(QPainter& painter) const
-{
-	painter.save();
-	QPen pen(Qt::black);
-	QBrush brush(Qt::red);
-
-	painter.setPen(pen);
-	painter.setBrush(brush);
-
-	const float bulletRadius = 5.0f;
-
-	painter.drawEllipse(QPointF(m_position.x, m_position.y), bulletRadius, bulletRadius);
-	painter.restore();
-}
+//void Bullet::draw(QPainter& painter) const
+//{
+//	painter.save();
+//	QPen pen(Qt::black);
+//	QBrush brush(Qt::red);
+//
+//	painter.setPen(pen);
+//	painter.setBrush(brush);
+//
+//	const float bulletRadius = 5.0f;
+//
+//	painter.drawEllipse(QPointF(m_position.x, m_position.y), bulletRadius, bulletRadius);
+//	painter.restore();
+//}
 
 Vector2 Bullet::GetPosition() const {
 	return m_position;

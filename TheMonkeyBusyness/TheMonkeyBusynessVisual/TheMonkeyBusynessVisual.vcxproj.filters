@@ -26,12 +26,19 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <QtRcc Include="qml.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-    <None Include="main.qml">
+    <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
-    </None>
-
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

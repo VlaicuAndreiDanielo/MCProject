@@ -1,15 +1,17 @@
 #pragma once
 #include <QtWidgets/QWidget>
 #include <QtGui/QKeyEvent>
-#include "Vector2.h"
+#include <cmath>
 #include <vector>
 #include <unordered_set>
 class InputHandler : public QWidget { //this class reads key input
 public:
     explicit InputHandler(QWidget* parent = nullptr);
-    Vector2 m_direction;
-    Vector2 m_mousePosition;
+    QPoint m_direction;
+    QPoint m_mousePosition;
     bool is_shooting;
+
+    void Normalize(QPoint& point);
 private:
     std::unordered_map<int, bool> keyStates;
 protected:

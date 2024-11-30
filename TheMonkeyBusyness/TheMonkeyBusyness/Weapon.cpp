@@ -45,11 +45,13 @@ void Weapon::initializeBullets()
 		m_inactiveBullets.push_back(Bullet(Vector2(), Vector2(), m_speed, m_damage));
 }
 
-void Weapon::DrawBullets(QPainter& painter) const
-{
-	for (const Bullet& bullet : m_activeBullets)
-		bullet.draw(painter);
-}
+//Va fi mutata mai incolo
+
+//void Weapon::DrawBullets(QPainter& painter) const
+//{
+//	for (const Bullet& bullet : m_activeBullets)
+//		bullet.draw(painter);
+//}
 
 void Weapon::ActivateDamagePowerup(float duration)
 {

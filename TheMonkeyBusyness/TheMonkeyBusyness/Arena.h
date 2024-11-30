@@ -6,7 +6,6 @@
 #include <random>
 #include "Tile.h"
 #include "TileType.h"
-#include <QtGui/qpainter.h>
 #include <cstdint>
 #include "ConstantValues.h"
 
@@ -24,8 +23,6 @@ private:
         }
     };
     std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> m_teleporterConnections;
-    //temporary color squares for the tiles;
-    std::vector<QColor> squareColors{ Qt::green, Qt::black, Qt::red, Qt::yellow, Qt::blue, Qt::darkGreen, Qt::darkRed, Qt::magenta, Qt::yellow };
 public:
 
     Arena(int dim = 100, int numSpawn = 1);
@@ -55,7 +52,7 @@ public:
     void pairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
     void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
-    void draw(QPainter& painter)const;
+    //void draw(QPainter& painter)const;
 
     static Tile& GetTile(int line, int col);
     std::pair<int, int> GetSpawn();

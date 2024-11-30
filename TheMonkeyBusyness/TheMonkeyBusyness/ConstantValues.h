@@ -3,7 +3,7 @@
 
 constexpr int SQUARE_SIZE = 40;
 constexpr int kPlayerSize = 30;
-
+constexpr float PI = 3.1415;
 namespace WeaponConfig
 {
     constexpr float kBasicSpeed = 3;

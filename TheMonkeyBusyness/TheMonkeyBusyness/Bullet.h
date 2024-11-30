@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Vector2.h"
-
-#include <QtGui\QPainter>
-#include <QtGui\QBrush>
-#include <QtGui\QPen>
 #include "GameObject.h"
 
 class Bullet : public GameObject
@@ -22,7 +18,7 @@ public:
 
 
 	void Update();
-	void draw(QPainter& painter) const;
+	//void draw(QPainter& painter) const;
 
 	Vector2 GetPosition() const;
 	Vector2 GetDirection() const;

@@ -7,16 +7,18 @@ GameWindow::GameWindow(QWidget* parent) : QWidget(parent)
 	setFocusPolicy(Qt::StrongFocus);
 	this->installEventFilter(player.ReturnInputHandler());
 	timer = new QTimer(this);
+    Character* character = new BasicMonkey();
+    player.SetMonkeyType(character);
     player.SetSpawn(Vector2(Arena::Instance().GetSpawn().first * SQUARE_SIZE + SQUARE_SIZE / 2, Arena::Instance().GetSpawn().second * SQUARE_SIZE + SQUARE_SIZE / 2));
 	QObject::connect(timer, &QTimer::timeout, [this]() {
-        if (HitResult hit = Cast::Raycast(player.GetPosition(), player.ReturnInputHandler()->direction, 15); std::holds_alternative<Tile>(hit)) {
-            Tile tempTile = std::get<Tile>(hit);
+        if (HitResult hit = Cast::Raycast(player.GetPosition(), player.ReturnInputHandler()->m_direction, 15); std::holds_alternative<Tile>(hit)) {
+            Tile& tempTile = std::get<Tile>(hit);
             if (tempTile.getType() != TileType::DestructibleWall && tempTile.getType() != TileType::IndestructibleWall) {
-                player.UpdatePosition(player.ReturnInputHandler()->direction);
+                player.UpdatePosition(player.ReturnInputHandler()->m_direction);
             }
-            player.UpdateRotation(player.ReturnInputHandler()->mousePosition, width(), height());
+            player.UpdateRotation(player.ReturnInputHandler()->m_mousePosition, width(), height());
         }
-        player.Shoot(player.ReturnInputHandler()->mousePosition, width(), height());
+        player.Shoot(player.ReturnInputHandler()->m_mousePosition, width(), height());
         CycleBullets(player);
 		update();
 		});
@@ -47,7 +49,7 @@ void GameWindow::paintEvent(QPaintEvent* event)
     painter.translate(screenWidth / 2 - playerX, screenHeight / 2 - playerY);
     Arena::Instance().draw(painter);
    
-    player.weapon.DrawBullets(painter);
+    player.m_weapon.DrawBullets(painter);
 
     player.draw(painter);
 
@@ -58,7 +60,7 @@ void GameWindow::paintEvent(QPaintEvent* event)
 
 void GameWindow::CycleBullets(Player& player)
 {
-    auto& bullets = player.weapon.getBullets();
+    auto& bullets = player.m_weapon.getBullets();
     for (auto it = bullets.begin(); it != bullets.end(); /* no increment here */) {
         Bullet& bullet = *it;
         if (HitResult hit = Cast::Raycast(bullet.GetPosition(), bullet.GetDirection(), 5); std::holds_alternative<Tile>(hit)) {

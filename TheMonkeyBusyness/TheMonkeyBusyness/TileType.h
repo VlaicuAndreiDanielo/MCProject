@@ -9,5 +9,6 @@ enum class TileType : uint8_t
 	Water,
 	Grass,
 	Lava,
-	Teleporter
+	Teleporter,
+	FakeDestructibleWall
 };

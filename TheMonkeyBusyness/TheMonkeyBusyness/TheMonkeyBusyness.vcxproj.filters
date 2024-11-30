@@ -13,43 +13,67 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Monkeys">
+      <UniqueIdentifier>{a6768198-53a8-44aa-99f9-fec2c8d0122d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Monkeys">
+      <UniqueIdentifier>{8eb589e0-9961-451b-a30a-dc8282587007}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Player.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameWindow.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector2.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="Arena.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Resource Files</Filter>
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Raycast.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Orangutan.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="HowlerMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="Gorilla.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="CapuchinMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="AnubisBaboon.cpp">
+      <Filter>Source Files\Monkeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,6 +103,33 @@
     </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponsConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Orangutan.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="AnubisBaboon.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicMonkey.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="CapuchinMonkey.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="Gorilla.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="HowlerMonkey.h">
+      <Filter>Header Files\Monkeys</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

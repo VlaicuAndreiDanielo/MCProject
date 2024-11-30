@@ -1,5 +1,6 @@
 #include "InputHandler.h"
 #include "Vector2.h"
+
 InputHandler::InputHandler(QWidget* parent) : QWidget(parent), is_shooting(false) {
 
 }
@@ -18,32 +19,32 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
             keyStates[key] = false; // Mark the key as released
         }
 
-        direction.x = 0;
-        direction.y = 0;
+        m_direction.x = 0;
+        m_direction.y = 0;
         
         if (keyStates[Qt::Key_W]) {
-            direction.y -= 1;
+            m_direction.y -= 1;
         }
         if (keyStates[Qt::Key_A]) {
-            direction.x -= 1;
+            m_direction.x -= 1;
         }
         if (keyStates[Qt::Key_S]) {
-            direction.y += 1;
+            m_direction.y += 1;
         }
         if (keyStates[Qt::Key_D]) {
-            direction.x += 1;
+            m_direction.x += 1;
         }
 
 
-        direction.Normalize();
+        m_direction.Normalize();
         return true;
        // Indicate that the event was handled
     }
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint mousePoint = mouseEvent->pos();
-        mousePosition.x = mousePoint.x();
-        mousePosition.y = mousePoint.y();
+        m_mousePosition.x = mousePoint.x();
+        m_mousePosition.y = mousePoint.y();
         /*std::cout << mousePosition;
         std::cout << std::endl;*/
     }
@@ -56,3 +57,4 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
     // Pass the event on to the base class
     return QObject::eventFilter(obj, event);
 }
+

@@ -1,4 +1,4 @@
-import Tile;
+#include "Tile.h"
 #include <iostream>
 
 Tile::Tile(TileType type) : m_tileType{ type }, m_hp{ 0 }, m_playerOccupied{ false } {

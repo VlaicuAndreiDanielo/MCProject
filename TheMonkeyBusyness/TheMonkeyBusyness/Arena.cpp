@@ -199,52 +199,63 @@ void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType
 }
 
 void Arena::generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
-    int startX, startY, endX, endY;
-    int edge = rand() % 4;
+    // Initialize river parameters
+    int startX = rand() % (dim - 2) + 1;
+    int startY = (rand() % 2 == 0) ? 1 : dim - 2;
+    int endX = startX;
+    int endY = (startY == 1) ? dim - 2 : 1;
+    int width = dim / 20;
+    int maxIterations = dim * dim; // Safety limit for iterations
+    int iterations = 0;
 
-    // Choose a starting edge
-    switch (edge) {
-    case 0: startX = rand() % (dim - 2) + 1; startY = 1; endX = startX; endY = dim - 2; break; // Top to Bottom
-    case 1: startX = rand() % (dim - 2) + 1; startY = dim - 2; endX = startX; endY = 1; break; // Bottom to Top
-    case 2: startX = 1; startY = rand() % (dim - 2) + 1; endX = dim - 2; endY = startY; break; // Left to Right
-    case 3: startX = dim - 2; startY = rand() % (dim - 2) + 1; endX = 1; endY = startY; break; // Right to Left
-    }
+    FastNoiseLite noise;
+    noise.SetSeed(static_cast<int>(time(0)));
+    noise.SetFrequency(0.01f);
 
     int x = startX, y = startY;
-    int width = 3;  // River width
-    int riverLength = std::abs(endX - startX) + std::abs(endY - startY);
-    int gapPosition = rand() % (riverLength / 2) + riverLength / 4;
 
-    int stepCount = 0;
-    int directionX = (endX > startX) ? 1 : (endX < startX) ? -1 : 0;
-    int directionY = (endY > startY) ? 1 : (endY < startY) ? -1 : 0;
+    while ((x != endX || y != endY) && iterations < maxIterations) {
+        iterations++;
 
-    while ((x != endX || y != endY) && x > 0 && x < dim - 1 && y > 0 && y < dim - 1) {
-        if (stepCount != gapPosition) {
-            for (int dx = -width / 2; dx <= width / 2; ++dx) {
-                for (int dy = -width / 2; dy <= width / 2; ++dy) {
-                    int nx = x + dx, ny = y + dy;
-                    if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1) {
-                        mapa[ny][nx].setType(type);
-                    }
+        // Calculate next direction based on noise
+        float noiseX = noise.GetNoise((float)x, (float)y);
+        float noiseY = noise.GetNoise((float)y, (float)x);
+
+        int directionX = (endX > x) ? 1 : (endX < x) ? -1 : 0;
+        int directionY = (endY > y) ? 1 : (endY < y) ? -1 : 0;
+
+        if (noiseX > 0.1f) directionX += 1;
+        else if (noiseX < -0.5f) directionX -= 1;
+
+        if (noiseY > 0.1f) directionY += 1;
+        else if (noiseY < -0.5f) directionY -= 1;
+
+        // Clamp direction values to [-1, 1]
+        directionX = std::clamp(directionX, -1, 1);
+        directionY = std::clamp(directionY, -1, 1);
+
+        // Move to next position
+        x = std::clamp(x + directionX, 1, dim - 2);
+        y = std::clamp(y + directionY, 1, dim - 2);
+
+        // Create river width at current point
+        for (int dx = -width / 2; dx <= width / 2; ++dx) {
+            for (int dy = -width / 2; dy <= width / 2; ++dy) {
+                int nx = x + dx, ny = y + dy;
+                if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1 && mapa[ny][nx].getType() == TileType::Empty) {
+                    mapa[ny][nx].setType(type);
                 }
             }
         }
-
-        if (rand() % 100 < 20) {
-            directionX += (rand() % 3) - 1;
-            directionY += (rand() % 3) - 1;
-        }
-
-        if (directionX > 1) directionX = 1;
-        if (directionX < -1) directionX = -1;
-        if (directionY > 1) directionY = 1;
-        if (directionY < -1) directionY = -1;
-
-        x += directionX;
-        y += directionY;
-        ++stepCount;
     }
+
+    // Log if the loop exits due to hitting the safety limit
+    /*if (iterations >= maxIterations) {
+        std::cerr << "River generation terminated early due to iteration limit.\n";
+    }*/
+
+    // Ensure accessibility post-river creation
+    //ensureAccessibility(mapa, dim, type);
 }
 
 void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {

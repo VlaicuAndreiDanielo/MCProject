@@ -52,6 +52,12 @@ public:
     void pairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
     void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
+    void generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+    void generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+
+    void generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability);
+    void transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability);
+    void applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type);
     //void draw(QPainter& painter)const;
 
     static Tile& GetTile(int line, int col);

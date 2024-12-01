@@ -9,84 +9,37 @@ Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
     this->m_mapa = generate_map(dim, numSpawns);
 }
 
-std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
-{
-    // Initializare harta cu spatii goale
+std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns) {
+    // Initialize map with empty spaces
     std::vector<std::vector<Tile>> mapa(dim, std::vector<Tile>(dim, Tile(TileType::Empty)));
 
+    // Create indestructible walls around the edges
     for (int i = 0; i < dim; i++) {
         mapa[i][0].setType(TileType::IndestructibleWall);
         mapa[i][dim - 1].setType(TileType::IndestructibleWall);
     }
-
     for (int j = 0; j < dim; j++) {
         mapa[0][j].setType(TileType::IndestructibleWall);
         mapa[dim - 1][j].setType(TileType::IndestructibleWall);
     }
 
+    // Generate liquids
     generateBigLiquid(mapa, dim);
     generateSmallLiquid(mapa, dim);
 
+    // Generate destructible walls
+    generateDestructibleWalls(mapa, dim, 35); // 35% chance for initial destructible walls
+
+    // Apply Cellular Automata for destructible walls
+    applyCellularAutomata(mapa, dim, 2, TileType::DestructibleWall); // Apply 2 iterations of Cellular Automata
+
+    // Transform destructible walls into other types
+    transformDestructibleWalls(mapa, dim, 10, 10); // 10% chance for indestructible, 10% for fake destructible
+
+    // Add grass
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 100);
-
-    for (int y = 1; y < dim - 1; ++y) {
-        for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
-                mapa[y][x].setType(TileType::DestructibleWall);
-            }
-        }
-    }
-
-    // Iteratii de Cellular Automata
-    int iterations = 2;
-    for (int it = 0; it < iterations; ++it) {
-        std::vector<std::vector<Tile>> newMap = mapa;
-
-        for (int y = 1; y < dim - 1; ++y) {
-            for (int x = 1; x < dim - 1; ++x) {
-                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::DestructibleWall) {
-                    continue;  // Skip further processing for this tile
-                }
-
-                int wallCount = 0;
-                // Numara peretii vecini
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        if (dx == 0 && dy == 0) continue;
-                        if (mapa[y + dy][x + dx].getType() == TileType::DestructibleWall) {
-                            wallCount++;
-                        }
-                    }
-                }
-
-                // Aplica regula Cellular Automata
-                if (wallCount >= 4) {
-                    newMap[y][x].setType(TileType::DestructibleWall); // mai multi pereti vecini -> devine obstacol
-                }
-                else {
-                    newMap[y][x].setType(TileType::Empty); // mai putini pereti vecini -> devine spatiu liber
-                }
-            }
-        }
-        mapa = newMap;
-    }
-
-    // Transform some destructible walls into indestructible or fake destructible walls
-    for (int y = 1; y < dim - 1; ++y) {
-        for (int x = 1; x < dim - 1; ++x) {
-            if (mapa[y][x].getType() == TileType::DestructibleWall) {
-                int randomValue = distrib(gen);
-                if (randomValue < 10) {
-                    mapa[y][x].setType(TileType::IndestructibleWall); // 10% chance for indestructible wall
-                }
-                else if (randomValue < 20) {
-                    mapa[y][x].setType(TileType::FakeDestructibleWall); // 10% chance for fake destructible wall
-                }
-            }
-        }
-    }
 
     for (int y = 1; y < dim - 1; ++y) {
         for (int x = 1; x < dim - 1; ++x) {
@@ -97,8 +50,8 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
     }
     generateGrass(mapa);
 
+    // Generate spawns and teleporters
     generateInitialSpawns(mapa, numSpawns, 8);
-
     placeTeleporters(mapa);
 
     return mapa;
@@ -114,112 +67,195 @@ std::pair<int, int> Arena::GetSpawn()
     return m_spawnPositions[0];
 }
 
-void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
-    TileType type = getRandomLiquid();
+void Arena::applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type) {
+    for (int it = 0; it < iterations; ++it) {
+        std::vector<std::vector<Tile>> newMap = mapa;
 
-    int centerX = dim / 2;
-    int centerY = dim / 2;
+        for (int y = 1; y < dim - 1; ++y) {
+            for (int x = 1; x < dim - 1; ++x) {
+                // Skip tiles that are not the specified type or empty
+                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != type) {
+                    continue;
+                }
 
-    bool isRiver = rand() % 2 == 0;
+                int count = 0;
 
-    if (isRiver) {
-        auto generateRiver = [&](TileType type) {
-            int startX, startY, endX, endY;
-            int edge = rand() % 4;
-
-            // Choose a starting edge
-            switch (edge) {
-            case 0: startX = rand() % (dim - 2) + 1; startY = 1; endX = startX; endY = dim - 2; break; // Top to Bottom
-            case 1: startX = rand() % (dim - 2) + 1; startY = dim - 2; endX = startX; endY = 1; break; // Bottom to Top
-            case 2: startX = 1; startY = rand() % (dim - 2) + 1; endX = dim - 2; endY = startY; break; // Left to Right
-            case 3: startX = dim - 2; startY = rand() % (dim - 2) + 1; endX = 1; endY = startY; break; // Right to Left
-            }
-
-            int x = startX, y = startY;
-            int width = 3;  // River width
-            int riverLength = std::abs(endX - startX) + std::abs(endY - startY);
-            int gapPosition = rand() % (riverLength / 2) + riverLength / 4;
-
-            int stepCount = 0;
-            int directionX = (endX > startX) ? 1 : (endX < startX) ? -1 : 0;
-            int directionY = (endY > startY) ? 1 : (endY < startY) ? -1 : 0;
-
-            while ((x != endX || y != endY) && x > 0 && x < dim - 1 && y > 0 && y < dim - 1) {
-                if (stepCount != gapPosition) {
-                    for (int dx = -width / 2; dx <= width / 2; ++dx) {
-                        for (int dy = -width / 2; dy <= width / 2; ++dy) {
-                            int nx = x + dx, ny = y + dy;
-                            if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1) {
-                                mapa[ny][nx].setType(type);
-                            }
+                // Count neighboring tiles
+                for (int dy = -1; dy <= 1; ++dy) {
+                    for (int dx = -1; dx <= 1; ++dx) {
+                        if (dx == 0 && dy == 0) continue; // Skip the center tile
+                        if (mapa[y + dy][x + dx].getType() == type) {
+                            count++;
                         }
                     }
                 }
 
-                if (rand() % 100 < 20) {
-                    directionX += (rand() % 3) - 1;
-                    directionY += (rand() % 3) - 1;
+                // Apply Cellular Automata rules
+                if (count >= 4) {
+                    newMap[y][x].setType(type); // More neighbors -> becomes specified type
                 }
-
-                if (directionX > 1) directionX = 1;
-                if (directionX < -1) directionX = -1;
-                if (directionY > 1) directionY = 1;
-                if (directionY < -1) directionY = -1;
-
-                x += directionX;
-                y += directionY;
-                ++stepCount;
+                else {
+                    newMap[y][x].setType(TileType::Empty); // Fewer neighbors -> becomes empty
+                }
             }
-            };
+        }
 
-        generateRiver(type);
+        mapa = newMap; // Update the map after each iteration
+    }
+}
+
+void Arena::generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100);
+
+    for (int y = 1; y < mapa.size() - 1; ++y) {
+        for (int x = 1; x < mapa[0].size() - 1; ++x) {
+            if (distrib(gen) < probability && mapa[y][x].getType() == TileType::Empty) {
+                mapa[y][x].setType(TileType::DestructibleWall);
+            }
+        }
+    }
+    applyCellularAutomata(mapa, mapa.size(), 3, TileType::DestructibleWall);
+}
+
+void Arena::transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100);
+
+    for (int y = 1; y < dim - 1; ++y) {
+        for (int x = 1; x < dim - 1; ++x) {
+            if (mapa[y][x].getType() == TileType::DestructibleWall) {
+                int randomValue = distrib(gen);
+                if (randomValue < indestructibleProbability) {
+                    mapa[y][x].setType(TileType::IndestructibleWall);
+                }
+                else if (randomValue < indestructibleProbability + fakeProbability) {
+                    mapa[y][x].setType(TileType::FakeDestructibleWall);
+                }
+            }
+        }
+    }
+}
+
+void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
+    TileType type = getRandomLiquid();
+    bool isRiver = rand() % 2 == 0;
+
+    if (isRiver) {
+        generateRiver(mapa, dim, type);
     }
     else {
-        FastNoiseLite noise;
-        noise.SetSeed(static_cast<int>(time(0)));
-        noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
+        generateLake(mapa, dim, type);
+    }
+}
 
-        // Decide the liquid type (either Water or Lava) for the entire feature
-        TileType liquidType = (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
+void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+    FastNoiseLite noise;
+    noise.SetSeed(static_cast<int>(time(0)));
+    noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
 
-        // Randomly choose the center point for the lake
-        int centerX = dim / 5 + rand() % (dim / 2);
-        int centerY = dim / 5 + rand() % (dim / 2);
+    // Decide the liquid type (either Water or Lava) for the entire feature
+    TileType liquidType = (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
 
-        // Define the maximum radius of the lake
-        int maxRadius = dim / 7 + rand() % (dim / 8);
+    // Randomly choose the center point for the lake
+    int centerX = dim / 5 + rand() % (dim / 2);
+    int centerY = dim / 5 + rand() % (dim / 2);
 
-        // Generate the lake
-        for (int y = 0; y < dim; ++y) {
-            for (int x = 0; x < dim; ++x) {
-                // Calculate distance from the center
-                float distance = std::sqrt(std::pow(x - centerX, 2) + std::pow(y - centerY, 2));
+    // Define the maximum radius of the lake
+    int maxRadius = dim / 7 + rand() % (dim / 8);
 
-                // Add Perlin noise to the distance calculation
-                float noiseValue = noise.GetNoise((float)x, (float)y);
+    // Generate the lake
+    for (int y = 0; y < dim; ++y) {
+        for (int x = 0; x < dim; ++x) {
+            // Calculate distance from the center
+            float distance = std::sqrt(std::pow(x - centerX, 2) + std::pow(y - centerY, 2));
 
-                // Base condition for being part of the lake
-                if (distance + noiseValue * maxRadius / 4.0f <= maxRadius) {
-                    // Ensure we don't overwrite existing important tiles
-                    if (mapa[y][x].getType() == TileType::Empty) {
-                        mapa[y][x].setType(liquidType);
-                    }
+            // Add Perlin noise to the distance calculation
+            float noiseValue = noise.GetNoise((float)x, (float)y);
+
+            // Base condition for being part of the lake
+            if (distance + noiseValue * maxRadius / 4.0f <= maxRadius) {
+                // Ensure we don't overwrite existing important tiles
+                if (mapa[y][x].getType() == TileType::Empty) {
+                    mapa[y][x].setType(liquidType);
                 }
+            }
 
-                // Add fragmentation if it's lava and near the edge of the lake
-                if (liquidType == TileType::Lava) {
-                    float edgeDistance = maxRadius - distance;
-                    if (edgeDistance >= 0 && edgeDistance < 3.0f) { // Edge threshold for fragmentation
-                        if (noise.GetNoise((float)x, (float)y) > 0.6f) { // Add jagged noise
-                            if (mapa[y][x].getType() == TileType::Empty) {
-                                mapa[y][x].setType(TileType::Lava); // Add lava fragments
-                            }
+            // Add fragmentation if it's lava and near the edge of the lake
+            if (liquidType == TileType::Lava) {
+                float edgeDistance = maxRadius - distance;
+                if (edgeDistance >= 0 && edgeDistance < 3.0f) { // Edge threshold for fragmentation
+                    if (noise.GetNoise((float)x, (float)y) > 0.6f) { // Add jagged noise
+                        if (mapa[y][x].getType() == TileType::Empty) {
+                            mapa[y][x].setType(TileType::Lava); // Add lava fragments
                         }
                     }
                 }
             }
         }
     }
+}
+
+void Arena::generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+    // Initialize river parameters
+    int startX = rand() % (dim - 2) + 1;
+    int startY = (rand() % 2 == 0) ? 1 : dim - 2;
+    int endX = startX;
+    int endY = (startY == 1) ? dim - 2 : 1;
+    int width = dim / 20;
+    int maxIterations = dim * dim; // Safety limit for iterations
+    int iterations = 0;
+
+    FastNoiseLite noise;
+    noise.SetSeed(static_cast<int>(time(0)));
+    noise.SetFrequency(0.01f);
+
+    int x = startX, y = startY;
+
+    while ((x != endX || y != endY) && iterations < maxIterations) {
+        iterations++;
+
+        // Calculate next direction based on noise
+        float noiseX = noise.GetNoise((float)x, (float)y);
+        float noiseY = noise.GetNoise((float)y, (float)x);
+
+        int directionX = (endX > x) ? 1 : (endX < x) ? -1 : 0;
+        int directionY = (endY > y) ? 1 : (endY < y) ? -1 : 0;
+
+        if (noiseX > 0.1f) directionX += 1;
+        else if (noiseX < -0.5f) directionX -= 1;
+
+        if (noiseY > 0.1f) directionY += 1;
+        else if (noiseY < -0.5f) directionY -= 1;
+
+        // Clamp direction values to [-1, 1]
+        directionX = std::clamp(directionX, -1, 1);
+        directionY = std::clamp(directionY, -1, 1);
+
+        // Move to next position
+        x = std::clamp(x + directionX, 1, dim - 2);
+        y = std::clamp(y + directionY, 1, dim - 2);
+
+        // Create river width at current point
+        for (int dx = -width / 2; dx <= width / 2; ++dx) {
+            for (int dy = -width / 2; dy <= width / 2; ++dy) {
+                int nx = x + dx, ny = y + dy;
+                if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1 && mapa[ny][nx].getType() == TileType::Empty) {
+                    mapa[ny][nx].setType(type);
+                }
+            }
+        }
+    }
+
+    // Log if the loop exits due to hitting the safety limit
+    /*if (iterations >= maxIterations) {
+        std::cerr << "River generation terminated early due to iteration limit.\n";
+    }*/
+
+    // Ensure accessibility post-river creation
+    //ensureAccessibility(mapa, dim, type);
 }
 
 void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
@@ -318,48 +354,21 @@ void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numS
 }
 
 void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
-    // Define the number of iterations for cellular automata
-    int iterations = 3;
+    // Initialize random grass tiles
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100);
 
-    // Perform Cellular Automata to add grass
-    for (int it = 0; it < iterations; ++it) {
-        std::vector<std::vector<Tile>> newMap = mapa;
-
-        for (int y = 1; y < m_dim - 1; ++y) {
-            for (int x = 1; x < m_dim - 1; ++x) {
-                // Skip tiles that are already obstacles or spawn points
-                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::Grass) {
-                    continue;
-                }
-
-                int grassCount = 0;
-
-                // Count adjacent grass tiles
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        if (dx == 0 && dy == 0) continue; // Skip the center tile
-                        int nx = x + dx;
-                        int ny = y + dy;
-
-                        if (nx >= 0 && nx < m_dim && ny >= 0 && ny < m_dim &&
-                            mapa[ny][nx].getType() == TileType::Grass) {
-                            ++grassCount;
-                        }
-                    }
-                }
-
-                // Apply Cellular Automata rules for grass growth
-                if (mapa[y][x].getType() == TileType::Empty && grassCount >= 3) {
-                    newMap[y][x].setType(TileType::Grass); // Empty tiles with enough grass neighbors become grass
-                }
-                else if (mapa[y][x].getType() == TileType::Grass && grassCount < 2) {
-                    newMap[y][x].setType(TileType::Empty); // Grass with too few neighbors reverts to empty
-                }
+    for (int y = 1; y < mapa.size() - 1; ++y) {
+        for (int x = 1; x < mapa[0].size() - 1; ++x) {
+            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% chance for initial grass
+                mapa[y][x].setType(TileType::Grass);
             }
         }
-
-        mapa = newMap; // Update the map for the next iteration
     }
+
+    // Use the generic cellular automata function for grass refinement
+    applyCellularAutomata(mapa, mapa.size(), 3, TileType::Grass);
 }
 
 std::pair<int, int> Arena::getConnectedTeleporter(int x, int y) const {

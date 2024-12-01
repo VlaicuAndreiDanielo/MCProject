@@ -4,6 +4,7 @@
 constexpr int SQUARE_SIZE = 40;
 constexpr int kPlayerSize = 30;
 constexpr float PI = 3.1415;
+
 namespace WeaponConfig
 {
     constexpr float kBasicSpeed = 3;
@@ -13,6 +14,12 @@ namespace WeaponConfig
 
     constexpr float kSpeedPowerupIncreasePercent = 100;
     constexpr float kDamagePowerupIncreasePercent = 100;
+
+}
+
+namespace PlayerConfig
+{
+    constexpr int kDefaultPlayeId = -1;
 }
 
 constexpr float frameTime = 1.0f / 60.0f;

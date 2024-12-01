@@ -475,24 +475,19 @@ void Arena::triggerExplosion(int x, int y) {
     }
 }
 
-//void Arena::draw(QPainter& painter) const
-//{
-//    painter.save();
-//    painter.setPen(Qt::NoPen);
-//    for (int row = 0; row < m_dim; ++row) {
-//        for (int col = 0; col < m_dim; ++col) {
-//            uint8_t squareType = (uint8_t)m_mapa[row][col].getType();
-//            QColor color = squareColors[squareType];
-//            int x = col * SQUARE_SIZE;
-//            int y = row * SQUARE_SIZE;
-//            painter.setBrush(color);
-//
-//            painter.drawRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
-//        }
-//    }
-//
-//    painter.restore();
-//}
+crow::json::wvalue Arena::toJson() const {
+    crow::json::wvalue jsonMap;
+
+    for (int y = 0; y < m_dim; ++y) {
+        crow::json::wvalue row = crow::json::wvalue::list();
+        for (int x = 0; x < m_dim; ++x) {
+            row[x] = m_mapa[y][x].toJson();
+        }
+        jsonMap[y] = std::move(row);
+    }
+
+    return jsonMap;
+}
 
 // Afisarea hartii in consola
 void Arena::print_map() const

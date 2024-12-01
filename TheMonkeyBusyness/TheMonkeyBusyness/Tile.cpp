@@ -56,3 +56,12 @@ void Tile::takeDamage(int damage) {
 		}
 	}
 }
+
+crow::json::wvalue Tile::toJson() const {
+	crow::json::wvalue tileJson;
+	tileJson["type"] = static_cast<int>(m_tileType);
+	tileJson["hp"] = m_hp;
+	tileJson["occupied"] = m_playerOccupied;
+	return tileJson;
+}
+

@@ -2,6 +2,8 @@
 #include "TileType.h"
 #include <string>
 #include "GameObject.h"
+#include <crow.h>
+
 class Tile : public GameObject
 {
 private:
@@ -22,5 +24,7 @@ public:
     void setHP(int health);
     int getHP() const;
     void takeDamage(int damage); // Decrease HP
+
+    crow::json::wvalue toJson() const;
 };
 

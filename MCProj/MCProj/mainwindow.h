@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QPainter>
 #include <QLabel>
 #include <QPixmap>
 #include <QPalette>
@@ -22,6 +23,7 @@ public:
 private slots:
     void ShowLoginForm();
     void ShowSignInForm();
+    void ShowMainScreen();
 
 private:
     QWidget* m_centralWidget;
@@ -30,6 +32,7 @@ private:
     // Prima interfață
     QPushButton* m_loginButton;
     QPushButton* m_signInButton;
+    QPushButton* m_backButton; // Buton pentru revenire la ecranul principal
 
     // Elemente pentru formular
     QLabel* m_usernameLabel;

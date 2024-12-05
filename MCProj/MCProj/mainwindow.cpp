@@ -175,23 +175,81 @@ void MainWindow::ShowLoginForm() {
     // Curăță layout-ul
     ClearLayout();
 
+    // Setează distanța dintre widgeturi și marginile layout-ului
+    m_layout->setSpacing(0); // Distanța dintre grupuri redusă la jumătate
+    m_layout->setContentsMargins(50, 30, 50, 30); // Margini laterale și sus/jos
+
     // Creează câmpurile pentru login
     m_usernameLabel = new QLabel("Username:", this);
-    m_usernameField = new QLineEdit(this);
-
     m_passwordLabel = new QLabel("Password:", this);
+    m_usernameField = new QLineEdit(this);
     m_passwordField = new QLineEdit(this);
     m_passwordField->setEchoMode(QLineEdit::Password);
 
     m_submitButton = new QPushButton("Submit", this);
 
-    // Adaugă câmpurile în layout
-    m_layout->addWidget(m_usernameLabel);
-    m_layout->addWidget(m_usernameField);
-    m_layout->addWidget(m_passwordLabel);
-    m_layout->addWidget(m_passwordField);
+    // Stilizează câmpurile, butonul și etichetele
+    QString fieldStyle = R"(
+        QLineEdit {
+            background-color: rgba(255, 255, 255, 200); /* Alb transparent */
+            color: black; /* Culoarea textului */
+            border: 2px solid black; /* Graniță neagră */
+            border-radius: 10px; /* Colțuri rotunjite */
+            padding: 5px; /* Spațiere internă */
+            font-size: 16px; /* Dimensiunea fontului */
+        }
+        QPushButton {
+            background-color: rgba(255, 255, 0, 200); /* Galben transparent */
+            color: black; /* Culoarea textului */
+            font-size: 18px; /* Dimensiunea fontului */
+            font-weight: bold; /* Text îngroșat */
+            border-radius: 10px; /* Colțuri rotunjite */
+            padding: 10px; /* Spațiere internă */
+        }
+    )";
+    m_usernameField->setStyleSheet(fieldStyle);
+    m_passwordField->setStyleSheet(fieldStyle);
+    m_submitButton->setStyleSheet(fieldStyle);
+
+    QString labelStyle = R"(
+        QLabel {
+            color: rgba(255, 255, 255, 255); /* Alb intens */
+            font-size: 18px; /* Dimensiunea fontului */
+            font-weight: bold; /* Text îngroșat */
+            margin: 0px; /* Fără margini */
+            padding: 0px; /* Fără padding */
+        }
+    )";
+    m_usernameLabel->setStyleSheet(labelStyle);
+    m_passwordLabel->setStyleSheet(labelStyle);
+
+    // Setează dimensiuni fixe pentru câmpuri și buton
+    m_usernameField->setFixedSize(300, 40);
+    m_passwordField->setFixedSize(300, 40);
+    m_submitButton->setFixedSize(200, 50);
+
+    // Creează layout-uri intermediare pentru fiecare etichetă și câmp
+    QVBoxLayout* usernameLayout = new QVBoxLayout();
+    usernameLayout->addWidget(m_usernameLabel);
+    usernameLayout->addWidget(m_usernameField);
+    usernameLayout->setSpacing(0); // Fără spațiu între etichetă și câmp
+    usernameLayout->setContentsMargins(0, 0, 0, 0); // Fără margini între ele
+
+    QVBoxLayout* passwordLayout = new QVBoxLayout();
+    passwordLayout->addWidget(m_passwordLabel);
+    passwordLayout->addWidget(m_passwordField);
+    passwordLayout->setSpacing(0); // Fără spațiu între etichetă și câmp
+    passwordLayout->setContentsMargins(0, 0, 0, 0); // Fără margini între ele
+
+    // Adaugă layout-urile în layout-ul principal și aliniază-le la centru
+    m_layout->addLayout(usernameLayout);
+    m_layout->setAlignment(usernameLayout, Qt::AlignCenter); // Centrează vertical
+    m_layout->addLayout(passwordLayout);
+    m_layout->setAlignment(passwordLayout, Qt::AlignCenter); // Centrează vertical
     m_layout->addWidget(m_submitButton);
+    m_layout->setAlignment(m_submitButton, Qt::AlignCenter);
 }
+
 
 void MainWindow::ShowSignInForm() {
     // Curăță layout-ul

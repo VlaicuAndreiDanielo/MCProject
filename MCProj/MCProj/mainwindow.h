@@ -10,6 +10,7 @@
 #include <QPalette>
 #include <QBrush>
 #include <QCoreApplication>
+#include <QGraphicsDropShadowEffect> // Include necesar pentru efectul de umbră
 
 
 class MainWindow : public QMainWindow {

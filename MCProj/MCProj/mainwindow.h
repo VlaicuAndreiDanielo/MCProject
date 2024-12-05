@@ -6,6 +6,11 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QPixmap>
+#include <QPalette>
+#include <QBrush>
+#include <QCoreApplication>
+
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -14,28 +19,28 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
 
 private slots:
-    void showLoginForm();
-    void showSignInForm();
+    void ShowLoginForm();
+    void ShowSignInForm();
 
 private:
-    QWidget* centralWidget;
-    QVBoxLayout* layout;
+    QWidget* m_centralWidget;
+    QVBoxLayout* m_layout;
 
     // Prima interfață
-    QPushButton* loginButton;
-    QPushButton* signInButton;
+    QPushButton* m_loginButton;
+    QPushButton* m_signInButton;
 
     // Elemente pentru formular
-    QLabel* usernameLabel;
-    QLabel* passwordLabel;
-    QLabel* confirmPasswordLabel;
-    QLineEdit* usernameField;
-    QLineEdit* passwordField;
-    QLineEdit* confirmPasswordField;
-    QPushButton* submitButton;
+    QLabel* m_usernameLabel;
+    QLabel* m_passwordLabel;
+    QLabel* m_confirmPasswordLabel;
+    QLineEdit* m_usernameField;
+    QLineEdit* m_passwordField;
+    QLineEdit* m_confirmPasswordField;
+    QPushButton* m_submitButton;
 
     // Funcție de resetare
-    void clearLayout();
+    void ClearLayout();
 };
 
 #endif // MAINWINDOW_H

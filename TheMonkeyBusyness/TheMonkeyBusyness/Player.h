@@ -13,7 +13,7 @@
 
 class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
-	explicit Player(float x=0, float y=0);
+	explicit Player(float x=0, float y=0, int id = -1);
 	Vector2 Forward() const;
 	Vector2 GetPosition()const;
 	void SetSpawn(Vector2 location);
@@ -23,7 +23,7 @@ public:
 	void UpdatePosition(const Vector2 &vector);
 	void UpdatePosition(const float x, const float y);
 	void UpdateRotation(const Vector2& mousePos);
-	void Shoot(const Vector2& mousePos);
+	void Shoot(const Vector2& mousePosition);
 	void Update(float deltaTime);
 	bool IsAlive() const;
 

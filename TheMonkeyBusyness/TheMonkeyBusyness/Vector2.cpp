@@ -71,6 +71,22 @@ Vector2& Vector2::operator+=(const Vector2& vector)
 	return *this; // Return the current object by reference
 }
 
+Vector2 Vector2::operator-(const Vector2& other) const
+{
+	return Vector2(x - other.x, y - other.y);
+}
+
+bool Vector2::operator==(const Vector2& other) const
+{
+	return this->x == other.x && this->y == other.y;
+}
+
+bool Vector2::operator!=(const Vector2& other) const
+{
+	return !(*this == other);
+}
+
+
 float Vector2::GetAngleFromNormalizedVector() const
 {
 	float angleInRadians = atan2(this->y, this->x);

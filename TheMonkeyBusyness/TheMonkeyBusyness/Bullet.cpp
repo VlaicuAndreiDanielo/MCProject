@@ -21,29 +21,21 @@ Bullet& Bullet::operator=(Bullet&& other) noexcept
 	return *this;
 }
 
-void Bullet::Update()
+void Bullet::Update(float deltaTime)
 {
-	Vector2 newPosition = m_position;
-	newPosition.x += m_direction.x * m_speed;
-	newPosition.y += m_direction.y * m_speed;
-
-	SetPosition(newPosition);
+	m_position.x += m_direction.x * m_speed * deltaTime;
+	m_position.y += m_direction.y * m_speed * deltaTime;
 }
 
-//void Bullet::draw(QPainter& painter) const
-//{
-//	painter.save();
-//	QPen pen(Qt::black);
-//	QBrush brush(Qt::red);
-//
-//	painter.setPen(pen);
-//	painter.setBrush(brush);
-//
-//	const float bulletRadius = 5.0f;
-//
-//	painter.drawEllipse(QPointF(m_position.x, m_position.y), bulletRadius, bulletRadius);
-//	painter.restore();
-//}
+crow::json::wvalue Bullet::toJson() const
+{
+	crow::json::wvalue bulletJson;
+	bulletJson["x"] = m_position.x;
+	bulletJson["y"] = m_position.y;
+	bulletJson["directionX"] = m_direction.x;
+	bulletJson["directionY"] = m_direction.y;
+	return bulletJson;
+}
 
 Vector2 Bullet::GetPosition() const {
 	return m_position;

@@ -7,32 +7,65 @@ Weapon::Weapon(float damage, float fireRate, float speed)
 	initializeBullets();
 }
 
-void Weapon::Shoot(const Vector2& position, const Vector2& direction)
-{
-	if (m_timeSinceLastShot >= m_fireRate && !m_inactiveBullets.empty())
-	{
-		m_inactiveBullets.back().SetPosition(position);
-		m_inactiveBullets.back().SetDirection(direction);
-		m_activeBullets.push_back(std::move(m_inactiveBullets.back()));
-		m_inactiveBullets.pop_back();
+void Weapon::Shoot(const Vector2& position, const Vector2& direction) {
+	std::ofstream logFile("server_log.txt", std::ios::app);
 
-		m_timeSinceLastShot = 0.0f;
+	logFile << "Weapon::Shoot called with Position=(" << position.x << ", " << position.y
+		<< "), Direction=(" << direction.x << ", " << direction.y << ")" << std::endl;
+	logFile << "Current cooldown: " << m_timeSinceLastShot << ", Fire rate: " << m_fireRate << std::endl;
 
-		if (hasActivePowerup())
-			activateBulletPowerup(m_activeBullets.back());
+	if (m_timeSinceLastShot >= m_fireRate) {
+		if (!m_inactiveBullets.empty()) {
+			// Bullet activation logic
+			logFile << "Activating bullet: Position=(" << position.x << ", " << position.y
+				<< "), Direction=(" << direction.x << ", " << direction.y << ")" << std::endl;
+
+			m_inactiveBullets.back().SetPosition(position);
+			m_inactiveBullets.back().SetDirection(direction);
+			m_activeBullets.push_back(std::move(m_inactiveBullets.back()));
+			m_inactiveBullets.pop_back();
+			m_timeSinceLastShot = 0.0f;
+
+			logFile << "Bullet added to m_activeBullets. Total active bullets: " << m_activeBullets.size() << std::endl;
+
+			if (hasActivePowerup()) {
+				logFile << "Activating powerup for bullet at Position=("
+					<< m_activeBullets.back().GetPosition().x << ", "
+					<< m_activeBullets.back().GetPosition().y << ")" << std::endl;
+				activateBulletPowerup(m_activeBullets.back());
+			}
+		}
+		else {
+			logFile << "Weapon cannot shoot: No inactive bullets available." << std::endl;
+		}
+	}
+	else {
+		logFile << "Weapon cannot shoot: Fire rate cooldown active." << std::endl;
 	}
 }
 
-void Weapon::Update()
+
+
+void Weapon::Update(float deltaTime)
 {
-	m_timeSinceLastShot += frameTime;
+    m_timeSinceLastShot += deltaTime;
 
-	if (hasActivePowerup())
-		updatePowerups();
+    // Open log file and append new log entries for debugging purposes
+    std::ofstream logFile("server_log.txt", std::ios::app);
+    logFile << "[" << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << "] ";
+    logFile << "Weapon::Update - deltaTime: " << deltaTime 
+            << ", Accumulated timeSinceLastShot: " << m_timeSinceLastShot << std::endl;
 
-	for (auto& bullet : m_activeBullets) {
-		bullet.Update();
-		//TODO add logic for deactivating bullets once map and player classes are finished
+    updatePowerupsTimeLeft(deltaTime);
+}
+
+
+void Weapon::deactivateBullet(size_t index)
+{
+	if (index < m_activeBullets.size())
+	{
+		m_inactiveBullets.push_back(std::move(m_activeBullets[index]));
+		m_activeBullets.erase(m_activeBullets.begin() + index);
 	}
 }
 
@@ -44,14 +77,6 @@ void Weapon::initializeBullets()
 	for (size_t i = 0; i < WeaponConfig::kMaxBasicBullets; ++i)
 		m_inactiveBullets.push_back(Bullet(Vector2(), Vector2(), m_speed, m_damage));
 }
-
-//Va fi mutata mai incolo
-
-//void Weapon::DrawBullets(QPainter& painter) const
-//{
-//	for (const Bullet& bullet : m_activeBullets)
-//		bullet.draw(painter);
-//}
 
 void Weapon::ActivateDamagePowerup(float duration)
 {
@@ -91,18 +116,18 @@ void Weapon::deactivateBulletsPowerup()
 	}
 }
 
-void Weapon::updatePowerups()
+void Weapon::updatePowerupsTimeLeft(float deltaTime)
 {
 	if (m_damageIncreaseTimer > 0)
 	{
-		m_damageIncreaseTimer -= frameTime;
+		m_damageIncreaseTimer -= deltaTime;
 		if (m_damageIncreaseTimer <= 0)
 			deactivateBulletsPowerup();
 	}
 
 	if (m_speedIncreaseTimer > 0)
 	{
-		m_speedIncreaseTimer -= frameTime;
+		m_speedIncreaseTimer -= deltaTime;
 		if (m_speedIncreaseTimer <= 0)
 			deactivateBulletsPowerup();
 	}
@@ -130,6 +155,26 @@ float Weapon::GetSpeed() const {
 
 void Weapon::SetSpeed(float speed) {
 	m_speed = speed;
+}
+
+crow::json::wvalue Weapon::toJson() const {
+	crow::json::wvalue weaponJson;
+
+	crow::json::wvalue bulletsJson = crow::json::wvalue::list();
+	size_t bulletIndex = 0;
+	for (const auto& bullet : m_activeBullets) {
+		bulletsJson[bulletIndex++] = bullet.toJson();
+	}
+	weaponJson["bullets"] = std::move(bulletsJson);
+	//TODO also return time left in powerups so it can be displayed on screen
+
+	return weaponJson;
+}
+
+
+std::vector<Bullet>& Weapon::GetActiveBullets()
+{
+	return m_activeBullets;
 }
 
 /*

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\LogIn and SingIn">
+      <UniqueIdentifier>{dbfd4317-3e1f-425b-99be-9ba654fa31db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LogIn and SingIn">
+      <UniqueIdentifier>{02e77373-95d4-4aa2-bc10-5502c5816458}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -83,10 +89,22 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogInForm.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="SignInForm.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SignInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="LogInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

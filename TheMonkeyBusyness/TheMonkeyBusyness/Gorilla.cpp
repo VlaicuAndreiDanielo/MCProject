@@ -4,36 +4,36 @@ Gorilla::Gorilla()
 	: Character(1500, 4, 20, 0)
 {}
 
-void Gorilla::activateSpecialAbility() 
+void Gorilla::ActivateSpecialAbility() 
 {   //Protection
-    if (remainingCooldown <= 0) {
+    if (m_remainingCooldown <= 0) {
         std::cout << "Gorilla activates Shield!\n";
 
         // Activăm scutul de 50 de puncte
-        shieldPoints = 50;
-        shieldActive = true;
-        abilityStartTime = std::chrono::steady_clock::now();
+        m_shieldPoints = 50;
+        m_shieldActive = true;
+        m_abilityStartTime = std::chrono::steady_clock::now();
 
         std::cout << "Gorilla gains a shield of 50 points!\n";
-        std::cout << "Current Shield: " << shieldPoints << "\n";
+        std::cout << "Current Shield: " << m_shieldPoints << "\n";
 
         // Setăm cooldown-ul abilității la 20 de secunde
-        remainingCooldown = cooldownTime;
+        m_remainingCooldown = m_cooldownTime;
     }
     else {
-        std::cout << "Ability is on cooldown. Time left: " << remainingCooldown << " seconds\n";
+        std::cout << "Ability is on cooldown. Time left: " << m_remainingCooldown << " seconds\n";
     }
 }
 
-void Gorilla::monkeyEvolution()
+void Gorilla::MonkeyEvolution()
 {
-	if(evolutionLevel < 5){
+	if(EvolutionLevel < 5){
 		std::cout << "Gorilla is evolving...\n";
-		HP += 30;     // Crestem viata
-		speed += 1;   // Crestem viteza
-		evolutionLevel++;
-		std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
-		std::cout << "Evolution Level: " << evolutionLevel << "\n";
+		m_HP += 30;     // Crestem viata
+		m_speed += 1;   // Crestem viteza
+		EvolutionLevel++;
+		std::cout << "New stats - HP: " << m_HP << ", Speed: " << m_speed << "\n";
+		std::cout << "Evolution Level: " << EvolutionLevel << "\n";
 	}
 	else {
 		std::cout << "Gorilla has reached the maximum evolution level (5)!\n";

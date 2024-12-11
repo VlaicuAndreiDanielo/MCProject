@@ -4,6 +4,6 @@ Character::Character()
 {
 }
 
-void Character::attack() const
+void Character::Attack() const
 {
 }

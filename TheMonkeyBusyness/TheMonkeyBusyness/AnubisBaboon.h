@@ -7,12 +7,12 @@ class AnubisBaboon : public Character
 {
 public:
 	AnubisBaboon();
-	void activateSpecialAbility() override;
-	void monkeyEvolution() override;
-	void update();
+	void ActivateSpecialAbility() override;
+	void MonkeyEvolution() override;
+	void Update();
 	~AnubisBaboon() = default;
 private:
-	bool bonusSpeedActive;
-	std::chrono::steady_clock::time_point abilityStartTime;
+	bool m_bonusSpeedActive;
+	std::chrono::steady_clock::time_point m_abilityStartTime;
 };
 

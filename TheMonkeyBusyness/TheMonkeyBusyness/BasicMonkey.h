@@ -7,12 +7,12 @@ class BasicMonkey : public Character
 {
 public:
 	BasicMonkey();
-	void activateSpecialAbility() override;
-	void monkeyEvolution() override;
-	void update();
+	void ActivateSpecialAbility() override;
+	void MonkeyEvolution() override;
+	void Update();
 	~BasicMonkey() = default;
 private:
-	bool speedBoostActive;
-	std::chrono::steady_clock::time_point abilityStartTime;
+	bool m_speedBoostActive;
+	std::chrono::steady_clock::time_point m_abilityStartTime;
 };
 

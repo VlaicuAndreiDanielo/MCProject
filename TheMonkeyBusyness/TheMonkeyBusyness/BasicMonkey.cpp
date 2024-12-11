@@ -4,58 +4,58 @@ BasicMonkey::BasicMonkey()
 	: Character(500, 10, 12, 0)
 {}
 
-void BasicMonkey::activateSpecialAbility() 
+void BasicMonkey::ActivateSpecialAbility() 
 { //Special Ability = Quick Escape 
-    if (remainingCooldown <= 0) {
+    if (m_remainingCooldown <= 0) {
         std::cout << "BasicMonkey activates Speed Boost!\n";
 
         // Temporar boost la viteză pentru 25 de secunde
-        speed += 10;
-        speedBoostActive = true;
-        abilityStartTime = std::chrono::steady_clock::now();
+        m_speed += 10;
+        m_speedBoostActive = true;
+        m_abilityStartTime = std::chrono::steady_clock::now();
 
         std::cout << "BasicMonkey gains +10 speed for 25 seconds!\n";
-        std::cout << "New Speed: " << speed << "\n";
+        std::cout << "New Speed: " << m_speed << "\n";
 
         // Setăm cooldown-ul abilității
-        remainingCooldown = cooldownTime;
+        m_remainingCooldown = m_cooldownTime;
     }
     else {
-        std::cout << "Ability is on cooldown. Time left: " << remainingCooldown << " seconds\n";
+        std::cout << "Ability is on cooldown. Time left: " << m_remainingCooldown << " seconds\n";
     }
 }
 
-void BasicMonkey::monkeyEvolution()
+void BasicMonkey::MonkeyEvolution()
 {
-	if(evolutionLevel < 5){
+	if(EvolutionLevel < 5){
 		std::cout << "BasicMonkey is evolving...\n";
-		HP += 75;     // Crestem viata
-		speed += 3;   // Crestem viteza
-		evolutionLevel++;
-		std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
-		std::cout << "Evolution Level: " << evolutionLevel << "\n";
+		m_HP += 75;     // Crestem viata
+		m_speed += 3;   // Crestem viteza
+		EvolutionLevel++;
+		std::cout << "New stats - HP: " << m_HP << ", Speed: " << m_speed << "\n";
+		std::cout << "Evolution Level: " << EvolutionLevel << "\n";
 	}
 	else {
 		std::cout << "BasicMonkey has reached the maximum evolution level (5)!\n";
 	}
 }
 
-void BasicMonkey::update()
+void BasicMonkey::Update()
 {
-    if (speedBoostActive) {
+    if (m_speedBoostActive) {
         auto now = std::chrono::steady_clock::now();
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(now - abilityStartTime).count();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(now - m_abilityStartTime).count();
 
         if (elapsedTime >= 25) {
             // Restaurăm viteza inițială după 25 de secunde
-            speed -= 10;
-            speedBoostActive = false;
-            std::cout << "Speed Boost effect ended. Speed restored to " << speed << "\n";
+            m_speed -= 10;
+            m_speedBoostActive = false;
+            std::cout << "Speed Boost effect ended. Speed restored to " << m_speed << "\n";
         }
     }
 
     // Logica pentru cooldown
-    if (remainingCooldown > 0) {
-        remainingCooldown -= 1; // Presupunem că `update` este apelată la fiecare secundă
+    if (m_remainingCooldown > 0) {
+        m_remainingCooldown -= 1; // Presupunem că `update` este apelată la fiecare secundă
     }
 }

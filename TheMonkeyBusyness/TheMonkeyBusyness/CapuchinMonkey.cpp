@@ -2,52 +2,52 @@
 #include <iostream>
 
 CapuchinMonkey::CapuchinMonkey()
-    : Character(400, 8, 15, 0), isAgilityActive(false), agilityDuration(15), agilityBoostAmount(5), baseSpeed(8)
+    : Character(400, 8, 15, 0), m_isAgilityActive(false), m_agilityDuration(15), m_agilityBoostAmount(5), m_baseSpeed(8)
 {}
 
-void CapuchinMonkey::activateSpecialAbility()
+void CapuchinMonkey::ActivateSpecialAbility()
 {   //Agility Boost
-    if (!isAgilityActive && remainingCooldown <= 0) {
+    if (!m_isAgilityActive && m_remainingCooldown <= 0) {
         std::cout << "CapuchinMonkey activates Agility Boost!\n";
-        isAgilityActive = true;
-        speed += agilityBoostAmount;  // Creștem viteza temporar
-        remainingCooldown = cooldownTime;  // Setați timpul de cooldown
+        m_isAgilityActive = true;
+        m_speed += m_agilityBoostAmount;  // Creștem viteza temporar
+        m_remainingCooldown = m_cooldownTime;  // Setați timpul de cooldown
     }
     else {
-        std::cout << "Ability is on cooldown. Time left: " << remainingCooldown << " seconds\n";
+        std::cout << "Ability is on cooldown. Time left: " << m_remainingCooldown << " seconds\n";
     }
 }
 
-void CapuchinMonkey::update()
+void CapuchinMonkey::Update()
 {
-    if (isAgilityActive) {
+    if (m_isAgilityActive) {
         // Contorizăm durata abilității
-        agilityDuration--;
-        if (agilityDuration <= 0) {
+        m_agilityDuration--;
+        if (m_agilityDuration <= 0) {
             // Odată ce durata expiră, revenim la viteza de bază
             std::cout << "Agility Boost has ended.\n";
-            speed = baseSpeed;
-            isAgilityActive = false;
-            agilityDuration = 15;  // Resetăm durata pentru activarea viitoare
+            m_speed = m_baseSpeed;
+            m_isAgilityActive = false;
+            m_agilityDuration = 15;  // Resetăm durata pentru activarea viitoare
         }
     }
 
     // Scădem cooldown-ul, dacă e necesar
-    if (remainingCooldown > 0) {
-        remainingCooldown--;
+    if (m_remainingCooldown > 0) {
+        m_remainingCooldown--;
     }
 }
 
-void CapuchinMonkey::monkeyEvolution()
+void CapuchinMonkey::MonkeyEvolution()
 {
-    if (evolutionLevel < 5) {
+    if (EvolutionLevel < 5) {
         std::cout << "CapuchinMonkey is evolving...\n";
-        HP += 100;  // Creștem viața
-        speed += 3; // Creștem viteza
-        baseSpeed = speed;
-        evolutionLevel++;
-        std::cout << "New stats - HP: " << HP << ", Speed: " << speed << "\n";
-        std::cout << "Evolution Level: " << evolutionLevel << "\n";
+        m_HP += 100;  // Creștem viața
+        m_speed += 3; // Creștem viteza
+        m_baseSpeed = m_speed;
+        EvolutionLevel++;
+        std::cout << "New stats - HP: " << m_HP << ", Speed: " << m_speed << "\n";
+        std::cout << "Evolution Level: " << EvolutionLevel << "\n";
     }
     else {
         std::cout << "CapuchinMonkey has reached the maximum evolution level (5)!\n";

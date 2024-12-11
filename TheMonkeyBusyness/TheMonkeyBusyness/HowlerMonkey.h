@@ -5,14 +5,14 @@ class HowlerMonkey : public Character
 {
 public:
 	HowlerMonkey();
-	void activateSpecialAbility()override;
-	void update();
-	void takeDamage(int damage);
-	void monkeyEvolution() override;
+	void ActivateSpecialAbility()override;
+	void Update();
+	void TakeDamage(int damage);
+	void MonkeyEvolution() override;
 	~HowlerMonkey() = default;
 private:
-	bool isInvulnerable = false;  
-	int soundBarrierDuration = 5;  
-	int baseHP = 600;
+	bool m_isInvulnerable = false;  
+	int m_soundBarrierDuration = 5;  
+	int m_baseHP = 600;
 };
 

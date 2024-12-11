@@ -6,23 +6,23 @@ class Character
 public:
 	Character();
 	Character(int hp, int speed,float cooldown , float remainingtime)
-		: HP(hp), speed(speed), cooldownTime(cooldown), remainingCooldown(remainingtime) {};
-	virtual void attack() const;
+		: m_HP(hp), m_speed(speed), m_cooldownTime(cooldown), m_remainingCooldown(remainingtime) {};
+	virtual void Attack() const;
 
-	virtual void activateSpecialAbility() = 0;
-	virtual void monkeyEvolution() = 0; 
+	virtual void ActivateSpecialAbility() = 0;
+	virtual void MonkeyEvolution() = 0; 
 
 	virtual ~Character() = default;
 
-	int getHealth() const { return HP; }
-	int getSpeed() const { return speed; }
-	float getCooldownTime() const { return cooldownTime; }
+	int GetHealth() const { return m_HP; }
+	int GetSpeed() const { return m_speed; }
+	float GetCooldownTime() const { return m_cooldownTime; }
 	
 protected:
-	int HP;
-	int speed;
-	float cooldownTime;
-	float remainingCooldown;
-	int evolutionLevel = 0;
+	int m_HP;
+	int m_speed;
+	float m_cooldownTime;
+	float m_remainingCooldown;
+	int EvolutionLevel = 0;
 };
 

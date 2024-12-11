@@ -31,8 +31,8 @@ void Player::SetMonkeyType(Character* character)
 
 void Player::UpdatePosition(const Vector2& direction)
 {
-	this->m_position.x += direction.x * m_Character->getSpeed();
-	this->m_position.y += direction.y * m_Character->getSpeed();
+	this->m_position.x += direction.x * m_Character->GetSpeed();
+	this->m_position.y += direction.y * m_Character->GetSpeed();
 }
 
 void Player::UpdatePosition(const float x, const float y)
@@ -79,7 +79,7 @@ void Player::Update(float deltaTime)
 
 bool Player::IsAlive() const
 {
-	return m_Character->getHealth() > 0;
+	return m_Character->GetHealth() > 0;
 }
 
 void Player::SetScreenSize(const int screenWidth, const int screenHeight)
@@ -94,7 +94,7 @@ crow::json::wvalue Player::toJson() const
 	playerJson["id"] = m_id;
 	playerJson["x"] = m_position.x;
 	playerJson["y"] = m_position.y;
-	playerJson["hp"] = m_Character->getHealth();
+	playerJson["hp"] = m_Character->GetHealth();
 
 	playerJson["weapon"] = m_weapon.toJson();
 

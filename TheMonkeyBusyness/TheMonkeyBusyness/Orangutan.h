@@ -6,10 +6,10 @@ class Orangutan : public Character
 {
 public:
 	Orangutan();
-	void activateSpecialAbility()override;
-	void monkeyEvolution() override;
+	void ActivateSpecialAbility()override;
+	void MonkeyEvolution() override;
 	~Orangutan() = default;
 private:
-	int getRandomHealthRegen(int min, int max) const;
+	int GetRandomHealthRegen(int min, int max) const;
 };
 

@@ -10,6 +10,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="InputHandler.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D3AF52DB-B03A-4018-B112-468BB7D756EE}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
@@ -72,9 +81,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>C:\Qt\6.8.0\msvc2022_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Qt6Cored.lib;Qt6Core.lib;Qt6Widgets.lib;Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt6Core.lib;Qt6Widgets.lib;Qt6Gui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Qt\6.8.0\msvc2022_64\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -106,15 +116,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="GameWindow.cpp" />
-    <ClCompile Include="InputHandler.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GameWindow.h" />
-    <ClInclude Include="InputHandler.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

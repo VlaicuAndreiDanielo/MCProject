@@ -4,7 +4,7 @@ InputHandler::InputHandler(QWidget* parent) : QWidget(parent), is_shooting(false
 
 }
 
-void InputHandler::Normalize(QPoint &point)
+void InputHandler::Normalize(QPoint& point)
 {
     float magnitude = (float)std::sqrt(pow(point.x(), 2) + pow(point.y(), 2));
     if (!magnitude == 0)  (point /= magnitude);
@@ -16,7 +16,7 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         int key = keyEvent->key();
-     
+
         if (event->type() == QEvent::KeyPress) {
             keyStates[key] = true; // Mark the key as pressed
         }
@@ -26,9 +26,9 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
 
         m_direction.setX(0);
         m_direction.setY(0);
-        
+
         if (keyStates[Qt::Key_W]) {
-            m_direction.setY(m_direction.y()-1);
+            m_direction.setY(m_direction.y() - 1);
         }
         if (keyStates[Qt::Key_A]) {
             m_direction.setX(m_direction.x() - 1);
@@ -43,7 +43,7 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
 
         Normalize(m_direction);
         return true;
-       // Indicate that the event was handled
+        // Indicate that the event was handled
     }
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);

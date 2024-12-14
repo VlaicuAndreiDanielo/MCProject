@@ -7,17 +7,16 @@
 #include <vector>
 #include <cpr/cpr.h>
 #include <crow/json.h>
-#include "InputHandler.h" // For handling player input
+#include "InputHandler.h"
 
 
 using Position = std::pair<float, float>;
 using Direction = std::pair<float, float>;
 
 class GameWindow : public QWidget {
-    Q_OBJECT
+    //Q_OBJECT;
 public:
     explicit GameWindow(int playerId, int gameId, const std::string& serverUrl, QWidget* parent = nullptr);
-
 private:
     int playerId;                      // Player's unique ID
     int gameId;                        // Game's unique ID
@@ -31,15 +30,13 @@ private:
     int health;
     std::vector<Position> playersCoordinates;
 
+    void fetchArena();  // Fetch the whole arena from the server
+    void loadArena(const crow::json::rvalue& arenaData);
     void fetchGameState();             // Fetch game state from the server
     void updateGameState(const crow::json::rvalue& jsonResponse); // Update local state based on server data
     void updatePlayerDirection();       // Update player movement locally
     void sendPlayerInputToServer();    // Send input data (movement, shooting) to the server
-
+ 
     void paintEvent(QPaintEvent* event) override; // Render the game window
-
-
-    QElapsedTimer fpsTimer;  // Timer to measure FPS
-    int frameCount = 0;      // Frame counter
-    int currentFPS = 0;      // Calculated FPS
 };
+

@@ -26,10 +26,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
+    <ClCompile Include="GameWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameWindow.cpp">
+    <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QtWidgets/qapplication.h>
 #include <cpr/cpr.h>
 #include <crow/json.h>
 #include "GameWindow.h"
@@ -56,7 +56,7 @@ int createGame(const std::string& serverUrl, int playerId) {
     }
     else {
         std::cerr << "Error: Missing gameId in /create_game response." << std::endl;
-        abort(); // Fail-fast for debugging
+        abort();
     }
 }
 
@@ -75,9 +75,6 @@ void startGameLoop(const std::string& serverUrl, int gameId) {
     }
 }
 
-
-
-
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
@@ -87,6 +84,9 @@ int main(int argc, char* argv[]) {
     std::string serverUrl = "http://localhost:8080";
     std::string username = "player1";
     std::string password = "password123";
+
+
+    // interfata login raspuns --> username,password
 
     int playerId = loginPlayer(serverUrl, username, password);
 
@@ -100,9 +100,8 @@ int main(int argc, char* argv[]) {
     logFile << "Initializing GameWindow..." << std::endl;
 
     GameWindow gameWindow(playerId, gameId, serverUrl);
-    //gameWindow.setFixedSize(800, 600); // Ensure window size is set
     gameWindow.show();
 
-    logFile << "Event loop starting..." << std::endl;
+    //logFile << "Event loop starting..." << std::endl;
     return app.exec();
 }

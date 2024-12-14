@@ -1,7 +1,7 @@
 #include "GameWindow.h"
 #include <QPainter>
 #include <iostream>
-
+#include <fstream>
 constexpr int SQUARE_SIZE = 40;
 constexpr int kPlayerSize = 30;
 
@@ -9,11 +9,12 @@ constexpr int kPlayerSize = 30;
 GameWindow::GameWindow(int playerId, int gameId, const std::string& serverUrl, QWidget* parent)
     : QWidget(parent), playerId(playerId), gameId(gameId), serverUrl(serverUrl), playerPosition(400, 300) {
 
+    fetchArena(); // fetch the whole arena
+
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     this->installEventFilter(&playerInput);
-
-
+    
     timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, [this]() {
         fetchGameState();
@@ -22,17 +23,91 @@ GameWindow::GameWindow(int playerId, int gameId, const std::string& serverUrl, Q
         update();
         });
 
-    timer->start(32); // 16ms for ~60 FPS
+    timer->start(64); // 16ms for ~60 FPS
 }
 
-void GameWindow::fetchGameState() {
-    cpr::Response response = cpr::Get(cpr::Url{ serverUrl + "/game_state" },
+void GameWindow::fetchArena() {
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+
+    cpr::Response response = cpr::Get(cpr::Url{ serverUrl + "/game_arena" },
         cpr::Parameters{ {"gameId", std::to_string(gameId)} });
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::ofstream logFile("client_log.txt", std::ios::app);
+    logFile << "fetchArena request took " << duration.count() << " seconds." << std::endl;
+
+
 
     if (response.status_code == 200) {
         auto jsonResponse = crow::json::load(response.text);
+        if (jsonResponse.has("arena")) {
+            loadArena(jsonResponse);
+            update(); // Trigger paint event
+        }
+        else {
+            std::cerr << "Error: Arena map not found in response." << std::endl;
+        }
+    }
+    else {
+        std::cerr << "Error: Server responded with code " << response.status_code << std::endl;
+    }
+}
+
+
+void GameWindow::loadArena(const crow::json::rvalue& arenaData) {
+
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+
+    map.clear();
+    for (const auto& row : arenaData["arena"]) {
+        std::vector<int> mapRow;
+        for (const auto& tile : row) {
+            mapRow.push_back(tile.i()); // Convert JSON tile to integer
+        }
+        map.push_back(std::move(mapRow));
+    }
+
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::ofstream logFile("client_log.txt", std::ios::app);
+    logFile << "loadArena request took " << duration.count() << " seconds." << std::endl;
+
+
+}
+void GameWindow::fetchGameState() {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Measure HTTP request time
+    auto requestStart = std::chrono::high_resolution_clock::now();
+    cpr::Response response = cpr::Get(cpr::Url{ serverUrl + "/game_state" },
+        cpr::Parameters{ {"gameId", std::to_string(gameId)} });
+    auto requestEnd = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> requestDuration = requestEnd - requestStart;
+
+    std::ofstream logFile("client_log.txt", std::ios::app);
+    logFile << "HTTP request for fetchGameState took " << requestDuration.count() << " seconds." << std::endl;
+
+    if (response.status_code == 200) {
+        auto parseStart = std::chrono::high_resolution_clock::now();
+        auto jsonResponse = crow::json::load(response.text);
+        auto parseEnd = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> parseDuration = parseEnd - parseStart;
+        logFile << "JSON parsing for fetchGameState took " << parseDuration.count() << " seconds." << std::endl;
+
         if (jsonResponse) {
+            auto updateStart = std::chrono::high_resolution_clock::now();
             updateGameState(jsonResponse);
+            auto updateEnd = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> updateDuration = updateEnd - updateStart;
+            logFile << "updateGameState took " << updateDuration.count() << " seconds." << std::endl;
         }
         else {
             std::cerr << "Error: Failed to parse game state JSON." << std::endl;
@@ -41,62 +116,59 @@ void GameWindow::fetchGameState() {
     else {
         std::cerr << "Error: Server responded with code " << response.status_code << std::endl;
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> totalDuration = end - start;
+    logFile << "Total fetchGameState time: " << totalDuration.count() << " seconds." << std::endl;
 }
 
 void GameWindow::updateGameState(const crow::json::rvalue& jsonResponse) {
-    // Update players
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Measure time for player updates
+    auto playerUpdateStart = std::chrono::high_resolution_clock::now();
+
+    playersCoordinates.clear();
+    bulletsCoordinates.clear();
+
     for (const auto& player : jsonResponse["players"]) {
         float x = player["x"].d();
         float y = player["y"].d();
-        int id = player["id"].i(); 
-
-        bulletsCoordinates.clear();
-
-        std::ofstream logFile("client_log.txt", std::ios::app);
-
-        for (const auto& bullet : player["weapon"]["bullets"])
-        {
-            Position position(bullet["x"].d(), bullet["y"].d());
-            Direction direction(bullet["directionX"].d(), bullet["directionY"].d());
-
-            std::ofstream logFile("client_log.txt", std::ios::app);
-                float bulletX = bullet["x"].d();
-                float bulletY = bullet["y"].d();
-                float directionX = bullet["directionX"].d();
-                float directionY = bullet["directionY"].d();
-                logFile << "Bullet received at position: (" << bulletX << ", " << bulletY
-                    << ") with direction: (" << directionX << ", " << directionY << ")" << std::endl;
-
-
-            bulletsCoordinates.push_back({ position, direction });
-        }
+        int id = player["id"].i();
 
         if (id == playerId) {
             playerPosition.setX(x);
             playerPosition.setY(y);
             health = player["hp"].i();
-            static int healthDamage = 1;  //TODO remove this ,temporary just for testing
-            health -= healthDamage++; //TODO remove this ,temporary just for testing
         }
-        else
-        {
+        else {
             playersCoordinates.push_back({ x, y });
         }
-    }
 
-    // Update map
-    if (jsonResponse.has("arena") && jsonResponse["arena"].has("map")) {
-        map.clear();
-        for (const auto& row : jsonResponse["arena"]["map"]) {
-            std::vector<int> mapRow;
-            for (const auto& tile : row) {
-                mapRow.push_back(tile.i()); // Convert JSON tile to integer
-            }
-            map.push_back(std::move(mapRow));
+        auto bulletsStart = std::chrono::high_resolution_clock::now();
+        for (const auto& bullet : player["weapon"]["bullets"]) {
+            Position position(bullet["x"].d(), bullet["y"].d());
+            Direction direction(bullet["directionX"].d(), bullet["directionY"].d());
+            bulletsCoordinates.push_back({ position, direction });
         }
+        auto bulletsEnd = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> bulletsDuration = bulletsEnd - bulletsStart;
+
+        std::ofstream logFile("client_log.txt", std::ios::app);
+        logFile << "Bullet processing took " << bulletsDuration.count() << " seconds for player " << id << "." << std::endl;
     }
 
+    auto playerUpdateEnd = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> playerUpdateDuration = playerUpdateEnd - playerUpdateStart;
+
+    std::ofstream logFile("client_log.txt", std::ios::app);
+    logFile << "Player updates took " << playerUpdateDuration.count() << " seconds." << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> totalDuration = end - start;
+    logFile << "Total updateGameState time: " << totalDuration.count() << " seconds." << std::endl;
 }
+
 
 void GameWindow::updatePlayerDirection() {
     if (playerInput.m_direction.x() != 0 || playerInput.m_direction.y() != 0) {
@@ -105,6 +177,7 @@ void GameWindow::updatePlayerDirection() {
     }
 }
 void GameWindow::sendPlayerInputToServer() {
+
     // Player Movement
     std::string payload = R"({"playerId":)" + std::to_string(playerId) +
         R"(,"gameId":)" + std::to_string(gameId) +
@@ -152,7 +225,11 @@ void GameWindow::sendPlayerInputToServer() {
 }
 
 
+//TODO change the paintEvent to actually draw the map,this is just for testing. Also it needs to be more efficient as it takes 0.07s
 void GameWindow::paintEvent(QPaintEvent* event) {
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     Q_UNUSED(event);
 
     QPainter painter(this);
@@ -233,4 +310,12 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     //painter.setPen(Qt::black);
     //painter.setFont(QFont("Arial", 16));
     //painter.drawText(10, 40, QString("FPS: %1").arg(currentFPS));
+
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::ofstream logFile("client_log.txt", std::ios::app);
+    logFile << "paintEvent took " << duration.count() << " seconds." << std::endl;
 }
+

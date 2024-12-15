@@ -106,7 +106,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
 
 Tile& Arena::GetTile(int line, int col)
 {
-    return Instance().m_mapa[line][col];
+    return this->m_mapa[line][col];
 }
 
 std::pair<int, int> Arena::GetSpawn()

@@ -8,7 +8,7 @@ GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance)
 	hitLocation /= SQUARE_SIZE;
 	hitLocation.x = std::floor(hitLocation.x);
 	hitLocation.y = std::floor(hitLocation.y);
-	GameObject* gameTile = &Arena::GetTile(hitLocation.y, hitLocation.x);
+	GameObject* gameTile = &m_arena->GetTile(hitLocation.y, hitLocation.x);
 	return gameTile;
 	
 }

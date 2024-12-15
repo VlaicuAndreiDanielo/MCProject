@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "Player.h"
 #include "Arena.h"
-
+#include "Raycast.h"
 enum class GameStatus {
     NotStarted,
     InProgress,
@@ -43,7 +43,7 @@ private:
     std::unordered_map<int, Player> players;
     Arena arena;
     GameStatus gameStatus;
-
+    Cast raycast;
     void UpdateBullets(float deltaTime);
     void CheckGameOver();
     crow::json::wvalue GameStatusToJson() const;

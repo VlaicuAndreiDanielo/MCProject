@@ -8,7 +8,7 @@ void GameState::AddPlayer(int playerId) {
     if (players.find(playerId) != players.end()) {
         throw std::runtime_error("Player ID already exists");
     }
-   
+    raycast.m_arena = &arena;
     players[playerId] = InitializePlayer(playerId);
 }
 
@@ -23,7 +23,7 @@ Player* GameState::GetPlayer(int playerId) {
 
 Player GameState::InitializePlayer(int playerId)
 {
-    return Player(Arena::Instance().GetSpawn().first * SQUARE_SIZE + SQUARE_SIZE / 2, Arena::Instance().GetSpawn().second * SQUARE_SIZE + SQUARE_SIZE / 2, playerId);
+    return Player(arena.GetSpawn().first * SQUARE_SIZE + SQUARE_SIZE / 2, arena.GetSpawn().second * SQUARE_SIZE + SQUARE_SIZE / 2, playerId);
 
 }
 
@@ -32,8 +32,11 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
     if (!player) {
         return; // Player not found
     }
-
-    player->UpdatePosition(movement);
+    if (GameObject* hit = raycast.Raycast(player->GetPosition(), movement, 15); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+        if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall) {
+            player->UpdatePosition(movement);
+        }
+    }
     player->UpdateRotation(lookDirection);
 }
 

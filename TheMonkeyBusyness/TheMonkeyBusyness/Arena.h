@@ -27,15 +27,17 @@ public:
 
     Arena(int dim = 100, int numSpawn = 1);
 
-    //Forcing Singleton pattern, that means that only 1 arena can ever exist during runtime
-    Arena(const Arena&) = delete;
-    Arena& operator=(const Arena&) = delete;
+    //no need for a singleton now
 
-    // Static function to get the single instance of Arena
-    static Arena& Instance() {
-        static Arena instance; // The single instance
-        return instance;
-    }
+    ////Forcing Singleton pattern, that means that only 1 arena can ever exist during runtime
+    //Arena(const Arena&) = delete;
+    //Arena& operator=(const Arena&) = delete;
+
+    //// Static function to get the single instance of Arena
+    //static Arena& Instance() {
+    //    static Arena instance; // The single instance
+    //    return instance;
+    //}
 
 
 
@@ -54,7 +56,7 @@ public:
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
     //void draw(QPainter& painter)const;
 
-    static Tile& GetTile(int line, int col);
+    Tile& GetTile(int line, int col);
     std::pair<int, int> GetSpawn();
     void triggerExplosion(int x, int y);
 

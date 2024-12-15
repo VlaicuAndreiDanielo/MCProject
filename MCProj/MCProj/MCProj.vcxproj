@@ -187,6 +187,7 @@
     <QtMoc Include="LogInForm.h" />
     <ClInclude Include="Orangutan.h" />
     <QtMoc Include="SignInForm.h" />
+    <QtMoc Include="PlayWindow.h" />
     <ClInclude Include="UserDatabase.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
@@ -218,6 +219,7 @@
     </ClCompile>
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Orangutan.cpp" />
+    <ClCompile Include="PlayWindow.cpp" />
     <ClCompile Include="SignInForm.cpp" />
     <ClCompile Include="UserDatabase.cpp" />
     <ClCompile Include="User.cpp" />

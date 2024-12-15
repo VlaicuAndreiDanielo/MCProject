@@ -1,4 +1,5 @@
 ﻿#include "LoginForm.h"
+#include "PlayWindow.h"
 
 
 LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
@@ -92,4 +93,10 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
     layout->addWidget(m_backButton, 0, Qt::AlignCenter);
 
     connect(m_backButton, &QPushButton::clicked, this, &LoginForm::backRequested); // Emit semnalul backRequested
+    connect(m_submitButton, &QPushButton::clicked, [=]() {
+        // Deschide fereastra fullscreen cu buton Play
+        PlayWindow* playWindow = new PlayWindow();
+        playWindow->show();
+        close(); // Închide fereastra Login
+        });
 }

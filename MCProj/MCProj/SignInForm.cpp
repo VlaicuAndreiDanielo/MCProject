@@ -1,4 +1,5 @@
 ﻿#include "SignInForm.h"
+#include "PlayWindow.h"
 
 
 SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
@@ -101,4 +102,10 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
     layout->addWidget(m_backButton, 0, Qt::AlignCenter);
 
     connect(m_backButton, &QPushButton::clicked, this, &SignInForm::backRequested); // Emit semnalul backRequested
+    connect(m_submitButton, &QPushButton::clicked, [=]() {
+        // Deschide fereastra fullscreen cu buton Play
+        PlayWindow* playWindow = new PlayWindow();
+        playWindow->show();
+        close(); // Închide fereastra Sign In
+        });
 }

@@ -9,83 +9,59 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Header Files\LogIn and SingIn">
       <UniqueIdentifier>{dbfd4317-3e1f-425b-99be-9ba654fa31db}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\LogIn and SingIn">
       <UniqueIdentifier>{02e77373-95d4-4aa2-bc10-5502c5816458}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Monkeys">
+      <UniqueIdentifier>{9ada6f49-bb6d-4186-a652-fb0bdd7eb856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Monkeys">
+      <UniqueIdentifier>{93ff62f4-3d94-4e1a-9d70-a13a9117d10f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataBase">
+      <UniqueIdentifier>{fabb440a-34ec-4242-9a9d-b79c522974df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\DataBase">
+      <UniqueIdentifier>{17e6358f-24af-48ae-812a-38d88917a218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Orangutan.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gorilla.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HowlerMonkey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CapuchinMonkey.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Monkeys</Filter>
     </ClInclude>
     <ClInclude Include="AnubisBaboon.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Monkeys</Filter>
     </ClInclude>
     <ClInclude Include="BasicMonkey.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="CapuchinMonkey.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="Gorilla.h">
+      <Filter>Header Files\Monkeys</Filter>
+    </ClInclude>
+    <ClInclude Include="Orangutan.h">
+      <Filter>Header Files\Monkeys</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataBase</Filter>
     </ClInclude>
     <ClInclude Include="UserDatabase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Orangutan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Gorilla.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HowlerMonkey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CapuchinMonkey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnubisBaboon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicMonkey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainForTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UserDatabase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainForDatabase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -94,6 +70,45 @@
     </ClCompile>
     <ClCompile Include="SignInForm.cpp">
       <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="AnubisBaboon.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="CapuchinMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="Gorilla.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="HowlerMonkey.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="Orangutan.cpp">
+      <Filter>Source Files\Monkeys</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayWindow.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="mainForDatabase.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UserDatabase.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainForTests.cpp">
+      <Filter>Source Files\Monkeys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +119,9 @@
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
     <QtMoc Include="LogInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="PlayWindow.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
   </ItemGroup>

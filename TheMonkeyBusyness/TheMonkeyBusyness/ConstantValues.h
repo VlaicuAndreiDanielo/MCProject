@@ -22,4 +22,10 @@ namespace PlayerConfig
     constexpr int kDefaultPlayeId = -1;
 }
 
+namespace GameConfig
+{
+    constexpr int kMinLobbyPlayers = 1;  //TEMPORARY FOR DEBUGGING, LET THE GAME START WITH 1 PLAYER NOW. CHANGE TO 2 PLAYERS WHEN WORKING
+    constexpr int kMaxLobbyPlayers = 4;
+}
+
 #endif // CONSTANTS_H

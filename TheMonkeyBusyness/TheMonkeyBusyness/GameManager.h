@@ -10,19 +10,15 @@ public:
     ~GameManager();
 
     // Game lifecycle
-    int CreateGame();
-    void DeleteGame(int gameId);
-
-    // Player management
-    bool AddPlayerToGame(int gameId, int playerId);
-    void RemovePlayerFromGame(int gameId, int playerId);
+    int createGameFromLobby(int lobbyId); // Creates a game from a lobby
+    void deleteGame(int gameId);
 
     // Update loop
-    bool StartGameLoop(int gameId);
-    void StopGameLoop(int gameId);
+    bool startGameLoop(int gameId);
+    void stopGameLoop(int gameId);
 
     // Access game state
-    GameState* GetGameState(int gameId);
+    GameState* getGameState(int gameId);
 
 private:
     std::unordered_map<int, GameState*> games; // Map of gameId to GameState pointers
@@ -30,5 +26,5 @@ private:
     std::unordered_map<int, bool> runningGames; // Map of gameId to running state
     std::mutex gameMutex; // Protect access to game maps
 
-    void GameLoop(int gameId);
+    void gameLoop(int gameId);
 };

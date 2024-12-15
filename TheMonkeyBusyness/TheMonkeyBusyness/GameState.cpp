@@ -33,7 +33,7 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
         return; // Player not found
     }
     if (GameObject* hit = raycast.Raycast(player->GetPosition(), movement, 15); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
-        if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall) {
+        if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
             player->UpdatePosition(movement);
         }
     }
@@ -67,13 +67,14 @@ void GameState::UpdateBullets(float deltaTime) {
         for (size_t i = 0; i < bullets.size();) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
-
-            // TODO: Add collision detection logic and register map changes if bullets hit walls
-            if (/* collision condition */ false) {
-                player.m_weapon.deactivateBullet(i);
-            }
-            else {
-                ++i;
+            
+            if (GameObject* hit = raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), 5); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+                if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
+                    ++i;
+                }
+                else {
+                    player.m_weapon.deactivateBullet(i);
+                }
             }
         }
     }

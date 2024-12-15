@@ -112,18 +112,16 @@ crow::json::wvalue Player::toJson() const
 //	m_direction.Normalize();
 //	return m_direction;
 //}
+// ^ that was needed
 
 Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 {
-	// Calculate direction vector from player's position to mouse position
-	Vector2 direction = mousePos - m_position;
-
-	// Normalize the direction vector to make it a unit vector
-	direction.Normalize();
-
-	// Set player's direction and return it
-	m_direction = direction;
-	return m_direction;
+	int mouseOffsetX = mousePos.x - (800 / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+		int mouseOffsetY = mousePos.y - (600 / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+		m_direction.x = mouseOffsetX - m_position.x;
+		m_direction.y = mouseOffsetY - m_position.y;
+		m_direction.Normalize();
+		return m_direction;
 }
 
 

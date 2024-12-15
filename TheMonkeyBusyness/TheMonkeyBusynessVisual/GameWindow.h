@@ -11,7 +11,7 @@ constexpr int SQUARE_SIZE = 40;
 constexpr int kPlayerSize = 30;
 
 class GameWindow : public QWidget {
-    Q_OBJECT
+    
 public:
     explicit GameWindow(Player& player, QWidget* parent = nullptr);
 

@@ -178,11 +178,16 @@ void GameWindow::paintEvent(QPaintEvent* event) {
         for (int j = 0; j < map[i].size(); ++j) {
             QRect square(j * SQUARE_SIZE, i * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
             switch (map[i][j]) {
-            case 0: painter.fillRect(square, Qt::white); break;  // Empty
-            case 1: painter.fillRect(square, Qt::green); break;  // Spawn
-            case 2: painter.fillRect(square, Qt::darkGray); break;  // Indestructible Wall
-            case 3: painter.fillRect(square, Qt::red); break;  // Destructible Wall
-            default: painter.fillRect(square, Qt::black); break;  // Unknown
+            case 0: painter.fillRect(square, Qt::green); break;  // Empty
+            case 1: painter.fillRect(square, Qt::black); break;  // Spawn
+            case 2: painter.fillRect(square, Qt::darkRed); break;  // Indestructible Wall
+            case 3: painter.fillRect(square, Qt::yellow); break;  // Destructible Wall
+            case 4: painter.fillRect(square, Qt::blue); break;  // Water
+            case 5: painter.fillRect(square, Qt::darkGreen); break;  // Grass
+            case 6: painter.fillRect(square, Qt::red); break;  // Lava
+            case 7: painter.fillRect(square, Qt::darkMagenta); break;  // Teleporter
+            case 8: painter.fillRect(square, Qt::darkYellow); break;  // Teleporter
+            default: painter.fillRect(square, Qt::black); break;  // FakeDestructibleWall
             }
             painter.drawRect(square);
         }

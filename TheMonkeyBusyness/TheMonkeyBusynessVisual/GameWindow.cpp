@@ -147,7 +147,22 @@ void GameWindow::sendInputToServer() {
     }
 }
 
+float CalculateAngle(const Direction direction) {
+    float angleInRadians = atan2(direction.second, direction.first);
 
+    // Convert radians to degrees
+    float angleInDegrees = (float)(angleInRadians * (180.0f / M_PI));
+
+    // Adjust the angle: since (0, -1) is 0 degrees, we need to shift by 90 degrees
+    angleInDegrees = fmod(angleInDegrees + 90.0f, 360.0f);
+
+    // If angle is negative, make it positive
+    if (angleInDegrees < 0) {
+        angleInDegrees += 360.0f;
+    }
+
+    return angleInDegrees;
+}
 
 void GameWindow::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
@@ -172,22 +187,25 @@ void GameWindow::paintEvent(QPaintEvent* event) {
             painter.drawRect(square);
         }
     }
-
+    painter.save();
     // Draw the local player
     QRect playerRect(
-        player.getPosition().first - kPlayerSize / 2,
-        player.getPosition().second - kPlayerSize / 2,
+        - kPlayerSize / 2,
+        - kPlayerSize / 2,
         kPlayerSize, kPlayerSize
     );
+    painter.translate(player.getPosition().first, player.getPosition().second);
+    painter.rotate(CalculateAngle(player.getDirection()));
     painter.setBrush(Qt::cyan);
-    painter.drawEllipse(playerRect);
-
+    painter.drawRect(playerRect);
+    
+    painter.restore();
     // Draw other players
     painter.setBrush(Qt::green);
     for (const auto& [position, direction] : playersCoordinates) {
         int x = position.first - player.getPosition().first + (width() / 2);
         int y = position.second - player.getPosition().second + (height() / 2);
-        painter.drawEllipse(QRect(x - kPlayerSize / 2, y - kPlayerSize / 2, kPlayerSize, kPlayerSize));
+        painter.drawRect(QRect(x - kPlayerSize / 2, y - kPlayerSize / 2, kPlayerSize, kPlayerSize));
     }
 
     // Draw bullets

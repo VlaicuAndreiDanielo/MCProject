@@ -94,13 +94,14 @@ crow::json::wvalue Player::toJson() const
 	playerJson["id"] = m_id;
 	playerJson["x"] = m_position.x;
 	playerJson["y"] = m_position.y;
+	playerJson["directionX"] = m_direction.x;
+	playerJson["directionY"] = m_direction.y;
 	playerJson["hp"] = m_Character->GetHealth();
 
 	playerJson["weapon"] = m_weapon.toJson();
 
 	return playerJson;
 }
-
 
 //Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 //{

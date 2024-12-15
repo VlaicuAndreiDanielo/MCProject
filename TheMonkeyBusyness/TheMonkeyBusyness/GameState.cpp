@@ -27,14 +27,14 @@ Player GameState::InitializePlayer(int playerId)
 
 }
 
-void GameState::ProcessMove(int playerId, const Vector2& movement) {
+void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
     }
-    if (movement != Vector2(0, 0)) {
-        player->UpdatePosition(movement);
-    }
+
+    player->UpdatePosition(movement);
+    player->UpdateRotation(lookDirection);
 }
 
 void GameState::ProcessShoot(int playerId, const Vector2& mousePosition) {

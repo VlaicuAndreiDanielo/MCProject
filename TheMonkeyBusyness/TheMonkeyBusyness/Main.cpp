@@ -77,27 +77,35 @@ int main() {
         });
 
     CROW_ROUTE(app, "/player_move").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
-
-        auto start = std::chrono::high_resolution_clock::now(); //for logging
+        auto start = std::chrono::high_resolution_clock::now(); // For logging
 
         auto json = crow::json::load(req.body);
 
-        if (!json || !json.has("playerId") || !json.has("gameId") || !json.has("deltaX") || !json.has("deltaY")) {
+        // Validate request
+        if (!json || !json.has("playerId") || !json.has("gameId") ||
+            !json.has("deltaX") || !json.has("deltaY") ||
+            !json.has("mouseX") || !json.has("mouseY")) {
             return crow::response(400, "Invalid request");
         }
 
+        // Extract data from the request
         int playerId = json["playerId"].i();
         int gameId = json["gameId"].i();
         float deltaX = json["deltaX"].d();
         float deltaY = json["deltaY"].d();
+        float mouseX = json["mouseX"].d();
+        float mouseY = json["mouseY"].d();
 
+        // Get the game state
         auto* gameState = gameManager.GetGameState(gameId);
         if (!gameState) {
             return crow::response(404, "Game not found");
         }
 
-        gameState->ProcessMove(playerId, Vector2(deltaX, deltaY));
+        // Process movement and direction updates
+        gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY));
 
+        // Log the processing duration
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
 
@@ -106,6 +114,7 @@ int main() {
 
         return crow::response(200, "Movement registered");
         });
+
 
 
     // Player shooting

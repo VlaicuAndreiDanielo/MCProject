@@ -18,7 +18,6 @@ GameWindow::GameWindow(int playerId, int gameId, const std::string& serverUrl, Q
     timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, [this]() {
         fetchGameState();
-        //updatePlayerDirection();
         sendPlayerInputToServer();
         update();
         });
@@ -132,24 +131,27 @@ void GameWindow::updateGameState(const crow::json::rvalue& jsonResponse) {
     bulletsCoordinates.clear();
 
     for (const auto& player : jsonResponse["players"]) {
-        float x = player["x"].d();
-        float y = player["y"].d();
+        Position position = { player["x"].d(), player["y"].d() };
+        Direction direction = { player["directionX"].d(), player["directionY"].d() };
         int id = player["id"].i();
 
         if (id == playerId) {
-            playerPosition.setX(x);
-            playerPosition.setY(y);
+            // Update local player's position and direction
+            playerPosition = position;
+            playerDirection = direction;
             health = player["hp"].i();
         }
         else {
-            playersCoordinates.push_back({ x, y });
+            // Update other players' positions and directions
+            playersCoordinates.push_back({ position, direction });
         }
 
+        // Process bullets for this player
         auto bulletsStart = std::chrono::high_resolution_clock::now();
         for (const auto& bullet : player["weapon"]["bullets"]) {
-            Position position(bullet["x"].d(), bullet["y"].d());
-            Direction direction(bullet["directionX"].d(), bullet["directionY"].d());
-            bulletsCoordinates.push_back({ position, direction });
+            Position bulletPosition = { bullet["x"].d(), bullet["y"].d() };
+            Direction bulletDirection = { bullet["directionX"].d(), bullet["directionY"].d() };
+            bulletsCoordinates.push_back({ bulletPosition, bulletDirection });
         }
         auto bulletsEnd = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> bulletsDuration = bulletsEnd - bulletsStart;
@@ -172,22 +174,27 @@ void GameWindow::updateGameState(const crow::json::rvalue& jsonResponse) {
 
 void GameWindow::updatePlayerDirection() {
     if (playerInput.m_direction.x() != 0 || playerInput.m_direction.y() != 0) {
-        playerPosition.setX(playerPosition.x() + playerInput.m_direction.x() * 5);
-        playerPosition.setY(playerPosition.y() + playerInput.m_direction.y() * 5);
+        playerPosition.first += playerInput.m_direction.x() * 5;
+        playerPosition.second += playerInput.m_direction.y() * 5;
     }
 }
-void GameWindow::sendPlayerInputToServer() {
 
-    // Player Movement
-    std::string payload = R"({"playerId":)" + std::to_string(playerId) +
-        R"(,"gameId":)" + std::to_string(gameId) +
-        R"(,"deltaX":)" + std::to_string(playerInput.m_direction.x()) +
-        R"(,"deltaY":)" + std::to_string(playerInput.m_direction.y()) + "}";
+
+void GameWindow::sendPlayerInputToServer() {
+    // Player Movement Payload
+    std::string payload = R"({
+        "playerId":)" + std::to_string(playerId) + R"(,
+        "gameId":)" + std::to_string(gameId) + R"(,
+        "deltaX":)" + std::to_string(playerInput.m_direction.x()) + R"(,
+        "deltaY":)" + std::to_string(playerInput.m_direction.y()) + R"(,
+        "mouseX":)" + std::to_string(playerInput.m_mousePosition.x()) + R"(,
+        "mouseY":)" + std::to_string(playerInput.m_mousePosition.y()) + R"(})";
 
     // Log the payload
     std::ofstream logFile("client_log.txt", std::ios::app);
     logFile << "Sending payload to server: " << payload << std::endl;
 
+    // Send the movement payload
     cpr::Response moveResponse = cpr::Post(
         cpr::Url{ serverUrl + "/player_move" },
         cpr::Header{ {"Content-Type", "application/json"} },
@@ -202,13 +209,14 @@ void GameWindow::sendPlayerInputToServer() {
         logFile << "Movement failed. Payload: " << payload << std::endl;
     }
 
+    // Handle Shooting
     if (playerInput.is_shooting) {
-        // Construct the request body with the mouse position
+        // Shooting payload (already includes mouse position)
         std::string payload = R"({
-        "playerId":)" + std::to_string(playerId) + R"(,
-        "gameId":)" + std::to_string(gameId) + R"(,
-        "mouseX":)" + std::to_string(playerInput.m_mousePosition.x()) + R"(,
-        "mouseY":)" + std::to_string(playerInput.m_mousePosition.y()) + R"(})";
+            "playerId":)" + std::to_string(playerId) + R"(,
+            "gameId":)" + std::to_string(gameId) + R"(,
+            "mouseX":)" + std::to_string(playerInput.m_mousePosition.x()) + R"(,
+            "mouseY":)" + std::to_string(playerInput.m_mousePosition.y()) + R"(})";
 
         // Send the request
         cpr::Response shootResponse = cpr::Post(
@@ -217,17 +225,14 @@ void GameWindow::sendPlayerInputToServer() {
             cpr::Body{ payload }
         );
 
-        // Log the request and response for debugging
-        std::ofstream logFile("client_log.txt", std::ios::app);
+        // Log the request and response
         logFile << "Shooting payload: " << payload << std::endl;
-        logFile << "Server response: " << shootResponse.status_code << " - " << shootResponse.text << std::endl;
+        logFile << "Server response: " << shootResponse.status_code
+            << " - " << shootResponse.text << std::endl;
     }
 }
 
-
-//TODO change the paintEvent to actually draw the map,this is just for testing. Also it needs to be more efficient as it takes 0.07s
 void GameWindow::paintEvent(QPaintEvent* event) {
-
     auto start = std::chrono::high_resolution_clock::now();
 
     Q_UNUSED(event);
@@ -236,7 +241,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     painter.setRenderHint(QPainter::Antialiasing);
 
     // Center the viewport on the player
-    QPointF playerOffset(width() / 2.0 - playerPosition.x(), height() / 2.0 - playerPosition.y());
+    QPointF playerOffset(width() / 2.0 - playerPosition.first, height() / 2.0 - playerPosition.second);
     painter.translate(playerOffset);
 
     // Draw the map
@@ -260,8 +265,8 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
     // Draw the player
     QRect playerRect(
-        playerPosition.x() - kPlayerSize / 2,
-        playerPosition.y() - kPlayerSize / 2,
+        playerPosition.first - kPlayerSize / 2,
+        playerPosition.second - kPlayerSize / 2,
         kPlayerSize, kPlayerSize
     );
     painter.setBrush(Qt::cyan); // Player color
@@ -269,9 +274,9 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
     // Draw other players
     painter.setBrush(Qt::green);
-    for (const auto& position : playersCoordinates) {
-        int x = position.first - playerPosition.x() + (width() / 2);
-        int y = position.second - playerPosition.y() + (height() / 2);
+    for (const auto& [position, direction] : playersCoordinates) {
+        int x = position.first - playerPosition.first + (width() / 2);
+        int y = position.second - playerPosition.second + (height() / 2);
         painter.drawEllipse(QRect(x - kPlayerSize / 2, y - kPlayerSize / 2, kPlayerSize, kPlayerSize));
     }
 
@@ -285,37 +290,10 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     // Reset painter transformations for UI elements
     painter.resetTransform();
 
-    //// Draw health bar
-    //QRect healthBar(10, 10, 200, 20); // Health bar position and size
-    //painter.setBrush(Qt::red);
-    //painter.drawRect(healthBar);
-
-    //QRect healthFill(10, 10, (health / 100.0) * 200, 20); // Fill proportional to health
-    //painter.setBrush(Qt::green);
-    //painter.drawRect(healthFill);
-
-    //// Draw health text
-    //painter.setPen(Qt::black);
-    //painter.drawText(healthBar, Qt::AlignCenter, QString("Health: %1").arg(health));
-
-    //// Draw FPS
-    //frameCount += 10;
-
-    //if (fpsTimer.elapsed() >= 1000) { // 1000 ms = 1 second
-    //    currentFPS = frameCount;
-    //    frameCount = 0;
-    //    fpsTimer.restart();
-    //}
-
-    //painter.setPen(Qt::black);
-    //painter.setFont(QFont("Arial", 16));
-    //painter.drawText(10, 40, QString("FPS: %1").arg(currentFPS));
-
-
+    // Log performance
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
 
     std::ofstream logFile("client_log.txt", std::ios::app);
     logFile << "paintEvent took " << duration.count() << " seconds." << std::endl;
 }
-

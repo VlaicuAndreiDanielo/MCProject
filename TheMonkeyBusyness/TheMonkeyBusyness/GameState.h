@@ -31,7 +31,7 @@ public:
     Player InitializePlayer(int playerId);
 
     // Updates
-    void ProcessMove(int playerId, const Vector2& movement);
+    void ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection);
     void ProcessShoot(int playerId, const Vector2& mousePosition);
     void UpdateGame(float deltaTime);
 

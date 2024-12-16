@@ -22,7 +22,7 @@ int main() {
         }
 
         int hostId = json["hostId"].i();
-        int lobbyId = lobbyManager.createLobby(hostId); // Fixed method call
+        int lobbyId = lobbyManager.createLobby(hostId);
 
         crow::json::wvalue response;
         response["lobbyId"] = lobbyId;

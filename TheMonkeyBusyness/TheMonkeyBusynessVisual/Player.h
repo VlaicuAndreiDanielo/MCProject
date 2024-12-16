@@ -17,17 +17,20 @@ public:
     // Lobby-related methods
     int createLobby();
     bool joinLobby(int lobbyId);
-    bool leaveLobby(int lobbyId);
-    bool setReady(int lobbyId, bool isReady);
+    bool leaveLobby();
+    bool setReady();
     crow::json::wvalue getActiveLobbies();
-    crow::json::wvalue getLobbyDetails(int lobbyId);
+    crow::json::wvalue getLobbyDetails();
 
     // Game-related methods
-    int startGame(int lobbyId);
+    int startGame();
 
     // Accessors
     int getId() const;
     int getGameId() const;
+    int getLobbyId() const;
+    bool getIsReady() const;
+    bool getIsHost() const;
     std::string getName() const;
     Position getPosition() const;
     Direction getDirection() const;
@@ -35,6 +38,8 @@ public:
 
     // Mutators
     void setGameId(int id);
+    void setLobbyId(int lobbyId);
+    void setHost(bool hostStatus);
     void setName(const std::string& playerName);
     void setPosition(const Position& position);
     void setDirection(const Direction& direction);
@@ -43,6 +48,9 @@ public:
 private:
     int id;                            // Player's unique ID
     int gameId;                        // The game ID the player is participating in
+    int lobbyId;                       // The lobby ID the player is in
+    bool isReady;                      // If player in the lobby is ready to start the game or not
+    bool isHost;                       // If the player is the host of the lobby
     std::string name;                  // Player's name
     std::string serverUrl;             // Server URL for requests
     Position position;                 // Player's current position

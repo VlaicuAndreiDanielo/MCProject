@@ -22,18 +22,16 @@ int main(int argc, char* argv[]) {
     std::cout << "Lobby created. Lobby ID: " << lobbyId << std::endl;
 
     // Set readiness and fetch lobby details
-    player.setReady(lobbyId, true);
-    auto lobbyDetails = player.getLobbyDetails(lobbyId);
+    player.setReady();
+    auto lobbyDetails = player.getLobbyDetails();
     std::cout << "Lobby Details: " << lobbyDetails.dump() << std::endl;
 
     // Start the game and get the gameId
-    int gameId = player.startGame(lobbyId);  // Start the game and get gameId
+    int gameId = player.startGame();  // Start the game and get gameId
     if (gameId == -1) {
         std::cerr << "Error: Failed to start the game." << std::endl;
         return -1;
     }
-
-    player.setGameId(gameId);  // Assign the gameId to the player
 
     // Start the game window
     GameWindow gameWindow(player);

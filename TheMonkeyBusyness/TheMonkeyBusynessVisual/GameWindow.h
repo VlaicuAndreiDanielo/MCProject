@@ -7,9 +7,6 @@
 #include "Player.h"
 #include "InputHandler.h"
 
-constexpr int SQUARE_SIZE = 40;
-constexpr int kPlayerSize = 30;
-
 class GameWindow : public QWidget { 
     
 public:

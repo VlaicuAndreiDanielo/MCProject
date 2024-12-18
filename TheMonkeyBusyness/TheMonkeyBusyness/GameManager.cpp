@@ -95,7 +95,7 @@ GameState* GameManager::GetGameState(int gameId) {
 }
 
 void GameManager::GameLoop(int gameId) {
-    const std::chrono::milliseconds frameDuration(16); // ~60 FPS (16 ms per frame)
+    const std::chrono::milliseconds frameDuration(GameConfig::kFrameDurationMs); // ~60 FPS (16 ms per frame)
     auto previousTime = std::chrono::high_resolution_clock::now();
 
     while (m_runningGames[gameId]) {

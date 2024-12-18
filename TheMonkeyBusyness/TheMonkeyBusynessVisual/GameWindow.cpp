@@ -12,7 +12,7 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
 
     this->installEventFilter(&m_playerInput); // Install InputHandler as the event filter
 
-    resize(800, 600); // Adjust dimensions as needed
+    resize(RenderConfig::kWindowWidth, RenderConfig::kWindowHeight);
 
     m_timer = new QTimer(this);
     QObject::connect(m_timer, &QTimer::timeout, [this]() {
@@ -21,7 +21,7 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
         update();  // Trigger repaint
         });
 
-    m_timer->start(64); // ~60 FPS
+    m_timer->start(TimingConfig::kGameLoopIntervalMs);
 }
 
 
@@ -157,7 +157,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     // Draw the map
     for (int i = 0; i < m_map.size(); ++i) {
         for (int j = 0; j < m_map[i].size(); ++j) {
-            QRect square(j * SQUARE_SIZE, i * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+            QRect square(j * RenderConfig::kTileSize, i * RenderConfig::kTileSize, RenderConfig::kTileSize, RenderConfig::kTileSize);
             switch (m_map[i][j]) {
             case 0: painter.fillRect(square, Qt::green); break;  // Empty
             case 1: painter.fillRect(square, Qt::black); break;  // Spawn
@@ -176,10 +176,11 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     painter.save();
     // Draw the local player
     QRect playerRect(
-        - kPlayerSize / 2,
-        - kPlayerSize / 2,
-        kPlayerSize, kPlayerSize
+        -RenderConfig::kPlayerSize / 2,
+        -RenderConfig::kPlayerSize / 2,
+        RenderConfig::kPlayerSize, RenderConfig::kPlayerSize
     );
+
     painter.translate(m_player.GetPosition().first, m_player.GetPosition().second);
     painter.rotate(CalculateAngle(m_player.GetDirection()));
     painter.setBrush(Qt::cyan);
@@ -191,13 +192,13 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     for (const auto& [position, direction] : m_playersCoordinates) {
         int x = position.first - m_player.GetPosition().first + (width() / 2);
         int y = position.second - m_player.GetPosition().second + (height() / 2);
-        painter.drawRect(QRect(x - kPlayerSize / 2, y - kPlayerSize / 2, kPlayerSize, kPlayerSize));
+        painter.drawRect(QRect(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize));
     }
 
     // Draw bullets
     painter.setBrush(Qt::red);
     for (const auto& [position, direction] : m_bulletsCoordinates) {
-        QRect bulletRect(position.first - 5, position.second - 5, 10, 10); // Center bullets
+        QRect bulletRect(position.first - RenderConfig::kBulletSize / 2, position.second - RenderConfig::kBulletSize / 2, RenderConfig::kBulletSize, RenderConfig::kBulletSize);
         painter.drawEllipse(bulletRect);
     }
 }

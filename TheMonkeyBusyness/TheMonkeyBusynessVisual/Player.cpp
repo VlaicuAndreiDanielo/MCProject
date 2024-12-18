@@ -4,15 +4,15 @@
 
 Player::Player(int id, const std::string& serverUrl)
     : m_id{ id },
-    m_gameId{ -1 },            // Default to -1 to indicate no game
-    m_lobbyId{ -1 },           // Default to -1 to indicate no lobby
+    m_gameId{ PlayerConfig::kNoGameId },
+    m_lobbyId{ PlayerConfig::kNoLobbyId },
     m_isReady{ false },        // Default to not ready
-    m_isHost{ false },          // Default to not host
+    m_isHost{ false },         // Default to not host
     m_name{ "" },              // Empty name by default
     m_serverUrl{ serverUrl },  // Initialize with provided server URL
-    m_position{ 0.0f, 0.0f },  // Default position at (0, 0)
-    m_direction{ 0.0f, 0.0f }, // Default direction at (0, 0)
-    m_health{ 100 }            // Default health value
+    m_position{ PlayerConfig::kDefaultPositionX, PlayerConfig::kDefaultPositionY },
+    m_direction{ PlayerConfig::kDefaultDirectionX, PlayerConfig::kDefaultDirectionY },
+    m_health{ PlayerConfig::kDefaultHealth }
 {}
 
 // Static method to log in

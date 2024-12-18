@@ -23,7 +23,7 @@ Player* GameState::GetPlayer(int playerId) {
 
 Player GameState::InitializePlayer(int playerId)
 {
-    return Player(m_arena.GetSpawn().first * SQUARE_SIZE + SQUARE_SIZE / 2, m_arena.GetSpawn().second * SQUARE_SIZE + SQUARE_SIZE / 2, playerId);
+    return Player(m_arena.GetSpawn().first * GameConfig::kTileSize + GameConfig::kTileSize / 2, m_arena.GetSpawn().second * GameConfig::kTileSize + GameConfig::kTileSize / 2, playerId);
 
 }
 
@@ -32,7 +32,7 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
     if (!player) {
         return; // Player not found
     }
-    if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, 15); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+    if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
             player->UpdatePosition(movement);
         }
@@ -68,7 +68,7 @@ void GameState::UpdateBullets(float deltaTime) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
             
-            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), 5); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
                 if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
                     ++i;
                 }

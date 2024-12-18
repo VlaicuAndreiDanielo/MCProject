@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player(float x, float y, int id) : m_id{ PlayerConfig::kDefaultPlayeId } //sets spawn of the player 
+Player::Player(float x, float y, int id) : m_id{ PlayerConfig::kDefaultPlayerId } //sets spawn of the player 
 {
 	m_Character = new BasicMonkey();
 	m_position.x = x;
@@ -105,8 +105,8 @@ crow::json::wvalue Player::ToJson() const
 
 Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 {
-	int mouseOffsetX = mousePos.x - (800 / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
-		int mouseOffsetY = mousePos.y - (600 / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+	int mouseOffsetX = mousePos.x - (GameConfig::kScreenWidth / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+		int mouseOffsetY = mousePos.y - (GameConfig::kScreenHeight / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
 		m_direction.x = mouseOffsetX - m_position.x;
 		m_direction.y = mouseOffsetY - m_position.y;
 		m_direction.Normalize();
@@ -116,8 +116,8 @@ Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 
 Vector2 Player::CalculateBulletSpawnPosition() const
 {
-	float offsetX = cos((m_rotationAngle - 90) * PI / 180.0f) * (kPlayerSize / 2.0f);
-	float offsetY = sin((m_rotationAngle - 90) * PI / 180.0f) * (kPlayerSize / 2.0f);
+	float offsetX = cos((m_rotationAngle - GameConfig::kDefaultRotationOffset) * MathConfig::kPi / 180.0f) * (PlayerConfig::kPlayerSize / 2.0f);
+	float offsetY = sin((m_rotationAngle - GameConfig::kDefaultRotationOffset) * MathConfig::kPi / 180.0f) * (PlayerConfig::kPlayerSize / 2.0f);
 
 	return m_position + Vector2{ offsetX, offsetY };
 }

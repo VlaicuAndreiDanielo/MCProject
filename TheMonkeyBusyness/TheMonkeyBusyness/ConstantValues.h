@@ -1,31 +1,39 @@
-#ifndef CONSTANTS_H  // Include guard to prevent double inclusion
-#define CONSTANTS_H
+#pragma once
 
-constexpr int SQUARE_SIZE = 40;
-constexpr int kPlayerSize = 30;
-constexpr float PI = 3.1415;
+// Math Constants
+namespace MathConfig {
+    constexpr float kPi = 3.14159265358979323846f;
+}
 
-namespace WeaponConfig
-{
-    constexpr float kBasicSpeed = 25;
+// Player Configuration
+namespace PlayerConfig {
+    constexpr int kDefaultPlayerId = -1;    // Default ID when uninitialized
+    constexpr int kPlayerSize = 30;         // Size of the player
+    constexpr float kDefaultPositionX = 0.0f;
+    constexpr float kDefaultPositionY = 0.0f;
+}
+
+// Weapon Configuration
+namespace WeaponConfig {
+    constexpr float kBasicSpeed = 25.0f;
     constexpr int kBasicDamage = 10;
-    constexpr float kBasicFireRate = 1;  //fire rate of 1 means 1 shot every 1s. Fire rate of 0.1 means 10 shots every 1s
-    constexpr float kMaxBasicBullets = 100;
+    constexpr float kBasicFireRate = 1.0f;  //fire rate of 1 means 1 shot every 1s. Fire rate of 0.1 means 10 shots every 1s
+    constexpr int kMaxBasicBullets = 100;
 
-    constexpr float kSpeedPowerupIncreasePercent = 100;
-    constexpr float kDamagePowerupIncreasePercent = 100;
-
+    constexpr float kSpeedPowerupIncreasePercent = 100.0f; // Percent increase
+    constexpr float kDamagePowerupIncreasePercent = 100.0f; // Percent increase
 }
 
-namespace PlayerConfig
-{
-    constexpr int kDefaultPlayeId = -1;
-}
-
-namespace GameConfig
-{
-    constexpr int kMinLobbyPlayers = 1;  //TEMPORARY FOR DEBUGGING, LET THE GAME START WITH 1 PLAYER NOW. CHANGE TO 2 PLAYERS WHEN WORKING
+// Game Configuration
+namespace GameConfig {
+    constexpr int kMinLobbyPlayers = 1;      //TEMPORARY FOR DEBUGGING, LET THE GAME START WITH 1 PLAYER NOW. CHANGE TO 2 PLAYERS WHEN WORKING
     constexpr int kMaxLobbyPlayers = 4;
-}
+    constexpr int kFrameDurationMs = 16;     // ~60 FPS
+    constexpr int kRaycastRange = 15;
+    constexpr int kBulletRaycastRange = 5;
 
-#endif // CONSTANTS_H
+    constexpr int kScreenWidth = 800;        // Default screen width
+    constexpr int kScreenHeight = 600;       // Default screen height
+    constexpr int kTileSize = 40;          // Size of a single grid tile
+    constexpr float kDefaultRotationOffset = 90.0f; // Offset for rotation calculations
+}

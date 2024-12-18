@@ -8,17 +8,10 @@ Weapon::Weapon(float damage, float fireRate, float speed)
 }
 
 void Weapon::Shoot(const Vector2& position, const Vector2& direction) {
-	std::ofstream logFile("server_log.txt", std::ios::app);
-
-	logFile << "Weapon::Shoot called with Position=(" << position.x << ", " << position.y
-		<< "), Direction=(" << direction.x << ", " << direction.y << ")" << std::endl;
-	logFile << "Current cooldown: " << m_timeSinceLastShot << ", Fire rate: " << m_fireRate << std::endl;
 
 	if (m_timeSinceLastShot >= m_fireRate) {
 		if (!m_inactiveBullets.empty()) {
 			// Bullet activation logic
-			logFile << "Activating bullet: Position=(" << position.x << ", " << position.y
-				<< "), Direction=(" << direction.x << ", " << direction.y << ")" << std::endl;
 
 			m_inactiveBullets.back().SetPosition(position);
 			m_inactiveBullets.back().SetDirection(direction);
@@ -26,21 +19,10 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction) {
 			m_inactiveBullets.pop_back();
 			m_timeSinceLastShot = 0.0f;
 
-			logFile << "Bullet added to m_activeBullets. Total active bullets: " << m_activeBullets.size() << std::endl;
 
-			if (hasActivePowerup()) {
-				logFile << "Activating powerup for bullet at Position=("
-					<< m_activeBullets.back().GetPosition().x << ", "
-					<< m_activeBullets.back().GetPosition().y << ")" << std::endl;
+			if (hasActivePowerup())
 				activateBulletPowerup(m_activeBullets.back());
-			}
 		}
-		else {
-			logFile << "Weapon cannot shoot: No inactive bullets available." << std::endl;
-		}
-	}
-	else {
-		logFile << "Weapon cannot shoot: Fire rate cooldown active." << std::endl;
 	}
 }
 
@@ -49,13 +31,6 @@ void Weapon::Shoot(const Vector2& position, const Vector2& direction) {
 void Weapon::Update(float deltaTime)
 {
     m_timeSinceLastShot += deltaTime;
-
-    // Open log file and append new log entries for debugging purposes
-    std::ofstream logFile("server_log.txt", std::ios::app);
-    logFile << "[" << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << "] ";
-    logFile << "Weapon::Update - deltaTime: " << deltaTime 
-            << ", Accumulated timeSinceLastShot: " << m_timeSinceLastShot << std::endl;
-
     updatePowerupsTimeLeft(deltaTime);
 }
 

@@ -1,10 +1,7 @@
 #include "Vector2.h"
 #include <cmath>
 #include <stdexcept>
-
-#ifndef M_PI
-#define M_PI 3.14159
-#endif
+#include "ConstantValues.h"
 
 Vector2::Vector2(float x, float y) : x(x), y(y)
 {}
@@ -92,10 +89,10 @@ float Vector2::GetAngleFromNormalizedVector() const
 	float angleInRadians = atan2(this->y, this->x);
 
 	// Convert radians to degrees
-	float angleInDegrees = (float)(angleInRadians * (180.0f / M_PI));
+	float angleInDegrees = (float)(angleInRadians * (180.0f / MathConfig::kPi));
 
 	// Adjust the angle: since (0, -1) is 0 degrees, we need to shift by 90 degrees
-	angleInDegrees = fmod(angleInDegrees + 90.0f, 360.0f);
+	angleInDegrees = fmod(angleInDegrees + GameConfig::kDefaultRotationOffset, 360.0f);
 
 	// If angle is negative, make it positive
 	if (angleInDegrees < 0) {

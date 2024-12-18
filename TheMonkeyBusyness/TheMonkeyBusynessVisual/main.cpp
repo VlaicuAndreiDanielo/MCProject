@@ -19,17 +19,14 @@ int main(int argc, char* argv[]) {
     int lobbyId = player.CreateLobby();
     if (lobbyId == -1) return -1;
 
-    std::cout << "Lobby created. Lobby ID: " << lobbyId << std::endl;
 
     // Set readiness and fetch lobby details
     player.SetReady();
     auto lobbyDetails = player.GetLobbyDetails();
-    std::cout << "Lobby Details: " << lobbyDetails.dump() << std::endl;
 
     // Start the game and get the gameId
     int gameId = player.StartGame();  // Start the game and get gameId
     if (gameId == -1) {
-        std::cerr << "Error: Failed to start the game." << std::endl;
         return -1;
     }
 

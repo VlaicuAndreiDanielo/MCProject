@@ -11,7 +11,7 @@ class Player {
 public:
     Player(int id, const std::string& serverUrl);
 
-    // Static methods for login and game creation
+    // Static method for logging in
     static int LogIn(const std::string& serverUrl, const std::string& username, const std::string& password);
 
     // Lobby-related methods

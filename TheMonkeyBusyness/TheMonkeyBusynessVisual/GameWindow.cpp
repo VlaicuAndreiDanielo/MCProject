@@ -37,12 +37,6 @@ void GameWindow::FetchArena() {
             LoadArena(jsonResponse);
             update(); // Trigger paint event
         }
-        else {
-            std::cerr << "Error: Arena map not found in response." << std::endl;
-        }
-    }
-    else {
-        std::cerr << "Error: Server responded with code " << response.status_code << std::endl;
     }
 }
 
@@ -68,12 +62,6 @@ void GameWindow::FetchGameState() {
         if (jsonResponse) {
             UpdateGameState(jsonResponse);
         }
-        else {
-            std::cerr << "Error: Failed to parse game state JSON." << std::endl;
-        }
-    }
-    else {
-        std::cerr << "Error: Server responded with code " << response.status_code << std::endl;
     }
 }
 
@@ -123,10 +111,6 @@ void GameWindow::SendInputToServer() {
         cpr::Body{ payload }
     );
 
-    if (response.status_code != 200) {
-        std::cerr << "Error: Failed to send movement. Response: " << response.text << std::endl;
-    }
-
     // Shooting payload
     if (m_playerInput.is_shooting) {
         std::string shootPayload = R"({
@@ -141,9 +125,6 @@ void GameWindow::SendInputToServer() {
             cpr::Body{ shootPayload }
         );
 
-        if (shootResponse.status_code != 200) {
-            std::cerr << "Error: Failed to send shoot input. Response: " << shootResponse.text << std::endl;
-        }
     }
 }
 

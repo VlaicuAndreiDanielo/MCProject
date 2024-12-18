@@ -26,5 +26,5 @@ private:
     std::unordered_map<int, bool> m_runningGames; // Map of gameId to running state
     std::mutex m_gameMutex; // Protect access to game maps
 
-    void gameLoop(int gameId);
+    void GameLoop(int gameId);
 };

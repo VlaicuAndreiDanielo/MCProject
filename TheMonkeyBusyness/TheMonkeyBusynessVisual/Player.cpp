@@ -25,7 +25,6 @@ int Player::LogIn(const std::string& serverUrl, const std::string& username, con
 
     auto jsonResponse = crow::json::load(response.text);
     if (!jsonResponse || !jsonResponse.has("playerId")) {
-        std::cerr << "Error: Login failed. Response: " << response.text << std::endl;
         return -1;
     }
 
@@ -76,7 +75,6 @@ bool Player::LeaveLobby() {
         return true;
     }
 
-    std::cerr << "Error: Failed to leave lobby. Response: " << response.text << std::endl;
     return false;
 }
 
@@ -98,7 +96,6 @@ bool Player::SetReady() {
         return true; // Successfully updated ready state
     }
     else {
-        std::cerr << "Failed to set ready. Server response: " << response.text << std::endl;
         // Roll back the toggle on failure
         m_isReady = !m_isReady;
         return false;
@@ -109,7 +106,6 @@ bool Player::SetReady() {
 crow::json::wvalue Player::GetActiveLobbies() {
     cpr::Response response = cpr::Get(cpr::Url{ m_serverUrl + "/get_active_lobbies" });
     if (response.status_code != 200) {
-        std::cerr << "Error: Failed to fetch active lobbies. Response: " << response.text << std::endl;
         return {};
     }
     return crow::json::load(response.text);
@@ -126,7 +122,6 @@ crow::json::wvalue Player::GetLobbyDetails() {
         return crow::json::load(response.text);
     }
 
-    std::cerr << "Error: Failed to fetch lobby details. Response: " << response.text << std::endl;
     return {};
 }
 
@@ -147,12 +142,10 @@ int Player::StartGame() {
             return m_gameId;
         }
         else {
-            std::cerr << "Error: No gameId received in response: " << response.text << std::endl;
             return -1; // Indicate failure
         }
     }
     else {
-        std::cerr << "Error: Failed to start game. Server response: " << response.text << std::endl;
         return -1; // Indicate failure
     }
 }

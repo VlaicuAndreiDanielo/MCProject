@@ -223,8 +223,6 @@ int main() {
     // Returns the state of the game serialized. Everything the client needs to know from the server while in the game. Things like player's health, coordinates and direction, bullet coordinates and direction, map changes.
     CROW_ROUTE(app, "/game_state").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
 
-        auto start = std::chrono::high_resolution_clock::now();
-
         auto gameIdStr = req.url_params.get("gameId");
         if (!gameIdStr) {
             return crow::response(400, "Missing gameId");
@@ -236,18 +234,7 @@ int main() {
             return crow::response(404, "Game not found");
         }
 
-        auto jsonStart = std::chrono::high_resolution_clock::now();
         auto jsonResponse = gameState->ToJson();
-        auto jsonEnd = std::chrono::high_resolution_clock::now();
-
-        auto end = std::chrono::high_resolution_clock::now();
-        std::ofstream logFile("server_log.txt", std::ios::app);
-        logFile << "Processed /game_state in "
-            << std::chrono::duration<double>(end - start).count()
-            << " seconds." << std::endl;
-        logFile << "JSON serialization took "
-            << std::chrono::duration<double>(jsonEnd - jsonStart).count()
-            << " seconds." << std::endl;
 
         return crow::response(jsonResponse.dump());
         });
@@ -270,8 +257,6 @@ int main() {
         });
 
     CROW_ROUTE(app, "/player_move").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
-        auto start = std::chrono::high_resolution_clock::now(); // For logging
-
         auto json = crow::json::load(req.body);
 
         if (!json || !json.has("playerId") || !json.has("gameId") ||
@@ -294,17 +279,10 @@ int main() {
 
         gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY));
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
-
-        std::ofstream logFile("server_log.txt", std::ios::app);
-        logFile << "Processed /player_move in " << duration.count() << " seconds." << std::endl;
-
         return crow::response(200, "Movement registered");
         });
 
     CROW_ROUTE(app, "/shoot_weapon").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
-        auto start = std::chrono::high_resolution_clock::now(); // For logging
 
         auto json = crow::json::load(req.body);
 
@@ -323,12 +301,6 @@ int main() {
         }
 
         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
-
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
-
-        std::ofstream logFile("server_log.txt", std::ios::app);
-        logFile << "Processed /shoot_weapon in " << duration.count() << " seconds." << std::endl;
 
         return crow::response(200, "Shooting registered");
         });

@@ -106,10 +106,6 @@ bool GameState::IsGameOver() const {
 }
 
 crow::json::wvalue GameState::ToJson() const {
-
-
-    auto start = std::chrono::high_resolution_clock::now(); //for logging
-
     crow::json::wvalue gameStateJson;
 
     // Serialize players
@@ -122,12 +118,6 @@ crow::json::wvalue GameState::ToJson() const {
 
     // Serialize game status
     gameStateJson["gameStatus"] = static_cast<int>(m_gameStatus);
-
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::ofstream logFile("server_log.txt", std::ios::app);
-    logFile << "Processed GameState::toJson which is called in every game_state in " << duration.count() << " seconds." << std::endl;
 
     return gameStateJson;
 }

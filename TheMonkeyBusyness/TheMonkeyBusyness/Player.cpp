@@ -55,13 +55,6 @@ void Player::Shoot(const Vector2& mousePosition)
 	Vector2 bulletSpawnPosition = CalculateBulletSpawnPosition();
 	Vector2 shootDirection = CalculateLookAtDirection(mousePosition);
 
-	// Log player position, bullet position, and direction
-	std::ofstream logFile("server_log.txt", std::ios::app);
-	logFile << "Player " << m_id << " shooting:\n"
-		<< "  Player Position: (" << m_position.x << ", " << m_position.y << ")\n"
-		<< "  Bullet Spawn Position: (" << bulletSpawnPosition.x << ", " << bulletSpawnPosition.y << ")\n"
-		<< "  Bullet Direction: (" << shootDirection.x << ", " << shootDirection.y << ")\n";
-
 	// Shoot logic (e.g., add bullet to game state)
 	m_weapon.Shoot(bulletSpawnPosition, shootDirection);
 }
@@ -70,10 +63,6 @@ void Player::Shoot(const Vector2& mousePosition)
 void Player::Update(float deltaTime)
 {
 	// handles updating the timers on the powerup cooldowns
-
-	std::ofstream logFile("server_log.txt", std::ios::app);
-	logFile << "Player " << m_id << " Update called with deltaTime=" << deltaTime << std::endl;
-
 	m_weapon.Update(deltaTime);
 }
 

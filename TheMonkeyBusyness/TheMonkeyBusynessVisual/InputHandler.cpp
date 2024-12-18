@@ -49,8 +49,6 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint mousePoint = mouseEvent->pos();
         m_mousePosition = mousePoint;
-        /*std::cout << mousePosition;
-        std::cout << std::endl;*/
     }
     if (event->type() == QEvent::MouseButtonPress) {
         is_shooting = true;

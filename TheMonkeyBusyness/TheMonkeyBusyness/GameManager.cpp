@@ -62,7 +62,7 @@ bool GameManager::StartGameLoop(int gameId) {
     m_runningGames[gameId] = true;
 
     try {
-        m_gameThreads[gameId] = std::thread(&GameManager::gameLoop, this, gameId);
+        m_gameThreads[gameId] = std::thread(&GameManager::GameLoop, this, gameId);
         return true;  // Successfully started the game loop
     }
     catch (const std::exception& e) {
@@ -94,7 +94,7 @@ GameState* GameManager::GetGameState(int gameId) {
     return nullptr;
 }
 
-void GameManager::gameLoop(int gameId) {
+void GameManager::GameLoop(int gameId) {
     const std::chrono::milliseconds frameDuration(16); // ~60 FPS (16 ms per frame)
     auto previousTime = std::chrono::high_resolution_clock::now();
 

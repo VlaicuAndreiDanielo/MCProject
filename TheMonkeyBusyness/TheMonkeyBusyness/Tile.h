@@ -27,7 +27,7 @@ public:
     int getHP() const;
     void takeDamage(int damage); // Decrease HP
 
-    crow::json::wvalue toJson() const;
+    crow::json::wvalue ToJson() const;
 private:
     void updateProperties(); // Automatically adjust properties based on tile type
 };

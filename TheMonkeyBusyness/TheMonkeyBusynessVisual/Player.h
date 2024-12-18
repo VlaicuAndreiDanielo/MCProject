@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <utility> // for std::pair
+#include <utility>
 #include <cpr/cpr.h>
 #include <crow/json.h>
 
@@ -12,48 +12,48 @@ public:
     Player(int id, const std::string& serverUrl);
 
     // Static methods for login and game creation
-    static int logIn(const std::string& serverUrl, const std::string& username, const std::string& password);
+    static int LogIn(const std::string& serverUrl, const std::string& username, const std::string& password);
 
     // Lobby-related methods
-    int createLobby();
-    bool joinLobby(int lobbyId);
-    bool leaveLobby();
-    bool setReady();
-    crow::json::wvalue getActiveLobbies();
-    crow::json::wvalue getLobbyDetails();
+    int CreateLobby();
+    bool JoinLobby(int lobbyId);
+    bool LeaveLobby();
+    bool SetReady();
+    crow::json::wvalue GetActiveLobbies();
+    crow::json::wvalue GetLobbyDetails();
 
     // Game-related methods
-    int startGame();
+    int StartGame();
 
     // Accessors
-    int getId() const;
-    int getGameId() const;
-    int getLobbyId() const;
-    bool getIsReady() const;
-    bool getIsHost() const;
-    std::string getName() const;
-    Position getPosition() const;
-    Direction getDirection() const;
-    const std::string& getServerUrl() const;
+    int GetId() const;
+    int GetGameId() const;
+    int GetLobbyId() const;
+    bool GetIsReady() const;
+    bool GetIsHost() const;
+    std::string GetName() const;
+    Position GetPosition() const;
+    Direction GetDirection() const;
+    const std::string& GetServerUrl() const;
 
     // Mutators
-    void setGameId(int id);
-    void setLobbyId(int lobbyId);
-    void setHost(bool hostStatus);
-    void setName(const std::string& playerName);
-    void setPosition(const Position& position);
-    void setDirection(const Direction& direction);
-    void setHealth(int health);
+    void SetGameId(int id);
+    void SetLobbyId(int lobbyId);
+    void SetHost(bool hostStatus);
+    void SetName(const std::string& playerName);
+    void SetPosition(const Position& position);
+    void SetDirection(const Direction& direction);
+    void SetHealth(int health);
 
 private:
-    int id;                            // Player's unique ID
-    int gameId;                        // The game ID the player is participating in
-    int lobbyId;                       // The lobby ID the player is in
-    bool isReady;                      // If player in the lobby is ready to start the game or not
-    bool isHost;                       // If the player is the host of the lobby
-    std::string name;                  // Player's name
-    std::string serverUrl;             // Server URL for requests
-    Position position;                 // Player's current position
-    Direction direction;               // Player's current direction
-    int health;                        // Player's health
+    int m_id;                            // Player's unique ID
+    int m_gameId;                        // The game ID the player is participating in
+    int m_lobbyId;                       // The lobby ID the player is in
+    bool m_isReady;                      // If player in the lobby is ready to start the game or not
+    bool m_isHost;                       // If the player is the host of the lobby
+    std::string m_name;                  // Player's name
+    std::string m_serverUrl;             // Server URL for requests
+    Position m_position;                 // Player's current position
+    Direction m_direction;               // Player's current direction
+    int m_health;                        // Player's health
 };

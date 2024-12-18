@@ -29,7 +29,7 @@ public:
 
 	void SetScreenSize(const int screenWidth, const int screenHeight);
 
-	crow::json::wvalue toJson() const;
+	crow::json::wvalue ToJson() const;
 private:
 	int m_id;
 	Character* m_Character;

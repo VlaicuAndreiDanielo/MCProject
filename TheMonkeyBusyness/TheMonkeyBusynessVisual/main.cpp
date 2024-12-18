@@ -10,24 +10,24 @@ int main(int argc, char* argv[]) {
     std::string username = "mario";
     std::string password = "mario";
 
-    int playerId = Player::logIn(serverUrl, username, password);
+    int playerId = Player::LogIn(serverUrl, username, password);
     if (playerId == -1) return -1;
 
     Player player(playerId, serverUrl);
 
     // Create or join lobby
-    int lobbyId = player.createLobby();
+    int lobbyId = player.CreateLobby();
     if (lobbyId == -1) return -1;
 
     std::cout << "Lobby created. Lobby ID: " << lobbyId << std::endl;
 
     // Set readiness and fetch lobby details
-    player.setReady();
-    auto lobbyDetails = player.getLobbyDetails();
+    player.SetReady();
+    auto lobbyDetails = player.GetLobbyDetails();
     std::cout << "Lobby Details: " << lobbyDetails.dump() << std::endl;
 
     // Start the game and get the gameId
-    int gameId = player.startGame();  // Start the game and get gameId
+    int gameId = player.StartGame();  // Start the game and get gameId
     if (gameId == -1) {
         std::cerr << "Error: Failed to start the game." << std::endl;
         return -1;

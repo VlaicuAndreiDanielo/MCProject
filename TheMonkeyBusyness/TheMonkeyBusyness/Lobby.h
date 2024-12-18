@@ -14,26 +14,26 @@ public:
     explicit Lobby(int lobbyId, int hostId);
 
     // Player Management
-    bool addPlayer(int playerId);
-    bool removePlayer(int playerId);
-    void setReady(int playerId, bool isReady);
-    bool isAllReady() const;
+    bool AddPlayer(int playerId);
+    bool RemovePlayer(int playerId);
+    void SetReady(int playerId, bool isReady);
+    bool IsAllReady() const;
 
     // Game Management
-    bool startGame(int& gameId); // Returns a game ID if successful
-    void resetLobby();
-    bool hasMinimumPlayers() const;    // Helper to check if there are enough players
+    bool StartGame(int& gameId); // Returns a game ID if successful
+    void ResetLobby();
+    bool HasMinimumPlayers() const;    // Helper to check if there are enough players
 
     // Accessors
-    int getLobbyId() const;
-    int getHostId() const;
-    LobbyStatus getStatus() const;
-    std::unordered_map<int, bool> getPlayers() const;
+    int GetLobbyId() const;
+    int GetHostId() const;
+    LobbyStatus GetStatus() const;
+    std::unordered_map<int, bool> GetPlayers() const;
 
 private:
-    int lobbyId;                       // Unique identifier for the lobby
-    int hostId;                        // Player ID of the host
-    LobbyStatus status;                // Current status of the lobby
-    std::unordered_map<int, bool> players; // Players and their ready status
+    int m_lobbyId;                       // Unique identifier for the lobby
+    int m_hostId;                        // Player ID of the host
+    LobbyStatus m_status;                // Current status of the lobby
+    std::unordered_map<int, bool> m_players; // Players and their ready status
 
 };

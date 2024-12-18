@@ -27,7 +27,7 @@ void Bullet::Update(float deltaTime)
 	m_position.y += m_direction.y * m_speed * deltaTime;
 }
 
-crow::json::wvalue Bullet::toJson() const
+crow::json::wvalue Bullet::ToJson() const
 {
 	crow::json::wvalue bulletJson;
 	bulletJson["x"] = m_position.x;

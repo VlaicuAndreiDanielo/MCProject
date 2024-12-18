@@ -3,20 +3,20 @@
 #include <fstream>
 
 Player::Player(int id, const std::string& serverUrl)
-    : id{ id },
-    gameId{ -1 },            // Default to -1 to indicate no game
-    lobbyId{ -1 },           // Default to -1 to indicate no lobby
-    isReady{ false },        // Default to not ready
-    isHost{ false },          // Default to not host
-    name{ "" },              // Empty name by default
-    serverUrl{ serverUrl },  // Initialize with provided server URL
-    position{ 0.0f, 0.0f },  // Default position at (0, 0)
-    direction{ 0.0f, 0.0f }, // Default direction at (0, 0)
-    health{ 100 }            // Default health value
+    : m_id{ id },
+    m_gameId{ -1 },            // Default to -1 to indicate no game
+    m_lobbyId{ -1 },           // Default to -1 to indicate no lobby
+    m_isReady{ false },        // Default to not ready
+    m_isHost{ false },          // Default to not host
+    m_name{ "" },              // Empty name by default
+    m_serverUrl{ serverUrl },  // Initialize with provided server URL
+    m_position{ 0.0f, 0.0f },  // Default position at (0, 0)
+    m_direction{ 0.0f, 0.0f }, // Default direction at (0, 0)
+    m_health{ 100 }            // Default health value
 {}
 
 // Static method to log in
-int Player::logIn(const std::string& serverUrl, const std::string& username, const std::string& password) {
+int Player::LogIn(const std::string& serverUrl, const std::string& username, const std::string& password) {
     cpr::Response response = cpr::Post(
         cpr::Url{ serverUrl + "/login" },
         cpr::Header{ {"Content-Type", "application/json"} },
@@ -33,19 +33,19 @@ int Player::logIn(const std::string& serverUrl, const std::string& username, con
 }
 
 // Lobby-related methods
-int Player::createLobby() {
+int Player::CreateLobby() {
     cpr::Response response = cpr::Post(
-        cpr::Url{ serverUrl + "/create_lobby" },
+        cpr::Url{ m_serverUrl + "/create_lobby" },
         cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ R"({"hostId":)" + std::to_string(id) + R"(})" }
+        cpr::Body{ R"({"hostId":)" + std::to_string(m_id) + R"(})" }
     );
 
     if (response.status_code == 200) {
         auto jsonResponse = crow::json::load(response.text);
         if (jsonResponse && jsonResponse.has("lobbyId")) {
-            lobbyId = jsonResponse["lobbyId"].i();
-            setHost(true);
-            return lobbyId;
+            m_lobbyId = jsonResponse["lobbyId"].i();
+            SetHost(true);
+            return m_lobbyId;
         }
     }
     return -1;
@@ -53,26 +53,26 @@ int Player::createLobby() {
 
 
 
-bool Player::joinLobby(int lobbyId) {
+bool Player::JoinLobby(int lobbyId) {
     cpr::Response response = cpr::Post(
-        cpr::Url{ serverUrl + "/join_lobby" },
+        cpr::Url{ m_serverUrl + "/join_lobby" },
         cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ R"({"lobbyId":)" + std::to_string(lobbyId) + R"(,"playerId":)" + std::to_string(id) + R"(})" }
+        cpr::Body{ R"({"lobbyId":)" + std::to_string(lobbyId) + R"(,"playerId":)" + std::to_string(m_id) + R"(})" }
     );
 
     return response.status_code == 200;
 }
 
-bool Player::leaveLobby() {
+bool Player::LeaveLobby() {
     cpr::Response response = cpr::Post(
-        cpr::Url{ serverUrl + "/leave_lobby" },
+        cpr::Url{ m_serverUrl + "/leave_lobby" },
         cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ R"({"lobbyId":)" + std::to_string(lobbyId) + R"(,"playerId":)" + std::to_string(id) + R"(})" }
+        cpr::Body{ R"({"lobbyId":)" + std::to_string(m_lobbyId) + R"(,"playerId":)" + std::to_string(m_id) + R"(})" }
     );
 
     if (response.status_code == 200) {
-        lobbyId = -1;       // Reset lobbyId
-        setHost(false);     
+        m_lobbyId = -1;       // Reset lobbyId
+        SetHost(false);     
         return true;
     }
 
@@ -82,16 +82,16 @@ bool Player::leaveLobby() {
 
 
 
-bool Player::setReady() {
-    isReady = !isReady; // Toggle ready state
+bool Player::SetReady() {
+    m_isReady = !m_isReady; // Toggle ready state
 
     // Send the ready state to the server
     cpr::Response response = cpr::Post(
-        cpr::Url{ serverUrl + "/set_ready" },
+        cpr::Url{ m_serverUrl + "/set_ready" },
         cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ R"({"lobbyId":)" + std::to_string(lobbyId) +
-                    R"(,"playerId":)" + std::to_string(id) +
-                    R"(,"isReady":)" + (isReady ? "true" : "false") + R"(})" }
+        cpr::Body{ R"({"lobbyId":)" + std::to_string(m_lobbyId) +
+                    R"(,"playerId":)" + std::to_string(m_id) +
+                    R"(,"isReady":)" + (m_isReady ? "true" : "false") + R"(})" }
     );
 
     if (response.status_code == 200) {
@@ -100,14 +100,14 @@ bool Player::setReady() {
     else {
         std::cerr << "Failed to set ready. Server response: " << response.text << std::endl;
         // Roll back the toggle on failure
-        isReady = !isReady;
+        m_isReady = !m_isReady;
         return false;
     }
 }
 
 
-crow::json::wvalue Player::getActiveLobbies() {
-    cpr::Response response = cpr::Get(cpr::Url{ serverUrl + "/get_active_lobbies" });
+crow::json::wvalue Player::GetActiveLobbies() {
+    cpr::Response response = cpr::Get(cpr::Url{ m_serverUrl + "/get_active_lobbies" });
     if (response.status_code != 200) {
         std::cerr << "Error: Failed to fetch active lobbies. Response: " << response.text << std::endl;
         return {};
@@ -116,10 +116,10 @@ crow::json::wvalue Player::getActiveLobbies() {
 }
 
 
-crow::json::wvalue Player::getLobbyDetails() {
+crow::json::wvalue Player::GetLobbyDetails() {
     cpr::Response response = cpr::Get(
-        cpr::Url{ serverUrl + "/get_lobby_details" },
-        cpr::Parameters{ {"lobbyId", std::to_string(lobbyId)} }
+        cpr::Url{ m_serverUrl + "/get_lobby_details" },
+        cpr::Parameters{ {"lobbyId", std::to_string(m_lobbyId)} }
     );
 
     if (response.status_code == 200) {
@@ -132,19 +132,19 @@ crow::json::wvalue Player::getLobbyDetails() {
 
 
 // Game-related methods
-int Player::startGame() {
+int Player::StartGame() {
     cpr::Response response = cpr::Post(
-        cpr::Url{ serverUrl + "/start_game" },
+        cpr::Url{ m_serverUrl + "/start_game" },
         cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ R"({"lobbyId":)" + std::to_string(lobbyId) +
-                    R"(,"playerId":)" + std::to_string(id) + R"(})" }
+        cpr::Body{ R"({"lobbyId":)" + std::to_string(m_lobbyId) +
+                    R"(,"playerId":)" + std::to_string(m_id) + R"(})" }
     );
 
     if (response.status_code == 200) {
         auto jsonResponse = crow::json::load(response.text);
         if (jsonResponse.has("gameId")) {
-            gameId = jsonResponse["gameId"].i(); // Assign the gameId to this player
-            return gameId;
+            m_gameId = jsonResponse["gameId"].i(); // Assign the gameId to this player
+            return m_gameId;
         }
         else {
             std::cerr << "Error: No gameId received in response: " << response.text << std::endl;
@@ -160,20 +160,20 @@ int Player::startGame() {
 
 
 // Accessors and mutators
-int Player::getId() const { return id; }
-int Player::getGameId() const { return gameId; }
-int Player::getLobbyId() const { return lobbyId; }
-bool Player::getIsReady() const { return isReady; }
-bool Player::getIsHost() const { return isHost; }
-std::string Player::getName() const { return name; }
-Position Player::getPosition() const { return position; }
-Direction Player::getDirection() const { return direction; }
-const std::string& Player::getServerUrl() const { return serverUrl; }
+int Player::GetId() const { return m_id; }
+int Player::GetGameId() const { return m_gameId; }
+int Player::GetLobbyId() const { return m_lobbyId; }
+bool Player::GetIsReady() const { return m_isReady; }
+bool Player::GetIsHost() const { return m_isHost; }
+std::string Player::GetName() const { return m_name; }
+Position Player::GetPosition() const { return m_position; }
+Direction Player::GetDirection() const { return m_direction; }
+const std::string& Player::GetServerUrl() const { return m_serverUrl; }
 
-void Player::setGameId(int id) { gameId = id; }
-void Player::setLobbyId(int newLobbyId) { lobbyId = newLobbyId; }
-void Player::setHost(bool hostStatus) { isHost = hostStatus; }
-void Player::setName(const std::string& playerName) { name = playerName; }
-void Player::setPosition(const Position& pos) { position = pos; }
-void Player::setDirection(const Direction& dir) { direction = dir; }
-void Player::setHealth(int hp) { health = hp; }
+void Player::SetGameId(int id) { m_gameId = id; }
+void Player::SetLobbyId(int newLobbyId) { m_lobbyId = newLobbyId; }
+void Player::SetHost(bool hostStatus) { m_isHost = hostStatus; }
+void Player::SetName(const std::string& playerName) { m_name = playerName; }
+void Player::SetPosition(const Position& pos) { m_position = pos; }
+void Player::SetDirection(const Direction& dir) { m_direction = dir; }
+void Player::SetHealth(int hp) { m_health = hp; }

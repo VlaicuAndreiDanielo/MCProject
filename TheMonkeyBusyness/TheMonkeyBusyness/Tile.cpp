@@ -91,7 +91,7 @@ void Tile::updateProperties() {
     }
 }
 
-crow::json::wvalue Tile::toJson() const {
+crow::json::wvalue Tile::ToJson() const {
 	crow::json::wvalue tileJson;
 	tileJson["type"] = static_cast<int>(m_tileType);
 	tileJson["hp"] = m_hp;

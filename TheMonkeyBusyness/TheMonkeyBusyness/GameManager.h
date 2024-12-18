@@ -10,21 +10,21 @@ public:
     ~GameManager();
 
     // Game lifecycle
-    int createGameFromLobby(int lobbyId); // Creates a game from a lobby
+    int CreateGameFromLobby(int lobbyId); // Creates a game from a lobby
     void deleteGame(int gameId);
 
     // Update loop
-    bool startGameLoop(int gameId);
-    void stopGameLoop(int gameId);
+    bool StartGameLoop(int gameId);
+    void StopGameLoop(int gameId);
 
     // Access game state
-    GameState* getGameState(int gameId);
+    GameState* GetGameState(int gameId);
 
 private:
-    std::unordered_map<int, GameState*> games; // Map of gameId to GameState pointers
-    std::unordered_map<int, std::thread> gameThreads; // Map of gameId to threads
-    std::unordered_map<int, bool> runningGames; // Map of gameId to running state
-    std::mutex gameMutex; // Protect access to game maps
+    std::unordered_map<int, GameState*> m_games; // Map of gameId to GameState pointers
+    std::unordered_map<int, std::thread> m_gameThreads; // Map of gameId to threads
+    std::unordered_map<int, bool> m_runningGames; // Map of gameId to running state
+    std::mutex m_gameMutex; // Protect access to game maps
 
     void gameLoop(int gameId);
 };

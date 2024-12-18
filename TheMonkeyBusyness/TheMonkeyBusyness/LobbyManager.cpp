@@ -1,70 +1,70 @@
 #include "LobbyManager.h"
 #include <stdexcept>
 
-LobbyManager::LobbyManager() : nextLobbyId(1) {}
+LobbyManager::LobbyManager() : m_nextLobbyId(1) {}
 
-int LobbyManager::createLobby(int hostId) {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+int LobbyManager::CreateLobby(int hostId) {
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
-    int lobbyId = nextLobbyId++;
-    lobbies.emplace(lobbyId, Lobby(lobbyId, hostId));
+    int lobbyId = m_nextLobbyId++;
+    m_lobbies.emplace(lobbyId, Lobby(lobbyId, hostId));
 
     return lobbyId;
 }
 
 bool LobbyManager::deleteLobby(int lobbyId) {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
-    if (lobbies.find(lobbyId) == lobbies.end()) {
+    if (m_lobbies.find(lobbyId) == m_lobbies.end()) {
         return false; // Lobby doesn't exist
     }
 
-    lobbies.erase(lobbyId);
+    m_lobbies.erase(lobbyId);
     return true;
 }
 
-Lobby* LobbyManager::getLobby(int lobbyId) {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+Lobby* LobbyManager::GetLobby(int lobbyId) {
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
-    auto it = lobbies.find(lobbyId);
-    return it != lobbies.end() ? &it->second : nullptr;
+    auto it = m_lobbies.find(lobbyId);
+    return it != m_lobbies.end() ? &it->second : nullptr;
 }
 
-bool LobbyManager::addPlayerToLobby(int lobbyId, int playerId) {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+bool LobbyManager::AddPlayerToLobby(int lobbyId, int playerId) {
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
-    auto it = lobbies.find(lobbyId);
-    if (it == lobbies.end()) {
+    auto it = m_lobbies.find(lobbyId);
+    if (it == m_lobbies.end()) {
         return false; // Lobby doesn't exist
     }
 
-    return it->second.addPlayer(playerId);
+    return it->second.AddPlayer(playerId);
 }
 
-bool LobbyManager::removePlayerFromLobby(int lobbyId, int playerId) {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+bool LobbyManager::RemovePlayerFromLobby(int lobbyId, int playerId) {
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
-    auto it = lobbies.find(lobbyId);
-    if (it == lobbies.end()) {
+    auto it = m_lobbies.find(lobbyId);
+    if (it == m_lobbies.end()) {
         return false; // Lobby doesn't exist
     }
 
-    it->second.removePlayer(playerId);
+    it->second.RemovePlayer(playerId);
 
     // If the lobby becomes empty, delete it automatically
-    if (it->second.getPlayers().empty()) {
-        lobbies.erase(lobbyId);
+    if (it->second.GetPlayers().empty()) {
+        m_lobbies.erase(lobbyId);
     }
 
     return true;
 }
 
-std::vector<int> LobbyManager::getActiveLobbyIds() const {
-    std::lock_guard<std::mutex> lock(lobbyMutex);
+std::vector<int> LobbyManager::GetActiveLobbyIds() const {
+    std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
     std::vector<int> lobbyIds;
-    for (const auto& [lobbyId, lobby] : lobbies) {
-        if (lobby.getStatus() == LobbyStatus::Waiting) {
+    for (const auto& [lobbyId, lobby] : m_lobbies) {
+        if (lobby.GetStatus() == LobbyStatus::Waiting) {
             lobbyIds.push_back(lobbyId);
         }
     }

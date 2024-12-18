@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Arena.h"
 #include "Raycast.h"
+
 enum class GameStatus {
     NotStarted,
     InProgress,
@@ -36,14 +37,16 @@ public:
     void UpdateGame(float deltaTime);
 
     // Serialization
-    crow::json::wvalue toJson() const;
-    crow::json::wvalue arenaToJson() const;
+    crow::json::wvalue ToJson() const;
+    crow::json::wvalue ArenaToJson() const;
 
 private:
-    std::unordered_map<int, Player> players;
-    Arena arena;
-    GameStatus gameStatus;
-    Cast raycast;
+    std::unordered_map<int, Player> m_players;
+    Arena m_arena;
+    GameStatus m_gameStatus;
+    Cast m_raycast;
+
+private:
     void UpdateBullets(float deltaTime);
     void CheckGameOver();
     crow::json::wvalue GameStatusToJson() const;

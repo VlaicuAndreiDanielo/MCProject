@@ -34,7 +34,7 @@ public:
 	void SetFireRate(float fireRate);
 	void SetSpeed(float speed);
 
-	crow::json::wvalue toJson() const;
+	crow::json::wvalue ToJson() const;
 
 private:
 	// Weapon properties

@@ -8,19 +8,19 @@ public:
     LobbyManager();
 
     // Lobby Management
-    int createLobby(int hostId);
+    int CreateLobby(int hostId);
     bool deleteLobby(int lobbyId);
-    Lobby* getLobby(int lobbyId);
+    Lobby* GetLobby(int lobbyId);
 
     // Player-Lobby Management
-    bool addPlayerToLobby(int lobbyId, int playerId);
-    bool removePlayerFromLobby(int lobbyId, int playerId);
+    bool AddPlayerToLobby(int lobbyId, int playerId);
+    bool RemovePlayerFromLobby(int lobbyId, int playerId);
 
     // Get list of active lobbies
-    std::vector<int> getActiveLobbyIds() const;
+    std::vector<int> GetActiveLobbyIds() const;
 
 private:
-    std::unordered_map<int, Lobby> lobbies; // Map of lobbyId to Lobby objects
-    int nextLobbyId;                        // For generating unique lobby IDs
-    mutable std::mutex lobbyMutex;          // Protect access to lobbies
+    std::unordered_map<int, Lobby> m_lobbies; // Map of lobbyId to Lobby objects
+    int m_nextLobbyId;                        // For generating unique lobby IDs
+    mutable std::mutex m_lobbyMutex;          // Protect access to lobbies
 };

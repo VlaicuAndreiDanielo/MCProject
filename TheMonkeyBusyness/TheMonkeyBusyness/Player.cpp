@@ -88,7 +88,7 @@ void Player::SetScreenSize(const int screenWidth, const int screenHeight)
 	m_screenHeight = screenHeight;
 }
 
-crow::json::wvalue Player::toJson() const
+crow::json::wvalue Player::ToJson() const
 {
 	crow::json::wvalue playerJson;
 	playerJson["id"] = m_id;
@@ -98,7 +98,7 @@ crow::json::wvalue Player::toJson() const
 	playerJson["directionY"] = m_direction.y;
 	playerJson["hp"] = m_Character->GetHealth();
 
-	playerJson["weapon"] = m_weapon.toJson();
+	playerJson["weapon"] = m_weapon.ToJson();
 
 	return playerJson;
 }

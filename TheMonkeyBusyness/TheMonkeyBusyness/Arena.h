@@ -60,5 +60,5 @@ public:
     std::pair<int, int> GetSpawn();
     void triggerExplosion(int x, int y);
 
-    crow::json::wvalue toJson() const;
+    crow::json::wvalue ToJson() const;
 };

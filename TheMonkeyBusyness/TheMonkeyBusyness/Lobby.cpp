@@ -3,41 +3,41 @@
 #include "ConstantValues.h"
 
 Lobby::Lobby(int lobbyId, int hostId)
-    : lobbyId(lobbyId), hostId(hostId), status(LobbyStatus::Waiting) {
-    players[hostId] = false; // Host is initially not ready
+    : m_lobbyId(lobbyId), m_hostId(hostId), m_status(LobbyStatus::Waiting) {
+    m_players[hostId] = false; // Host is initially not ready
 }
 
-bool Lobby::addPlayer(int playerId) {
-    if (status != LobbyStatus::Waiting || players.size() >= GameConfig::kMaxLobbyPlayers) {
+bool Lobby::AddPlayer(int playerId) {
+    if (m_status != LobbyStatus::Waiting || m_players.size() >= GameConfig::kMaxLobbyPlayers) {
         return false; // Lobby is full or already in-game
     }
-    players[playerId] = false;
+    m_players[playerId] = false;
     return true;
 }
 
-bool Lobby::removePlayer(int playerId) {
-    if (players.find(playerId) == players.end()) {
+bool Lobby::RemovePlayer(int playerId) {
+    if (m_players.find(playerId) == m_players.end()) {
         return false; // Player not in lobby
     }
 
-    players.erase(playerId);
+    m_players.erase(playerId);
 
     // If host leaves, assign a new host
-    if (playerId == hostId && !players.empty()) {
-        hostId = players.begin()->first;
+    if (playerId == m_hostId && !m_players.empty()) {
+        m_hostId = m_players.begin()->first;
     }
 
     return true;
 }
 
-void Lobby::setReady(int playerId, bool isReady) {
-    if (players.find(playerId) != players.end()) {
-        players[playerId] = isReady;
+void Lobby::SetReady(int playerId, bool isReady) {
+    if (m_players.find(playerId) != m_players.end()) {
+        m_players[playerId] = isReady;
     }
 }
 
-bool Lobby::isAllReady() const {
-    for (const auto& [playerId, isReady] : players) {
+bool Lobby::IsAllReady() const {
+    for (const auto& [playerId, isReady] : m_players) {
         if (!isReady) {
             return false;
         }
@@ -45,39 +45,39 @@ bool Lobby::isAllReady() const {
     return true;
 }
 
-bool Lobby::startGame(int& gameId) {
-    if (status != LobbyStatus::Waiting || !hasMinimumPlayers() || !isAllReady()) {
+bool Lobby::StartGame(int& gameId) {
+    if (m_status != LobbyStatus::Waiting || !HasMinimumPlayers() || !IsAllReady()) {
         return false; // Can't start game
     }
 
-    status = LobbyStatus::InGame;
-    gameId = lobbyId; // Example: Use lobbyId as gameId for simplicity
+    m_status = LobbyStatus::InGame;
+    gameId = m_lobbyId; // Example: Use lobbyId as gameId for simplicity
     return true;
 }
 
-void Lobby::resetLobby() {
-    status = LobbyStatus::Waiting;
-    for (auto& [playerId, isReady] : players) {
+void Lobby::ResetLobby() {
+    m_status = LobbyStatus::Waiting;
+    for (auto& [playerId, isReady] : m_players) {
         isReady = false;
     }
 }
 
-int Lobby::getLobbyId() const {
-    return lobbyId;
+int Lobby::GetLobbyId() const {
+    return m_lobbyId;
 }
 
-int Lobby::getHostId() const {
-    return hostId;
+int Lobby::GetHostId() const {
+    return m_hostId;
 }
 
-LobbyStatus Lobby::getStatus() const {
-    return status;
+LobbyStatus Lobby::GetStatus() const {
+    return m_status;
 }
 
-std::unordered_map<int, bool> Lobby::getPlayers() const {
-    return players;
+std::unordered_map<int, bool> Lobby::GetPlayers() const {
+    return m_players;
 }
 
-bool Lobby::hasMinimumPlayers() const {
-    return players.size() >= GameConfig::kMinLobbyPlayers;
+bool Lobby::HasMinimumPlayers() const {
+    return m_players.size() >= GameConfig::kMinLobbyPlayers;
 }

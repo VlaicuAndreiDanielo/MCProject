@@ -157,13 +157,13 @@ void Weapon::SetSpeed(float speed) {
 	m_speed = speed;
 }
 
-crow::json::wvalue Weapon::toJson() const {
+crow::json::wvalue Weapon::ToJson() const {
 	crow::json::wvalue weaponJson;
 
 	crow::json::wvalue bulletsJson = crow::json::wvalue::list();
 	size_t bulletIndex = 0;
 	for (const auto& bullet : m_activeBullets) {
-		bulletsJson[bulletIndex++] = bullet.toJson();
+		bulletsJson[bulletIndex++] = bullet.ToJson();
 	}
 	weaponJson["bullets"] = std::move(bulletsJson);
 	//TODO also return time left in powerups so it can be displayed on screen

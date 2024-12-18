@@ -475,7 +475,7 @@ void Arena::triggerExplosion(int x, int y) {
     }
 }
 
-crow::json::wvalue Arena::toJson() const {
+crow::json::wvalue Arena::ToJson() const {
     crow::json::wvalue arenaJson = crow::json::wvalue::list();
 
     for (int i = 0; i < m_dim; i++) {  // Iterate through rows

@@ -18,7 +18,7 @@ public:
 	~Bullet() = default;
 
 	void Update(float deltaTime);
-	crow::json::wvalue toJson() const;
+	crow::json::wvalue ToJson() const;
 
 	Vector2 GetPosition() const;
 	Vector2 GetDirection() const;

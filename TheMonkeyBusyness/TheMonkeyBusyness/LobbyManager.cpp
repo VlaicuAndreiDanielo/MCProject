@@ -1,7 +1,8 @@
 #include "LobbyManager.h"
 #include <stdexcept>
+#include <algorithm>
 
-LobbyManager::LobbyManager() : m_nextLobbyId(1) {}
+LobbyManager::LobbyManager() : m_nextLobbyId(GameConfig::kfirstLobbyId) {}
 
 int LobbyManager::CreateLobby(int hostId) {
     std::lock_guard<std::mutex> lock(m_lobbyMutex);
@@ -12,11 +13,11 @@ int LobbyManager::CreateLobby(int hostId) {
     return lobbyId;
 }
 
-bool LobbyManager::deleteLobby(int lobbyId) {
+bool LobbyManager::DeleteLobby(int lobbyId) {
     std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
     if (m_lobbies.find(lobbyId) == m_lobbies.end()) {
-        return false; // Lobby doesn't exist
+        return false;
     }
 
     m_lobbies.erase(lobbyId);
@@ -35,7 +36,7 @@ bool LobbyManager::AddPlayerToLobby(int lobbyId, int playerId) {
 
     auto it = m_lobbies.find(lobbyId);
     if (it == m_lobbies.end()) {
-        return false; // Lobby doesn't exist
+        return false;
     }
 
     return it->second.AddPlayer(playerId);
@@ -46,7 +47,7 @@ bool LobbyManager::RemovePlayerFromLobby(int lobbyId, int playerId) {
 
     auto it = m_lobbies.find(lobbyId);
     if (it == m_lobbies.end()) {
-        return false; // Lobby doesn't exist
+        return false;
     }
 
     it->second.RemovePlayer(playerId);
@@ -63,11 +64,10 @@ std::vector<int> LobbyManager::GetActiveLobbyIds() const {
     std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
     std::vector<int> lobbyIds;
-    for (const auto& [lobbyId, lobby] : m_lobbies) {
-        if (lobby.GetStatus() == LobbyStatus::Waiting) {
-            lobbyIds.push_back(lobbyId);
-        }
-    }
+    lobbyIds.reserve(m_lobbies.size()); // Reserve space for efficiency
+
+    std::transform(m_lobbies.begin(), m_lobbies.end(), std::back_inserter(lobbyIds),
+        [](const auto& pair) { return pair.first; }); // Extract keys
 
     return lobbyIds;
 }

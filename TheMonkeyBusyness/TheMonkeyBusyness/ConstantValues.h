@@ -1,5 +1,7 @@
 #pragma once
 
+using MapPosition = std::pair<int, int>;
+
 // Math Constants
 namespace MathConfig {
     constexpr float kPi = 3.14159265358979323846f;
@@ -11,6 +13,7 @@ namespace PlayerConfig {
     constexpr int kPlayerSize = 30;         // Size of the player
     constexpr float kDefaultPositionX = 0.0f;
     constexpr float kDefaultPositionY = 0.0f;
+    constexpr const char* kDefaultPlayerName = "Mario";
 }
 
 // Weapon Configuration
@@ -36,4 +39,7 @@ namespace GameConfig {
     constexpr int kScreenHeight = 600;       // Default screen height
     constexpr int kTileSize = 40;          // Size of a single grid tile
     constexpr float kDefaultRotationOffset = 90.0f; // Offset for rotation calculations
+
+    constexpr float kfirstLobbyId = 1;   // Lobby unique IDs start from 1
+    constexpr float kfirstGameId = 1;    // Game bby unique IDs start from 1
 }

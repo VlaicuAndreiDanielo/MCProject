@@ -3,12 +3,6 @@
 #include <string>
 #include <vector>
 
-enum class LobbyStatus {
-    Waiting,
-    InGame,
-    Finished
-};
-
 class Lobby {
 public:
     explicit Lobby(int lobbyId, int hostId);
@@ -20,20 +14,17 @@ public:
     bool IsAllReady() const;
 
     // Game Management
-    bool StartGame(int& gameId); // Returns a game ID if successful
-    void ResetLobby();
-    bool HasMinimumPlayers() const;    // Helper to check if there are enough players
+    bool HasMinimumPlayers() const;
+    bool HasMaximumPlayers() const;
 
     // Accessors
     int GetLobbyId() const;
     int GetHostId() const;
-    LobbyStatus GetStatus() const;
     std::unordered_map<int, bool> GetPlayers() const;
 
 private:
-    int m_lobbyId;                       // Unique identifier for the lobby
-    int m_hostId;                        // Player ID of the host
-    LobbyStatus m_status;                // Current status of the lobby
+    int m_lobbyId;                    
+    int m_hostId;                   
     std::unordered_map<int, bool> m_players; // Players and their ready status
 
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "Lobby.h"
+#include "ConstantValues.h"
 #include <unordered_map>
 #include <mutex>
 
@@ -9,7 +10,7 @@ public:
 
     // Lobby Management
     int CreateLobby(int hostId);
-    bool deleteLobby(int lobbyId);
+    bool DeleteLobby(int lobbyId);
     Lobby* GetLobby(int lobbyId);
 
     // Player-Lobby Management
@@ -20,7 +21,7 @@ public:
     std::vector<int> GetActiveLobbyIds() const;
 
 private:
-    std::unordered_map<int, Lobby> m_lobbies; // Map of lobbyId to Lobby objects
-    int m_nextLobbyId;                        // For generating unique lobby IDs
-    mutable std::mutex m_lobbyMutex;          // Protect access to lobbies
+    std::unordered_map<int, Lobby> m_lobbies;
+    int m_nextLobbyId;  // For generating unique lobby IDs
+    mutable std::mutex m_lobbyMutex;
 };

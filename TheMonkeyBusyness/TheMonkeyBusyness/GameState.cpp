@@ -2,8 +2,6 @@
 #include <stdexcept>
 #include <crow.h>
 
-GameState::GameState() : m_gameStatus(GameStatus::NotStarted) {}
-
 void GameState::AddPlayer(int playerId) {
     if (m_players.find(playerId) != m_players.end()) {
         throw std::runtime_error("Player ID already exists");
@@ -21,10 +19,18 @@ Player* GameState::GetPlayer(int playerId) {
     return (it != m_players.end()) ? &it->second : nullptr;
 }
 
-Player GameState::InitializePlayer(int playerId)
-{
-    return Player(m_arena.GetSpawn().first * GameConfig::kTileSize + GameConfig::kTileSize / 2, m_arena.GetSpawn().second * GameConfig::kTileSize + GameConfig::kTileSize / 2, playerId);
+Player GameState::InitializePlayer(int playerId) {
+    std::string playerName = GetPlayerNameFromDatabase(playerId);
 
+    return Player(m_arena.GetSpawn().first * GameConfig::kTileSize + GameConfig::kTileSize / 2,
+        m_arena.GetSpawn().second * GameConfig::kTileSize + GameConfig::kTileSize / 2,
+        playerId, playerName);
+}
+
+std::string GameState::GetPlayerNameFromDatabase(int playerId)
+{
+    //TODO Andrei metoda asta primeste ca parametru ID ul playerului si ia din baza de date numele asociat si il returneaza
+    return "Mario";
 }
 
 void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection) {
@@ -57,8 +63,6 @@ void GameState::UpdateGame(float deltaTime)
     }
 
     UpdateBullets(deltaTime);
-
-    CheckGameOver();
 }
 
 void GameState::UpdateBullets(float deltaTime) {
@@ -69,46 +73,39 @@ void GameState::UpdateBullets(float deltaTime) {
             bullet.Update(deltaTime);
             
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+                //TODO Rob pentru tipurile de ziduri care se sparg, in momentul in care s-au spart adauga coordonatele in containerul de mai jos
+                //m_mapChanges.emplace_back(x, y)
+                //Poti sa stergi urmatorul if daca nu l-am facut bine,l-am facut repede ca sa testez
+                if (tempTile->getType() == TileType::DestructibleWall)
+                {
+                    int x = static_cast<int>((bullet.GetPosition().x + GameConfig::kTileSize / 2) / GameConfig::kTileSize);
+                    int y = static_cast<int>((bullet.GetPosition().y + GameConfig::kTileSize / 2) / GameConfig::kTileSize);
+
+                    m_mapChanges.push_back({x, y});
+
+                    //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
+                }
+                
                 if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
                     ++i;
                 }
                 else {
                     player.m_weapon.deactivateBullet(i);
                 }
+
             }
         }
     }
 }
 
-void GameState::CheckGameOver() {
-    int alivePlayers = 0;
-    for (const auto& [playerId, player] : m_players) {
-        if (player.IsAlive()) {
-            ++alivePlayers;
-        }
-    }
-
-    if (alivePlayers <= 1) {
-        EndGame();
-    }
-}
-
-void GameState::StartGame() {
-    m_gameStatus = GameStatus::InProgress;
-}
-
-void GameState::EndGame() {
-    m_gameStatus = GameStatus::GameOver;
-}
-
 bool GameState::IsGameOver() const {
-    return m_gameStatus == GameStatus::GameOver;
+    return m_players.size() <= 1; // Game is over when one or no players are left
 }
 
 crow::json::wvalue GameState::ToJson() const {
     crow::json::wvalue gameStateJson;
 
-    // Serialize players
+    // Serialize players (this includes their bullets)
     crow::json::wvalue playersJson = crow::json::wvalue::list();
     size_t playerIndex = 0;
     for (const auto& [playerId, player] : m_players) {
@@ -116,30 +113,30 @@ crow::json::wvalue GameState::ToJson() const {
     }
     gameStateJson["players"] = std::move(playersJson);
 
+    // Serialize map changes
+    gameStateJson["mapChanges"] = MapChangesToJson();
+    m_mapChanges.clear();
+
     // Serialize game status
-    gameStateJson["gameStatus"] = static_cast<int>(m_gameStatus);
+    gameStateJson["isGameOver"] = IsGameOver();
 
     return gameStateJson;
+}
+
+crow::json::wvalue GameState::MapChangesToJson() const
+{
+    crow::json::wvalue changes = crow::json::wvalue::list();
+    size_t index = 0;
+    for (const auto& [x, y] : m_mapChanges) {
+        changes[index]["x"] = x;
+        changes[index]["y"] = y;
+        ++index;
+    }
+    return changes;
 }
 
 crow::json::wvalue GameState::ArenaToJson() const {
     crow::json::wvalue arenaData;
     arenaData["arena"] = m_arena.ToJson();
     return arenaData;
-}
-
-crow::json::wvalue GameState::GameStatusToJson() const {
-    crow::json::wvalue statusJson;
-    switch (m_gameStatus) {
-    case GameStatus::NotStarted:
-        statusJson["status"] = "NotStarted";
-        break;
-    case GameStatus::InProgress:
-        statusJson["status"] = "InProgress";
-        break;
-    case GameStatus::GameOver:
-        statusJson["status"] = "GameOver";
-        break;
-    }
-    return statusJson;
 }

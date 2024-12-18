@@ -14,11 +14,11 @@ int main(int argc, char* argv[]) {
     if (playerId == -1) return -1;
 
     Player player(playerId, serverUrl);
+    player.SetName(username); //TODO probably should assign the name at the login
 
     // Create or join lobby
     int lobbyId = player.CreateLobby();
     if (lobbyId == -1) return -1;
-
 
     // Set readiness and fetch lobby details
     player.SetReady();

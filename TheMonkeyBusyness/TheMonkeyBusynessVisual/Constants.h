@@ -1,5 +1,8 @@
 #pragma once
 
+using Position = std::pair<float, float>;
+using Direction = std::pair<float, float>;
+
 // Rendering and Dimensions
 namespace RenderConfig {
     constexpr int kTileSize = 40;          // Size of a single grid tile

@@ -13,7 +13,7 @@
 
 class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
-	explicit Player(float x= PlayerConfig::kDefaultPositionX, float y= PlayerConfig::kDefaultPositionY, int id = PlayerConfig::kDefaultPlayerId);
+	explicit Player(float x = PlayerConfig::kDefaultPositionX, float y = PlayerConfig::kDefaultPositionY, int id = PlayerConfig::kDefaultPlayerId, const std::string& name = PlayerConfig::kDefaultPlayerName);
 	Vector2 Forward() const;
 	Vector2 GetPosition()const;
 	void SetSpawn(Vector2 location);
@@ -29,9 +29,12 @@ public:
 
 	void SetScreenSize(const int screenWidth, const int screenHeight);
 
+	const std::string& GetName() const;
+
 	crow::json::wvalue ToJson() const;
 private:
 	int m_id;
+	std::string m_name;
 	Character* m_Character;
 	Vector2 m_position;
 	Vector2 m_direction;

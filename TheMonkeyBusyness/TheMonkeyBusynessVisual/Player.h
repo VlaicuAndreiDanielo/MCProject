@@ -5,9 +5,6 @@
 #include <crow/json.h>
 #include "Constants.h"
 
-using Position = std::pair<float, float>;
-using Direction = std::pair<float, float>;
-
 class Player {
 public:
     Player(int id, const std::string& serverUrl);
@@ -36,6 +33,7 @@ public:
     Position GetPosition() const;
     Direction GetDirection() const;
     const std::string& GetServerUrl() const;
+    int GetHealth() const;
 
     // Mutators
     void SetGameId(int id);

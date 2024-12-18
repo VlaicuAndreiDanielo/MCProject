@@ -35,7 +35,7 @@ void GameWindow::FetchArena() {
         auto jsonResponse = crow::json::load(response.text);
         if (jsonResponse.has("arena")) {
             LoadArena(jsonResponse);
-            update(); // Trigger paint event
+            update();
         }
     }
 }
@@ -45,7 +45,7 @@ void GameWindow::LoadArena(const crow::json::rvalue& arenaData) {
     for (const auto& row : arenaData["arena"]) {
         std::vector<int> mapRow;
         for (const auto& tile : row) {
-            mapRow.push_back(tile.i()); // Convert JSON tile to integer
+            mapRow.push_back(tile.i());
         }
         m_map.push_back(std::move(mapRow));
     }
@@ -66,32 +66,24 @@ void GameWindow::FetchGameState() {
 }
 
 void GameWindow::UpdateGameState(const crow::json::rvalue& jsonResponse) {
-    m_playersCoordinates.clear();
+
+    if (jsonResponse["isGameOver"])
+        HandleGameOver();
+
     m_bulletsCoordinates.clear();
 
     for (const auto& playerData : jsonResponse["players"]) {
-        Position position = { playerData["x"].d(), playerData["y"].d() };
-        Direction direction = { playerData["directionX"].d(), playerData["directionY"].d() };
         int id = playerData["id"].i();
 
-        if (id == m_player.GetId()) {
-            // Update local player's attributes
-            m_player.SetPosition(position);
-            m_player.SetDirection(direction);
-            m_player.SetHealth(playerData["hp"].i());
-        }
-        else {
-            // Update other players
-            m_playersCoordinates.push_back({ position, direction });
-        }
+        if (id == m_player.GetId())
+            UpdatePlayerState(playerData);
+        else
+            UpdateOtherPlayers(playerData);
 
-        // Process bullets for this player
-        for (const auto& bullet : playerData["weapon"]["bullets"]) {
-            Position bulletPosition = { bullet["x"].d(), bullet["y"].d() };
-            Direction bulletDirection = { bullet["directionX"].d(), bullet["directionY"].d() };
-            m_bulletsCoordinates.push_back({ bulletPosition, bulletDirection });
-        }
+        ProcessBullets(playerData);
     }
+
+    ProcessMapChanges(jsonResponse["mapChanges"]);
 }
 
 
@@ -125,6 +117,12 @@ void GameWindow::SendInputToServer() {
             cpr::Body{ shootPayload }
         );
 
+    }
+}
+
+void GameWindow::DestroyMapWall(int x, int y) {
+    if (x >= 0 && x < m_map[0].size() && y >= 0 && y < m_map.size()) {
+        m_map[y][x] = 0; //TODO replace with the type of tile the destroyed wall becomes and don't use hardcoded numbers
     }
 }
 
@@ -173,7 +171,9 @@ void GameWindow::paintEvent(QPaintEvent* event) {
             painter.drawRect(square);
         }
     }
+
     painter.save();
+
     // Draw the local player
     QRect playerRect(
         -RenderConfig::kPlayerSize / 2,
@@ -185,14 +185,37 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     painter.rotate(CalculateAngle(m_player.GetDirection()));
     painter.setBrush(Qt::cyan);
     painter.drawRect(playerRect);
-    
+
+    // Set pen for text
+    painter.setPen(Qt::white);
+
+    // Draw local player's name above the rectangle
+    painter.drawText(-RenderConfig::kPlayerSize / 2, -RenderConfig::kPlayerSize - 5, QString::fromStdString(m_player.GetName()));
+
+    // Draw local player's health below the rectangle
+    painter.drawText(-RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(m_player.GetHealth()));
+
     painter.restore();
+
+
     // Draw other players
-    painter.setBrush(Qt::green);
-    for (const auto& [position, direction] : m_playersCoordinates) {
+    for (const auto& [name, data] : m_playersData) {
+        const auto& [health, position, direction] = data;
+
         int x = position.first - m_player.GetPosition().first + (width() / 2);
         int y = position.second - m_player.GetPosition().second + (height() / 2);
-        painter.drawRect(QRect(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize));
+
+        // Draw player rectangle
+        QRect playerRect(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
+        painter.setBrush(Qt::green);
+        painter.drawRect(playerRect);
+
+        // Draw player's name above the rectangle
+        painter.setPen(Qt::white);
+        painter.drawText(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize - 5, QString::fromStdString(name));
+
+        // Draw player's health below the rectangle
+        painter.drawText(x - RenderConfig::kPlayerSize / 2, y + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
     }
 
     // Draw bullets
@@ -200,5 +223,56 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     for (const auto& [position, direction] : m_bulletsCoordinates) {
         QRect bulletRect(position.first - RenderConfig::kBulletSize / 2, position.second - RenderConfig::kBulletSize / 2, RenderConfig::kBulletSize, RenderConfig::kBulletSize);
         painter.drawEllipse(bulletRect);
+    }
+}
+
+
+void GameWindow::HandleGameOver()
+{
+    //TODO implement what happens for gameover. I think it should transision to another window
+    return;
+}
+
+void GameWindow::UpdatePlayerState(const crow::json::rvalue& playerData) {
+    Position position = { playerData["x"].d(), playerData["y"].d() };
+    Direction direction = { playerData["directionX"].d(), playerData["directionY"].d() };
+
+    m_player.SetPosition(position);
+    m_player.SetDirection(direction);
+    m_player.SetHealth(playerData["hp"].i());
+
+    if (playerData["hp"].i() <= 0) {
+        // TODO: Handle player death
+    }
+}
+
+void GameWindow::UpdateOtherPlayers(const crow::json::rvalue& playerData) {
+    std::string name = playerData["name"].s();
+    Position position = { playerData["x"].d(), playerData["y"].d() };
+    Direction direction = { playerData["directionX"].d(), playerData["directionY"].d() };
+    int health = playerData["hp"].i();
+
+    if (health <= 0) {
+        //TODO Handle other players death
+    }
+
+    m_playersData[name] = { health, position, direction };
+}
+
+
+
+void GameWindow::ProcessBullets(const crow::json::rvalue& playerData) {
+    for (const auto& bullet : playerData["weapon"]["bullets"]) {
+        Position bulletPosition = { bullet["x"].d(), bullet["y"].d() };
+        Direction bulletDirection = { bullet["directionX"].d(), bullet["directionY"].d() };
+        m_bulletsCoordinates.push_back({ bulletPosition, bulletDirection });
+    }
+}
+
+void GameWindow::ProcessMapChanges(const crow::json::rvalue& mapChanges) {
+    for (const auto& change : mapChanges) {
+        int x = change["x"].i();
+        int y = change["y"].i();
+        DestroyMapWall(x, y);
     }
 }

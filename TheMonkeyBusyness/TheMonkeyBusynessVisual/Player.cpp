@@ -6,10 +6,10 @@ Player::Player(int id, const std::string& serverUrl)
     : m_id{ id },
     m_gameId{ PlayerConfig::kNoGameId },
     m_lobbyId{ PlayerConfig::kNoLobbyId },
-    m_isReady{ false },        // Default to not ready
-    m_isHost{ false },         // Default to not host
-    m_name{ "" },              // Empty name by default
-    m_serverUrl{ serverUrl },  // Initialize with provided server URL
+    m_isReady{ false },
+    m_isHost{ false },
+    m_name{ "" }, 
+    m_serverUrl{ serverUrl }, 
     m_position{ PlayerConfig::kDefaultPositionX, PlayerConfig::kDefaultPositionY },
     m_direction{ PlayerConfig::kDefaultDirectionX, PlayerConfig::kDefaultDirectionY },
     m_health{ PlayerConfig::kDefaultHealth }
@@ -162,6 +162,7 @@ std::string Player::GetName() const { return m_name; }
 Position Player::GetPosition() const { return m_position; }
 Direction Player::GetDirection() const { return m_direction; }
 const std::string& Player::GetServerUrl() const { return m_serverUrl; }
+int Player::GetHealth() const { return m_health; }
 
 void Player::SetGameId(int id) { m_gameId = id; }
 void Player::SetLobbyId(int newLobbyId) { m_lobbyId = newLobbyId; }

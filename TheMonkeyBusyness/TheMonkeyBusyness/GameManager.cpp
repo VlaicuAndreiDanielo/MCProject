@@ -3,9 +3,9 @@
 #include <chrono>
 #include <iostream>
 
-extern LobbyManager lobbyManager;
+extern LobbyManager lobbyManager;  //TODO check if I should make lobbyManager and gameManager singletons.
 
-GameManager::GameManager() {}
+GameManager::GameManager() : m_nextGameId(GameConfig::kfirstGameId) {}
 
 GameManager::~GameManager() {
     for (auto& [gameId, _] : m_games) {
@@ -19,8 +19,7 @@ GameManager::~GameManager() {
 int GameManager::CreateGameFromLobby(int lobbyId) {
     std::lock_guard<std::mutex> lock(m_gameMutex);
 
-    static int nextGameId = 1;
-    int gameId = nextGameId++;
+    int gameId = m_nextGameId++;
 
     Lobby* lobby = lobbyManager.GetLobby(lobbyId);
     if (!lobby) {
@@ -29,9 +28,9 @@ int GameManager::CreateGameFromLobby(int lobbyId) {
 
     // Create game state and add all lobby players
     GameState* gameState = new GameState();
-    const auto& playersMap = lobby->GetPlayers(); // Access players and their ready statuses
+    const auto& playersMap = lobby->GetPlayers();
     for (const auto& [playerId, isReady] : playersMap) {
-        gameState->AddPlayer(playerId); // Add each player to the game
+        gameState->AddPlayer(playerId);
     }
 
     m_games[gameId] = gameState;
@@ -40,7 +39,7 @@ int GameManager::CreateGameFromLobby(int lobbyId) {
     return gameId;
 }
 
-void GameManager::deleteGame(int gameId) {
+void GameManager::DeleteGame(int gameId) {
     StopGameLoop(gameId);
 
     std::lock_guard<std::mutex> lock(m_gameMutex);
@@ -56,7 +55,7 @@ bool GameManager::StartGameLoop(int gameId) {
     std::lock_guard<std::mutex> lock(m_gameMutex);
 
     if (m_runningGames[gameId]) {
-        return true;  // Game loop is already running
+        return true;
     }
 
     m_runningGames[gameId] = true;
@@ -95,7 +94,7 @@ GameState* GameManager::GetGameState(int gameId) {
 }
 
 void GameManager::GameLoop(int gameId) {
-    const std::chrono::milliseconds frameDuration(GameConfig::kFrameDurationMs); // ~60 FPS (16 ms per frame)
+    const std::chrono::milliseconds frameDuration(GameConfig::kFrameDurationMs);
     auto previousTime = std::chrono::high_resolution_clock::now();
 
     while (m_runningGames[gameId]) {
@@ -116,7 +115,7 @@ void GameManager::GameLoop(int gameId) {
             }
         }
 
-        // Sleep to maintain a consistent frame rate (~60 FPS)
+        // Sleep to maintain a consistent frame rate
         auto endTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<float> frameTime = endTime - currentTime;
 

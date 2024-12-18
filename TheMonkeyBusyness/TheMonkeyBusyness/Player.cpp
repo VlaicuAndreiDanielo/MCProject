@@ -1,12 +1,10 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player(float x, float y, int id) : m_id{ PlayerConfig::kDefaultPlayerId } //sets spawn of the player 
+Player::Player(float x, float y, int id, const std::string& name)
+	: m_id{ id }, m_name{ name }, m_position{ x, y }
 {
 	m_Character = new BasicMonkey();
-	m_position.x = x;
-	m_position.y = y;
-	m_id = id;
 }
 
 Vector2 Player::Forward()
@@ -77,10 +75,13 @@ void Player::SetScreenSize(const int screenWidth, const int screenHeight)
 	m_screenHeight = screenHeight;
 }
 
+const std::string& Player::GetName() const { return m_name; }
+
 crow::json::wvalue Player::ToJson() const
 {
 	crow::json::wvalue playerJson;
 	playerJson["id"] = m_id;
+	playerJson["name"] = m_name;
 	playerJson["x"] = m_position.x;
 	playerJson["y"] = m_position.y;
 	playerJson["directionX"] = m_direction.x;

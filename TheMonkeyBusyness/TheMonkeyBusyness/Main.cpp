@@ -59,7 +59,7 @@ int main() {
             return crow::response(403, "Only the host can delete the lobby");
         }
 
-        if (lobbyManager.deleteLobby(lobbyId)) {
+        if (lobbyManager.DeleteLobby(lobbyId)) {
             return crow::response(200, "Lobby deleted");
         }
         else {
@@ -84,7 +84,7 @@ int main() {
         }
         });
 
-    // Returns the IDs if active lobbies
+    // Returns the IDs of active lobbies
     CROW_ROUTE(app, "/get_active_lobbies").methods(crow::HTTPMethod::GET)([]() {
         auto activeLobbies = lobbyManager.GetActiveLobbyIds();
 
@@ -138,7 +138,6 @@ int main() {
         crow::json::wvalue response;
         response["lobbyId"] = lobby->GetLobbyId();
         response["hostId"] = lobby->GetHostId();
-        response["status"] = static_cast<int>(lobby->GetStatus());
 
         crow::json::wvalue playersJson = crow::json::wvalue::list();
         size_t index = 0;
@@ -179,9 +178,9 @@ int main() {
         }
 
         try {
-            int gameId = gameManager.CreateGameFromLobby(lobbyId); // Create the game from the lobby
-            lobbyManager.deleteLobby(lobbyId); // Delete the lobby
-            gameManager.StartGameLoop(gameId); // Start the game loop
+            int gameId = gameManager.CreateGameFromLobby(lobbyId);
+            lobbyManager.DeleteLobby(lobbyId);
+            gameManager.StartGameLoop(gameId);
 
             crow::json::wvalue response;
             response["gameId"] = gameId;

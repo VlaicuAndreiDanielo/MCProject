@@ -7,12 +7,21 @@
 #include <QListWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <qscreen.h>
+#include <qmessagebox.h>
+#include <QCoreApplication>
+#include <QPixmap>
+#include <QPalette>
+#include <QSizePolicy>
+#include <QInputDialog> 
 
 class LobbyWindow : public QWidget {
     Q_OBJECT
 
 public:
     explicit LobbyWindow(QWidget* parent = nullptr);
+signals:
+    void lobbyWindowClosed(); // Semnal personalizat pentru închiderea ferestrei
 
 private:
     QLabel* m_titleLabel;

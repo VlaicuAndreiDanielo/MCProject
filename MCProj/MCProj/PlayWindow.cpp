@@ -1,4 +1,5 @@
 ﻿#include "PlayWindow.h"
+#include "LobbyWindow.h"
 
 PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle("Game Window");
@@ -17,6 +18,21 @@ PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
     // Creează widgetul central și layout-ul
     QWidget* centralWidget = new QWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(centralWidget);
+
+    // Creează titlul
+    QLabel* titleLabel = new QLabel("Monkeys Madness", this);
+    QFont titleFont("Arial", 56, QFont::Bold);
+    titleLabel->setFont(titleFont);
+    titleLabel->setStyleSheet("color: rgba(255, 223, 0, 255);");
+    titleLabel->setAlignment(Qt::AlignCenter);
+
+    QGraphicsDropShadowEffect* shadowEffectTitle = new QGraphicsDropShadowEffect(this);
+    shadowEffectTitle->setOffset(4, 4);
+    shadowEffectTitle->setBlurRadius(15);
+    shadowEffectTitle->setColor(QColor(0, 0, 0, 150));
+    titleLabel->setGraphicsEffect(shadowEffectTitle);
+
+    layout->addWidget(titleLabel); // Adaugă titlul în layout
 
     // Creează butonul Play
     m_playButton = new QPushButton("Play", this);
@@ -64,6 +80,7 @@ PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
     m_quitButton->setFixedSize(300, 80);
     layout->addWidget(m_quitButton, 0, Qt::AlignCenter);
 
+    connect(m_playButton, &QPushButton::clicked, this, &PlayWindow::openLobbyWindow);
     // Conectează butonul Quit Game la funcția de închidere a ferestrei
     connect(m_quitButton, &QPushButton::clicked, this, &PlayWindow::close);
 
@@ -71,3 +88,18 @@ PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
     setCentralWidget(centralWidget);
 }
 
+void PlayWindow::openLobbyWindow() {
+    if (!m_lobbyWindow) { // Creează fereastra doar dacă nu există deja
+        m_lobbyWindow = new LobbyWindow();
+        connect(m_lobbyWindow, &LobbyWindow::lobbyWindowClosed, this, &PlayWindow::handleLobbyWindowClosed);
+
+        m_lobbyWindow->showFullScreen(); // Afișează fereastra în modul fullscreen
+
+        // Ascundem PlayWindow când LobbyWindow este deschis
+        hide();
+    }
+}
+void PlayWindow::handleLobbyWindowClosed() {
+    m_lobbyWindow = nullptr; // Resetăm pointerul
+    show(); // Afișăm PlayWindow din nou, dacă a fost ascuns
+}

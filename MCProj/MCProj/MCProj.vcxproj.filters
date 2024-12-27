@@ -61,7 +61,7 @@
       <Filter>Header Files\DataBase</Filter>
     </ClInclude>
     <ClInclude Include="SessionManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,9 +104,6 @@
     <ClCompile Include="UserDatabase.cpp">
       <Filter>Source Files\DataBase</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mainForTests.cpp">
       <Filter>Source Files\Monkeys</Filter>
     </ClCompile>
@@ -120,7 +117,10 @@
       <Filter>Source Files\LogIn and SingIn</Filter>
     </ClCompile>
     <ClCompile Include="SessionManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="mainForLobbyAndLogIn.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

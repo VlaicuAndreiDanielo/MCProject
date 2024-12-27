@@ -183,7 +183,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Gorilla.h" />
     <ClInclude Include="HowlerMonkey.h" />
-    <QtMoc Include="mainwindow.h" />
+    <QtMoc Include="FirstMainWindow.h" />
     <QtMoc Include="LogInForm.h" />
     <ClInclude Include="Orangutan.h" />
     <QtMoc Include="SignInForm.h" />
@@ -217,7 +217,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="FirstMainWindow.cpp" />
     <ClCompile Include="Orangutan.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
     <ClCompile Include="SaveForLater.cpp" />

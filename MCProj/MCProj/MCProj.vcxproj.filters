@@ -62,9 +62,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LogInForm.cpp">
       <Filter>Source Files\LogIn and SingIn</Filter>
     </ClCompile>
@@ -113,11 +110,11 @@
     <ClCompile Include="SaveForLater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FirstMainWindow.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="SignInForm.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
@@ -125,6 +122,9 @@
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
     <QtMoc Include="PlayWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="FirstMainWindow.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
   </ItemGroup>

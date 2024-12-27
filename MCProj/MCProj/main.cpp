@@ -1,9 +1,9 @@
 #include <QApplication>
-#include "mainwindow.h"
+#include "firstmainwindow.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    MainWindow window;
+    FirstMainWindow window;
     window.show();
     return app.exec();
 }

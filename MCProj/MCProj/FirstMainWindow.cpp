@@ -8,7 +8,7 @@
 ////titleLabel->setGraphicsEffect(shadowEffect);
 //
 ///*Varianta functionala*/
-//MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
+//FirstMainWindow::FirstMainWindow(QWidget* parent) : QMainWindow(parent) {
 //    // Creează widgetul central și layout-ul
 //    m_centralWidget = new QWidget(this);
 //    m_layout = new QVBoxLayout(m_centralWidget);
@@ -92,11 +92,11 @@
 //    resize(background.size());
 //
 //    // Conectează butoanele la sloturi
-//    connect(m_loginButton, &QPushButton::clicked, this, &MainWindow::ShowLoginForm);
-//    connect(m_signInButton, &QPushButton::clicked, this, &MainWindow::ShowSignInForm);
+//    connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
+//    connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 //}
 ///*Verianta cu transparenta dar imi redimensioneaza imaginea*/
-////MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
+////FirstMainWindow::FirstMainWindow(QWidget* parent) : QMainWindow(parent) {
 ////    // Creează widgetul central și layout-ul
 ////    m_centralWidget = new QWidget(this);
 ////    m_layout = new QVBoxLayout(m_centralWidget);
@@ -186,12 +186,12 @@
 ////    resize(background.size());
 ////
 ////    // Conectează butoanele la sloturi
-////    connect(m_loginButton, &QPushButton::clicked, this, &MainWindow::ShowLoginForm);
-////    connect(m_signInButton, &QPushButton::clicked, this, &MainWindow::ShowSignInForm);
+////    connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
+////    connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 ////}
 //
 ///*varianata simpla*/
-//void MainWindow::ClearLayout() {
+//void FirstMainWindow::ClearLayout() {
 //    // Șterge toate widgeturile din layout
 //    while (m_layout->count() > 0) {
 //        QWidget* widget = m_layout->takeAt(0)->widget();
@@ -203,7 +203,7 @@
 //}
 //
 //
-//void MainWindow::ShowLoginForm() {
+//void FirstMainWindow::ShowLoginForm() {
 //    // Curăță layout-ul
 //    ClearLayout();
 //
@@ -312,7 +312,7 @@
 //
 //
 //
-//void MainWindow::ShowSignInForm() {
+//void FirstMainWindow::ShowSignInForm() {
 //    // Curăță layout-ul
 //    ClearLayout();
 //
@@ -430,7 +430,7 @@
 //    m_layout->setAlignment(m_submitButton, Qt::AlignCenter); // Centrează butonul
 //}
 //
-////void MainWindow::ShowMainScreen() {
+////void FirstMainWindow::ShowMainScreen() {
 ////    // Curăță toate widget-urile și layout-ul
 ////    ClearLayout();
 ////
@@ -488,12 +488,12 @@
 ////    m_layout->setAlignment(m_signInButton, Qt::AlignCenter);
 ////
 ////    // Conectează butoanele la sloturile lor respective
-////    connect(m_loginButton, &QPushButton::clicked, this, &MainWindow::ShowLoginForm);
-////    connect(m_signInButton, &QPushButton::clicked, this, &MainWindow::ShowSignInForm);
+////    connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
+////    connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 ////}
 //
 //
-//void MainWindow::ShowMainScreen() {
+//void FirstMainWindow::ShowMainScreen() {
 //    // Curăță toate widget-urile și layout-ul
 //    ClearLayout();
 //
@@ -551,22 +551,16 @@
 //    m_layout->setAlignment(m_signInButton, Qt::AlignCenter);
 //
 //    // Conectează butoanele la sloturile lor respective
-//    connect(m_loginButton, &QPushButton::clicked, this, &MainWindow::ShowLoginForm);
-//    connect(m_signInButton, &QPushButton::clicked, this, &MainWindow::ShowSignInForm);
+//    connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
+//    connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 //}
 
 
 #include "LoginForm.h"
 #include "SignInForm.h"
-#include "MainWindow.h"
+#include "FirstMainWindow.h"
 
-#include <QGraphicsDropShadowEffect>
-#include <QPixmap>
-#include <QPalette>
-#include <QCoreApplication>
-#include <QDebug>
-
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), m_loginForm(nullptr), m_signInForm(nullptr) {
+FirstMainWindow::FirstMainWindow(QWidget* parent) : QMainWindow(parent), m_loginForm(nullptr), m_signInForm(nullptr) {
     setFixedSize(700, 700); // Setează dimensiunea fixă pentru fereastră
     // Creează widgetul central și layout-ul
     m_centralWidget = new QWidget(this);
@@ -591,7 +585,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), m_loginForm(nullp
     ShowMainScreen();
 }
 
-void MainWindow::ShowMainScreen() {
+void FirstMainWindow::ShowMainScreen() {
     ClearLayout();
 
     // Creează titlul
@@ -640,11 +634,11 @@ void MainWindow::ShowMainScreen() {
     m_layout->setAlignment(m_signInButton, Qt::AlignCenter);
 
     // Conectează butoanele la sloturile lor respective
-    connect(m_loginButton, &QPushButton::clicked, this, &MainWindow::ShowLoginForm);
-    connect(m_signInButton, &QPushButton::clicked, this, &MainWindow::ShowSignInForm);
+    connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
+    connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 }
 /*varianta anterioara*/
-//void MainWindow::ShowLoginForm() {
+//void FirstMainWindow::ShowLoginForm() {
 //    LoginForm* loginForm = new LoginForm(this); // Creează fereastra Login
 //    connect(loginForm, &LoginForm::backRequested, [=]() {
 //        loginForm->close(); // Închide fereastra Login
@@ -654,7 +648,7 @@ void MainWindow::ShowMainScreen() {
 //    loginForm->show();
 //}
 //
-//void MainWindow::ShowSignInForm() {
+//void FirstMainWindow::ShowSignInForm() {
 //    SignInForm* signInForm = new SignInForm(this); // Creează fereastra Sign In
 //    connect(signInForm, &SignInForm::backRequested, [=]() {
 //        signInForm->close(); // Închide fereastra Sign In
@@ -663,7 +657,7 @@ void MainWindow::ShowMainScreen() {
 //    signInForm->setModal(true);
 //    signInForm->show();
 //}
-//void MainWindow::ShowLoginForm() {
+//void FirstMainWindow::ShowLoginForm() {
 //    if (!m_loginForm) { // Creează fereastra doar dacă nu există deja
 //        m_loginForm = new LoginForm(this);
 //        m_loginForm->setModal(false);
@@ -680,7 +674,7 @@ void MainWindow::ShowMainScreen() {
 //    m_loginForm->show();
 //}
 //
-//void MainWindow::ShowSignInForm() {
+//void FirstMainWindow::ShowSignInForm() {
 //    if (!m_signInForm) { // Creează fereastra doar dacă nu există deja
 //        m_signInForm = new SignInForm(this);
 //        m_signInForm->setModal(false);
@@ -697,7 +691,7 @@ void MainWindow::ShowMainScreen() {
 //    m_signInForm->show();
 //}
 
-void MainWindow::ShowLoginForm() {
+void FirstMainWindow::ShowLoginForm() {
     if (!m_loginForm) { // Creează fereastra doar dacă nu există deja
         m_loginForm = new LoginForm(this);
         m_loginForm->setModal(false);
@@ -723,7 +717,7 @@ void MainWindow::ShowLoginForm() {
     m_loginForm->show();
 }
 
-void MainWindow::ShowSignInForm() {
+void FirstMainWindow::ShowSignInForm() {
     if (!m_signInForm) { // Creează fereastra doar dacă nu există deja
         m_signInForm = new SignInForm(this);
         m_signInForm->setModal(false);
@@ -749,7 +743,7 @@ void MainWindow::ShowSignInForm() {
     m_signInForm->show();
 }
 
-void MainWindow::ClearLayout() {
+void FirstMainWindow::ClearLayout() {
     while (m_layout->count() > 0) {
         QLayoutItem* item = m_layout->takeAt(0); // Ia primul element din layout
         if (item->widget()) {                   // Dacă elementul este un widget
@@ -759,7 +753,7 @@ void MainWindow::ClearLayout() {
     }
 }
 
-void MainWindow::moveEvent(QMoveEvent* event) {
+void FirstMainWindow::moveEvent(QMoveEvent* event) {
     QMainWindow::moveEvent(event);
 
     // Actualizează poziția ferestrelor copil, dacă există

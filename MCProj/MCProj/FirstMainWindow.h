@@ -50,22 +50,26 @@
 //#endif // MAINWINDOW_H
 
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef FIRSTMAINWINDOW_H
+#define FIRSTMAINWINDOW_H
 
 #include <QMainWindow>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGraphicsDropShadowEffect>
+#include <QPixmap>
+#include <QPalette>
+#include <QCoreApplication>
+#include <QDebug>
 #include "LoginForm.h"
 #include "SignInForm.h"
 
-class MainWindow : public QMainWindow {
+class FirstMainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
+    explicit FirstMainWindow(QWidget* parent = nullptr);
 
 private slots:
     void ShowLoginForm();  // Slot pentru a deschide fereastra Login

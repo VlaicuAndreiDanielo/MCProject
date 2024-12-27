@@ -22,6 +22,7 @@ private:
 
 public:
     User(const std::string& username, const std::string& password, int scr, int uppt);
+    User(const std::string& username, const std::string& password);
     int getUserId() const;
     std::string getUsername() const;
     std::string getPassword() const;

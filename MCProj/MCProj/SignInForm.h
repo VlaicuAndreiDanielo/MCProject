@@ -13,6 +13,7 @@
 #include <QPixmap>
 #include <QPalette>
 #include <QCoreApplication>
+#include <qmessagebox.h>
 #include <QVBoxLayout>
 
 class SignInForm : public QDialog {

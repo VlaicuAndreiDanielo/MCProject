@@ -1,5 +1,6 @@
 ﻿#include "SignInForm.h"
 #include "PlayWindow.h"
+#include "UserDatabase.h"
 
 
 SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
@@ -102,10 +103,108 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
     layout->addWidget(m_backButton, 0, Qt::AlignCenter);
 
     connect(m_backButton, &QPushButton::clicked, this, &SignInForm::backRequested); // Emit semnalul backRequested
+    // Conectează butonul Submit
+    /*connect(m_submitButton, &QPushButton::clicked, [=]() {
+    QString username = m_usernameField->text(); // Citește utilizatorul
+    QString password = m_passwordField->text(); // Citește parola
+    QString confirmPassword = m_confirmPasswordField->text(); // Confirmă parola
+
+    UserDatabase db("userdatabase.db");
+    db.createTable(); // Asigură-te că tabela există
+
+    if (!m_usernameField || !m_passwordField || !m_confirmPasswordField) {
+        QMessageBox::critical(this, "Error", "Input fields are not initialized.");
+        return;
+    }
+
+    // Regex pentru validare utilizator (doar litere și cifre, între 3 și 15 caractere)
+    QRegularExpression usernameRegex("^[a-zA-Z0-9]{3,15}$");
+    if (!usernameRegex.match(username).hasMatch()) {
+        QMessageBox::warning(this, "Validation Error", "Username must be 3-15 characters long and contain only letters and numbers.");
+        return;
+    }
+
+    // Regex pentru validare parolă (cel puțin 8 caractere, litere mari/mici, cifre, simboluri)
+    QRegularExpression passwordRegex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
+    if (!passwordRegex.match(password).hasMatch()) {
+        QMessageBox::warning(this, "Validation Error", "Password must be at least 8 characters long, include uppercase, lowercase, a digit, and a special character.");
+        return;
+    }
+
+    if (username.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Username or password cannot be empty!");
+        return;
+    }
+
+    // Verifică dacă numele de utilizator există deja
+    if (db.userExists(username.toStdString())) {
+        QMessageBox::warning(this, "Sign Up Failed", "Username already exists.");
+        return;
+    }
+
+    // Verifică dacă parolele coincid
+    if (password != confirmPassword) {
+        QMessageBox::warning(this, "Sign Up Failed", "Passwords do not match.");
+        return;
+    }
+
+    // Creează utilizatorul și adaugă-l în baza de date
+    User newUser(username.toStdString(), password.toStdString());
+    db.addUser(newUser);
+
+    QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
+    close(); // Închide SignInForm
+});
+
+    */
+
     connect(m_submitButton, &QPushButton::clicked, [=]() {
-        // Deschide fereastra fullscreen cu buton Play
-        PlayWindow* playWindow = new PlayWindow();
-        playWindow->show();
-        close(); // Închide fereastra Sign In
+        QString username = m_usernameField->text(); // Citește utilizatorul
+        QString password = m_passwordField->text(); // Citește parola
+        QString confirmPassword = m_confirmPasswordField->text(); // Confirmă parola
+
+        UserDatabase db("userdatabase.db");
+        db.createTable();
+
+        if (!m_usernameField || !m_passwordField || !m_confirmPasswordField) {
+            QMessageBox::critical(this, "Error", "Input fields are not initialized.");
+            return;
+        }
+        std::cout << "Username: " << username.toStdString() << ", Password: " << password.toStdString() << std::endl;
+        if (username.isEmpty() || password.isEmpty()) {
+            QMessageBox::warning(this, "Error", "Username or password cannot be empty!");
+            return;
+        }
+        // Verificare folosind funcția din clasa User
+        User tempUser(username.toStdString(), password.toStdString());
+        if (!tempUser.isUsernameValid()) {
+            QMessageBox::warning(this, "Validation Error", "Invalid username format.");
+            return;
+        }
+
+        if (!tempUser.isPasswordValid()) {
+            QMessageBox::warning(this, "Validation Error", "Invalid password format.");
+            return;
+        }
+
+        // Verifică dacă numele de utilizator există deja
+        if (db.userExists(username.toStdString())) {
+            QMessageBox::warning(this, "Sign Up Failed", "Username already exists.");
+            return;
+        }
+
+        // Verifică dacă parolele coincid
+        if (password != confirmPassword) {
+            QMessageBox::warning(this, "Sign Up Failed", "Passwords do not match.");
+            return;
+        }
+
+        // Creează utilizatorul și adaugă-l în baza de date
+        User newUser(username.toStdString(), password.toStdString());
+        db.addUser(newUser);
+
+        QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
+        close(); // Închide SignInForm
         });
+
 }

@@ -1,5 +1,6 @@
 ﻿#include "LoginForm.h"
 #include "PlayWindow.h"
+#include "UserDatabase.h"
 
 
 LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
@@ -93,10 +94,30 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
     layout->addWidget(m_backButton, 0, Qt::AlignCenter);
 
     connect(m_backButton, &QPushButton::clicked, this, &LoginForm::backRequested); // Emit semnalul backRequested
+    // Conectează butonul Submit
     connect(m_submitButton, &QPushButton::clicked, [=]() {
-        // Deschide fereastra fullscreen cu buton Play
-        PlayWindow* playWindow = new PlayWindow();
-        playWindow->show();
-        close(); // Închide fereastra Login
+        QString username = m_usernameField->text(); // Citește utilizatorul
+        QString password = m_passwordField->text(); // Citește parola
+
+        UserDatabase db("userdatabase.db");
+
+        // Verifică dacă utilizatorul există
+        if (db.userExists(username.toStdString())) {
+            User user = db.getUserInfo(username.toStdString());
+
+            // Verifică parola
+            if (user.getPassword() == password.toStdString()) {
+                // Login reușit -> Deschide PlayWindow
+                PlayWindow* playWindow = new PlayWindow();
+                playWindow->show();
+                close(); // Închide LoginForm
+            }
+            else {
+                QMessageBox::warning(this, "Login Failed", "Incorrect password.");
+            }
+        }
+        else {
+            QMessageBox::warning(this, "Login Failed", "User does not exist.");
+        }
         });
 }

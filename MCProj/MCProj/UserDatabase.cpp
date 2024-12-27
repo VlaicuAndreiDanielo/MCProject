@@ -2,12 +2,24 @@
 
 UserDatabase::UserDatabase(const std::string& dbName)
 {
-    if (sqlite3_open(dbName.c_str(), &db)) {
+    int result = sqlite3_open(dbName.c_str(), &db);
+
+    if (result != SQLITE_OK) {
         std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
         db = nullptr;
     }
     else {
-        std::cout << "Database opened successfully!" << std::endl;
+        std::cout << "Database opened successfully: " << dbName << std::endl;
+
+        // Asigură-te că tabela este creată
+        try {
+            createTable();
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Exception while creating table: " << e.what() << std::endl;
+            sqlite3_close(db); // Închide baza de date în caz de eroare
+            db = nullptr;
+        }
     }
 }
 
@@ -311,4 +323,38 @@ int UserDatabase::getUserIdByUsername(const std::string& username)
     sqlite3_finalize(stmt);
 
     return userId;
+}
+
+bool UserDatabase::authenticateUser(const std::string& username, const std::string& password) {
+    const std::string query = "SELECT password FROM User WHERE username = ?";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    // Asociază parametrii
+    if (sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC) != SQLITE_OK) {
+        std::cerr << "Failed to bind username: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    // Execută interogarea
+    bool isAuthenticated = false;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const unsigned char* storedPassword = sqlite3_column_text(stmt, 0);
+        if (storedPassword && password == reinterpret_cast<const char*>(storedPassword)) {
+            isAuthenticated = true;
+        }
+    }
+
+    sqlite3_finalize(stmt);
+
+    if (!isAuthenticated) {
+        std::cerr << "Authentication failed for user: " << username << std::endl;
+    }
+
+    return isAuthenticated;
 }

@@ -19,7 +19,7 @@ public:
     void clearTable();
     bool userExists(const std::string& username);
     int getUserIdByUsername(const std::string& username);
-
+    bool authenticateUser(const std::string& username, const std::string& password);
 
 private:
     sqlite3* db;

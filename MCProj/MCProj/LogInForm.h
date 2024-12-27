@@ -13,6 +13,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPixmap>
 #include <QPalette>
+#include <qmessagebox.h>
 #include <QCoreApplication>
 
 class LoginForm : public QDialog {

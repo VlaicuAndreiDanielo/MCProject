@@ -30,6 +30,14 @@ User::User(const std::string& username, const std::string& password, int scr, in
         << ", Password: " << m_password << std::endl;
 }
 
+User::User(const std::string& username, const std::string& password)
+{
+    m_username = username;
+    m_password = password;
+    m_score = 0;
+    m_upgradePoints = 0;
+}
+
 int User::getUserId() const
 {
     return m_userID;

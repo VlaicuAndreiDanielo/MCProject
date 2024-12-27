@@ -5,7 +5,7 @@ int main() {
     UserDatabase userDB("users.db");
 
     // Creează tabelă
-    userDB.createTable();
+    //userDB.createTable();
 
     // Creează utilizatori
     User user1("john_doe", "password123", 100, 50);  // Creează un obiect User
@@ -28,6 +28,6 @@ int main() {
     // Șterge un utilizator
     //userDB.deleteUser("passward");
     //userDB.deleteUser("mypasswo");
-    userDB.clearTable();
+    // userDB.clearTable();
     return 0;
 }

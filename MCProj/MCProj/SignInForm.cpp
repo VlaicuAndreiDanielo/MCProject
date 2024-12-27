@@ -1,6 +1,7 @@
 ﻿#include "SignInForm.h"
 #include "PlayWindow.h"
 #include "UserDatabase.h"
+#include "SessionManager.h"
 
 
 SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
@@ -329,6 +330,9 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         User newUser(usernameStd, passwordStd);
         db.addUser(newUser);
         QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
+
+        // Setează username-ul în SessionManager
+        SessionManager::setCurrentUsername(username);
 
         // Emit semnalul
         emit sessionStarted();

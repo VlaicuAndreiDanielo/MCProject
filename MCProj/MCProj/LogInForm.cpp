@@ -1,6 +1,7 @@
 ﻿#include "LoginForm.h"
 #include "PlayWindow.h"
 #include "UserDatabase.h"
+#include "SessionManager.h"
 
 
 LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
@@ -131,17 +132,21 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
         else
         {
             QMessageBox::information(this, "Login Successful", "Welcome back!");
+
+            // Setează username-ul în SessionManager
+            SessionManager::setCurrentUsername(username);
+
+            // Emit semnalul
+            emit sessionStarted();
+
+            // Deschide PlayWindow după logare reușită
+            PlayWindow* playWindow = new PlayWindow();
+            playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
+            playWindow->show();
+            db.showAllUsers();
+            close(); // Închide LogInForm
         }
 
-        // Emit semnalul
-        emit sessionStarted();
-
-        // Deschide PlayWindow după logare reușită
-        PlayWindow* playWindow = new PlayWindow();
-        playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
-        playWindow->show();
-        db.showAllUsers();
-        close(); // Închide LogInForm
         });
 
 }

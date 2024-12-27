@@ -1,9 +1,12 @@
-﻿#include "LobbyWindow.h"
+﻿/*Versiunea cu QListWidget pt lobbyuri*/
+#include "LobbyWindow.h"
+#include "SessionManager.h"
 #include <QGraphicsDropShadowEffect>
 #include <QCoreApplication>
 #include <QPixmap>
 #include <QPalette>
 #include <QMessageBox>
+
 
 LobbyWindow::LobbyWindow(QWidget* parent) : QWidget(parent) {
     setupUI();
@@ -158,14 +161,28 @@ void LobbyWindow::onCreateLobbyButtonClicked() {
 
     // Dacă utilizatorul a dat click pe OK și a introdus un nume valid
     if (ok && !lobbyName.trimmed().isEmpty()) {
+        // Obținem numele utilizatorului conectat (de exemplu, "Player1")
+        QString username = SessionManager::getCurrentUsername();
+        qDebug() << "Current logged-in user: " << username;
+
+        // Obținem data și ora curentă
+        QString currentDateTime = QDateTime::currentDateTime().toString("dd/MM/yyyy HH:mm:ss");
+
+        // Formatăm șirul de caractere
+        QString formattedEntry = QString("Name: %1 Creator: %2 Date: %3")
+            .arg(lobbyName.leftJustified(35, ' '))  // Numele lobby-ului completat cu spații
+            .arg(username.leftJustified(35, ' '))  // Username completat cu spații
+            .arg(currentDateTime.leftJustified(25, ' ')); // Data și ora completată cu spații
+
         // Creează un nou element în listă
-        QListWidgetItem* newItem = new QListWidgetItem(lobbyName, m_lobbyList);
+        QListWidgetItem* newItem = new QListWidgetItem(formattedEntry, m_lobbyList);
 
         // Configurăm stilul textului
         newItem->setForeground(QBrush(QColor(0, 0, 0))); // Text negru
-        newItem->setFont(QFont("Arial", 16, QFont::Bold)); // Font personalizat
+        newItem->setFont(QFont("Courier", 12, QFont::Bold)); // Font monospaced pentru aliniere corectă
 
-        m_lobbyList->addItem(newItem); // Adaugă elementul în listă
+        // Adăugăm elementul în listă
+        m_lobbyList->addItem(newItem);
         QMessageBox::information(this, "Create Lobby", "New lobby created: " + lobbyName);
     }
     else {
@@ -173,7 +190,9 @@ void LobbyWindow::onCreateLobbyButtonClicked() {
     }
 }
 
+
 void LobbyWindow::onQuitButtonClicked() {
     emit lobbyWindowClosed(); // Emit semnalul când se apasă Quit
     close();
 }
+

@@ -1,3 +1,4 @@
+/*Versiunea cu QListWidget pt lobbyuri*/
 #ifndef LOBBYWINDOW_H
 #define LOBBYWINDOW_H
 
@@ -14,6 +15,8 @@
 #include <QPalette>
 #include <QSizePolicy>
 #include <QInputDialog> 
+#include <qdatetime.h>
+
 
 class LobbyWindow : public QWidget {
     Q_OBJECT
@@ -39,3 +42,4 @@ private slots:
 };
 
 #endif // LOBBYWINDOW_H
+

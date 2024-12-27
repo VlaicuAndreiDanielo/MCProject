@@ -99,9 +99,13 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
     // Conectează butonul Submit
     connect(m_submitButton, &QPushButton::clicked, [=]() {
         QString username = m_usernameField->text();
-        std::cout << "Username: " << username.toStdString() << std::endl;
         QString password = m_passwordField->text();
-        std::cout << "Password: " << password.toStdString() << std::endl;
+
+        std::string usernameStd = username.toUtf8().constData(); // Conversia aceasta este functionala
+        std::cout << "Username: " << usernameStd << std::endl;
+        std::string passwordStd = password.toUtf8().constData(); // Conversia aceasta este functionala
+        std::cout << "Password: " << passwordStd << std::endl;
+
 
         UserDatabase db("userdatabase.db");
         if (!m_usernameField || !m_passwordField) {
@@ -114,23 +118,25 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
         }
 
         // Verifică dacă utilizatorul există în baza de date
-        if (!db.userExists(username.toStdString())) {
+        if (!db.userExists(usernameStd)) {
             QMessageBox::warning(this, "Login Failed", "Username does not exist.");
             return;
         }
 
         // Verifică dacă parola este corectă
-        if (!db.authenticateUser(username.toStdString(), password.toStdString())) {
+        if (!db.authenticateUser(usernameStd, passwordStd)) {
             QMessageBox::warning(this, "Login Failed", "Invalid password.");
             return;
         }
         else
         {
-            QMessageBox::information(this, "Login Successful", "Welcome!");
-            close();
+            QMessageBox::information(this, "Login Successful", "Welcome back!");
         }
-
-        QMessageBox::information(this, "Login Successful", "Welcome back!");
+        // Deschide PlayWindow după logare reușită
+        PlayWindow* playWindow = new PlayWindow();
+        playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
+        playWindow->show();
+        db.showAllUsers();
         close(); // Închide LogInForm
         });
 

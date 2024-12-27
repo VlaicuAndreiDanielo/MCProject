@@ -280,7 +280,7 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         QString username = m_usernameField->text(); //m_usernameField->displayText();
         QString password = m_passwordField->text(); //m_passwordField->displayText();
         QString confirmPassword = m_confirmPasswordField->text(); //m_confirmPasswordField->displayText();
-
+        // Conversie robustă
         std::string usernameStd = username.toUtf8().constData(); // Conversia aceasta este functionala
         std::string passwordStd = password.toUtf8().constData(); // Conversia aceasta este functionala
         std::string confirmPasswordStd = confirmPassword.toUtf8().constData(); // Conversia aceasta este functionala
@@ -303,12 +303,12 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         }
         // Verificare folosind funcția din clasa User
         User tempUser(usernameStd, passwordStd);
-        if (!tempUser.isUsernameValid()) {
+        if (!tempUser.isValidUsername(usernameStd)) {
             QMessageBox::warning(this, "Validation Error", "Invalid username format.");
             return;
         }
 
-        if (!tempUser.isPasswordValid()) {
+        if (!tempUser.isValidPassword(passwordStd)) {
             QMessageBox::warning(this, "Validation Error", "Invalid password format.");
             return;
         }
@@ -328,8 +328,14 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         // Creează utilizatorul și adaugă-l în baza de date
         User newUser(usernameStd, passwordStd);
         db.addUser(newUser);
-
         QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
+
+        // Deschide PlayWindow după crearea contului
+        PlayWindow* playWindow = new PlayWindow();
+        playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
+        playWindow->show();
+        db.showAllUsers();
+
         close(); // Închide SignInForm
         });
 

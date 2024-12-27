@@ -113,6 +113,9 @@
     <ClCompile Include="FirstMainWindow.cpp">
       <Filter>Source Files\LogIn and SingIn</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="SignInForm.h">
@@ -126,6 +129,9 @@
     </QtMoc>
     <QtMoc Include="FirstMainWindow.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="LobbyWindow.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

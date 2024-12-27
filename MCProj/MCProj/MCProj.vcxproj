@@ -185,6 +185,7 @@
     <ClInclude Include="HowlerMonkey.h" />
     <QtMoc Include="FirstMainWindow.h" />
     <QtMoc Include="LogInForm.h" />
+    <QtMoc Include="LobbyWindow.h" />
     <ClInclude Include="Orangutan.h" />
     <QtMoc Include="SignInForm.h" />
     <QtMoc Include="PlayWindow.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Gorilla.cpp" />
     <ClCompile Include="HowlerMonkey.cpp" />
+    <ClCompile Include="LobbyWindow.cpp" />
     <ClCompile Include="LogInForm.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

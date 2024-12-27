@@ -24,7 +24,7 @@ public:
 
 signals:
     void backRequested(); // Semnal pentru revenirea la fereastra anterioară
-
+    void sessionStarted(); //Semnal pt a inchide si fereastra principala cu butoane
 private:
     QLabel* m_usernameLabel;
     QLabel* m_passwordLabel;

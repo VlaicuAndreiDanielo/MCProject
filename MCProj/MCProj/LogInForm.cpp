@@ -132,6 +132,10 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
         {
             QMessageBox::information(this, "Login Successful", "Welcome back!");
         }
+
+        // Emit semnalul
+        emit sessionStarted();
+
         // Deschide PlayWindow după logare reușită
         PlayWindow* playWindow = new PlayWindow();
         playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere

@@ -330,6 +330,9 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         db.addUser(newUser);
         QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
 
+        // Emit semnalul
+        emit sessionStarted();
+
         // Deschide PlayWindow după crearea contului
         PlayWindow* playWindow = new PlayWindow();
         playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere

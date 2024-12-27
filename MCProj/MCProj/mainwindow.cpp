@@ -663,15 +663,58 @@ void MainWindow::ShowMainScreen() {
 //    signInForm->setModal(true);
 //    signInForm->show();
 //}
+//void MainWindow::ShowLoginForm() {
+//    if (!m_loginForm) { // Creează fereastra doar dacă nu există deja
+//        m_loginForm = new LoginForm(this);
+//        m_loginForm->setModal(false);
+//        m_loginForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
+//        connect(m_loginForm, &LoginForm::backRequested, [=]() {
+//            m_loginForm->close(); // Închide fereastra Login
+//            m_loginForm = nullptr; // Resetează pointerul
+//            ShowMainScreen(); // Reveniți la ecranul principal
+//            });
+//    }
+//
+//    // Setează poziția ferestrei copil în funcție de părintele său
+//    m_loginForm->move(geometry().x(), geometry().y());
+//    m_loginForm->show();
+//}
+//
+//void MainWindow::ShowSignInForm() {
+//    if (!m_signInForm) { // Creează fereastra doar dacă nu există deja
+//        m_signInForm = new SignInForm(this);
+//        m_signInForm->setModal(false);
+//        m_signInForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
+//        connect(m_signInForm, &SignInForm::backRequested, [=]() {
+//            m_signInForm->close(); // Închide fereastra Sign In
+//            m_signInForm = nullptr; // Resetează pointerul
+//            ShowMainScreen(); // Reveniți la ecranul principal
+//            });
+//    }
+//
+//    // Setează poziția ferestrei copil în funcție de părintele său
+//    m_signInForm->move(geometry().x(), geometry().y());
+//    m_signInForm->show();
+//}
+
 void MainWindow::ShowLoginForm() {
     if (!m_loginForm) { // Creează fereastra doar dacă nu există deja
         m_loginForm = new LoginForm(this);
         m_loginForm->setModal(false);
         m_loginForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
+
+        // Conectare pentru butonul Back
         connect(m_loginForm, &LoginForm::backRequested, [=]() {
             m_loginForm->close(); // Închide fereastra Login
             m_loginForm = nullptr; // Resetează pointerul
             ShowMainScreen(); // Reveniți la ecranul principal
+            });
+
+        // Conectare pentru sesiune începută
+        connect(m_loginForm, &LoginForm::sessionStarted, [=]() {
+            m_loginForm->close(); // Închide LoginForm
+            m_loginForm = nullptr; // Resetează pointerul
+            close(); // Închide MainWindow
             });
     }
 
@@ -685,10 +728,19 @@ void MainWindow::ShowSignInForm() {
         m_signInForm = new SignInForm(this);
         m_signInForm->setModal(false);
         m_signInForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
+
+        // Conectare pentru butonul Back
         connect(m_signInForm, &SignInForm::backRequested, [=]() {
             m_signInForm->close(); // Închide fereastra Sign In
             m_signInForm = nullptr; // Resetează pointerul
             ShowMainScreen(); // Reveniți la ecranul principal
+            });
+
+        // Conectare pentru sesiune începută
+        connect(m_signInForm, &SignInForm::sessionStarted, [=]() {
+            m_signInForm->close(); // Închide SignInForm
+            m_signInForm = nullptr; // Resetează pointerul
+            close(); // Închide MainWindow
             });
     }
 
@@ -696,7 +748,6 @@ void MainWindow::ShowSignInForm() {
     m_signInForm->move(geometry().x(), geometry().y());
     m_signInForm->show();
 }
-
 
 void MainWindow::ClearLayout() {
     while (m_layout->count() > 0) {

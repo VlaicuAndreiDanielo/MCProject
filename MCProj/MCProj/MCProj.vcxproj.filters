@@ -110,6 +110,9 @@
     <ClCompile Include="mainForTests.cpp">
       <Filter>Source Files\Monkeys</Filter>
     </ClCompile>
+    <ClCompile Include="SaveForLater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">

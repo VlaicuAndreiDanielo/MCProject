@@ -36,10 +36,12 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
 
     m_usernameLabel = new QLabel("Username:", this);
     m_usernameField = new QLineEdit(this);
+    m_usernameField->setPlaceholderText("Enter your username"); // Adăugare placeholder
 
     m_passwordLabel = new QLabel("Password:", this);
     m_passwordField = new QLineEdit(this);
     m_passwordField->setEchoMode(QLineEdit::Password);
+    m_passwordField->setPlaceholderText("Enter your password"); // Adăugare placeholder
 
     m_submitButton = new QPushButton("Submit", this);
     m_backButton = new QPushButton("Back", this);
@@ -96,28 +98,40 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
     connect(m_backButton, &QPushButton::clicked, this, &LoginForm::backRequested); // Emit semnalul backRequested
     // Conectează butonul Submit
     connect(m_submitButton, &QPushButton::clicked, [=]() {
-        QString username = m_usernameField->text(); // Citește utilizatorul
-        QString password = m_passwordField->text(); // Citește parola
+        QString username = m_usernameField->text();
+        std::cout << "Username: " << username.toStdString() << std::endl;
+        QString password = m_passwordField->text();
+        std::cout << "Password: " << password.toStdString() << std::endl;
 
         UserDatabase db("userdatabase.db");
-
-        // Verifică dacă utilizatorul există
-        if (db.userExists(username.toStdString())) {
-            User user = db.getUserInfo(username.toStdString());
-
-            // Verifică parola
-            if (user.getPassword() == password.toStdString()) {
-                // Login reușit -> Deschide PlayWindow
-                PlayWindow* playWindow = new PlayWindow();
-                playWindow->show();
-                close(); // Închide LoginForm
-            }
-            else {
-                QMessageBox::warning(this, "Login Failed", "Incorrect password.");
-            }
+        if (!m_usernameField || !m_passwordField) {
+            QMessageBox::critical(this, "Error", "Input fields are not initialized properly!");
+            return;
         }
-        else {
-            QMessageBox::warning(this, "Login Failed", "User does not exist.");
+        if (username.isEmpty() || password.isEmpty()) {
+            QMessageBox::warning(this, "Login Failed", "Username or password cannot be empty!");
+            return;
         }
+
+        // Verifică dacă utilizatorul există în baza de date
+        if (!db.userExists(username.toStdString())) {
+            QMessageBox::warning(this, "Login Failed", "Username does not exist.");
+            return;
+        }
+
+        // Verifică dacă parola este corectă
+        if (!db.authenticateUser(username.toStdString(), password.toStdString())) {
+            QMessageBox::warning(this, "Login Failed", "Invalid password.");
+            return;
+        }
+        else
+        {
+            QMessageBox::information(this, "Login Successful", "Welcome!");
+            close();
+        }
+
+        QMessageBox::information(this, "Login Successful", "Welcome back!");
+        close(); // Închide LogInForm
         });
+
 }

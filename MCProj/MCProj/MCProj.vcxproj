@@ -220,6 +220,7 @@
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Orangutan.cpp" />
     <ClCompile Include="PlayWindow.cpp" />
+    <ClCompile Include="SaveForLater.cpp" />
     <ClCompile Include="SignInForm.cpp" />
     <ClCompile Include="UserDatabase.cpp" />
     <ClCompile Include="User.cpp" />

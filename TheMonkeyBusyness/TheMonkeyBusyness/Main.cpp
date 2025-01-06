@@ -1,7 +1,7 @@
 #include <crow.h>
 #include "GameManager.h"
 #include "LobbyManager.h"
-
+#include <crow/websocket.h>
 GameManager gameManager;
 LobbyManager lobbyManager;
 
@@ -255,7 +255,7 @@ int main() {
         return crow::response(gameState->ArenaToJson().dump());
         });
 
-    CROW_ROUTE(app, "/player_move").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+ /*   CROW_ROUTE(app, "/player_move").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
         auto json = crow::json::load(req.body);
 
         if (!json || !json.has("playerId") || !json.has("gameId") ||
@@ -302,7 +302,25 @@ int main() {
         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
 
         return crow::response(200, "Shooting registered");
-        });
+        });*/
+    
+    
+    
+    CROW_ROUTE(app, "/webSocket")
+        .websocket(&app)
+        .onopen([&](crow::websocket::connection& conn) {
+        std::cout << "WebSocket connection opened!" << std::endl;
+        // You can store the connection object if needed for broadcasting messages
+            })
+        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
+                // Handle incoming messages
+                std::cout << "Received message: " << data << std::endl;
+                // Example: Broadcast the message back to all connected clients
+                conn.send_text(data);
+            })
+        .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+                std::cout << "WebSocket connection closed: " << reason << std::endl;
+            });
 
     // Start server
     app.port(8080).multithreaded().run();

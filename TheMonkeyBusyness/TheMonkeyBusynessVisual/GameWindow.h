@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 #include <crow/json.h>
+#include <ixwebsocket/IXWebSocket.h>
 #include "Player.h"
 #include "InputHandler.h"
-
+#include <ixwebsocket/IXNetSystem.h>
 struct PlayerData {
     int health;
     Position position;
@@ -16,7 +17,12 @@ struct PlayerData {
 class GameWindow : public QWidget {
 public:
     explicit GameWindow(Player& player, QWidget* parent = nullptr);
+    ~GameWindow();
 
+    //websocket functions
+    void startConnection();
+    void sendMessage(const std::string& message);
+    void closeConnection();
 private:
     // Core Components
     Player& m_player;                     // Reference to the Player object
@@ -25,7 +31,7 @@ private:
     std::vector<std::pair<Position, Direction>> m_bulletsCoordinates; // Bullets with position and direction
     std::unordered_map<std::string, PlayerData> m_playersData; // Map of player name to their data
     QTimer* m_timer;                      // Timer for the game loop
-
+    ix::WebSocket webSocket;             // Socket for communications
     // Core Game Loop Methods
     void FetchArena();                  // Fetch the whole arena from the server
     void LoadArena(const crow::json::rvalue& arenaData);
@@ -43,4 +49,5 @@ private:
 
     // Map Handling
     void DestroyMapWall(int x, int y);
+
 };

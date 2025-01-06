@@ -14,6 +14,8 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
 
     resize(RenderConfig::kWindowWidth, RenderConfig::kWindowHeight);
 
+    startConnection();
+
     m_timer = new QTimer(this);
     QObject::connect(m_timer, &QTimer::timeout, [this]() {
         FetchGameState();  // Fetch game state from the server
@@ -22,6 +24,43 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
         });
 
     m_timer->start(TimingConfig::kGameLoopIntervalMs);
+}
+
+GameWindow::~GameWindow()
+{
+    closeConnection();
+    ix::uninitNetSystem();
+}
+
+void GameWindow::startConnection() {
+    ix::initNetSystem();
+    // Set the URL to the WebSocket server you are trying to connect to
+    webSocket.setUrl("ws://localhost:8080/webSocket");
+
+    // Set up the 'on message' callback
+    webSocket.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
+        {
+            if (msg->type == ix::WebSocketMessageType::Message)
+            {
+                std::cout << msg->str << std::endl;
+            }
+        }
+    );
+
+
+    webSocket.start();
+}
+
+
+
+void GameWindow::sendMessage(const std::string& message)
+{
+   /* webSocket.send(message);*/
+}
+
+void GameWindow::closeConnection()
+{
+   /* webSocket.stop();*/
 }
 
 
@@ -89,7 +128,7 @@ void GameWindow::UpdateGameState(const crow::json::rvalue& jsonResponse) {
 
 void GameWindow::SendInputToServer() {
     // Movement payload
-    std::string payload = R"({
+   /* std::string payload = R"({
         "playerId":)" + std::to_string(m_player.GetId()) + R"(,
         "gameId":)" + std::to_string(m_player.GetGameId()) + R"(,
         "deltaX":)" + std::to_string(m_playerInput.m_direction.x()) + R"(,
@@ -117,7 +156,10 @@ void GameWindow::SendInputToServer() {
             cpr::Body{ shootPayload }
         );
 
-    }
+    }*/ 
+    // will replace /is_shooting and /player_move with /webSocket
+    //will send a json w player movement and rotation at the same time.
+    sendMessage("works");
 }
 
 void GameWindow::DestroyMapWall(int x, int y) {

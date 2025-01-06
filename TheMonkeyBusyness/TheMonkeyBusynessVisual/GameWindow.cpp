@@ -55,12 +55,12 @@ void GameWindow::startConnection() {
 
 void GameWindow::sendMessage(const std::string& message)
 {
-   /* webSocket.send(message);*/
+   webSocket.send(message);
 }
 
 void GameWindow::closeConnection()
 {
-   /* webSocket.stop();*/
+    webSocket.stop();
 }
 
 

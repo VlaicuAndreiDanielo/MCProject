@@ -19,8 +19,8 @@ public:
 	float GetCooldownTime() const { return m_cooldownTime; }
 	
 protected:
-	int m_HP;
-	int m_speed;
+	int m_HP=0;
+	int m_speed=0;
 	float m_cooldownTime;
 	float m_remainingCooldown;
 	int EvolutionLevel = 0;

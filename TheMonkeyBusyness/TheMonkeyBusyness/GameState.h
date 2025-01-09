@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Arena.h"
 #include "Raycast.h"
-
+#include <chrono>
 class GameState
 {
 public:
@@ -12,10 +12,10 @@ public:
     GameState& operator=(const GameState&) = delete;
     GameState(GameState&&) = default;
     GameState& operator=(GameState&&) = default;
-
+    
     // Game Lifecycle
     bool IsGameOver() const;
-
+    int CalculateDeltaTime(int playerId);
     // Player Management
     void AddPlayer(int playerId);
     void RemovePlayer(int playerId);
@@ -35,6 +35,7 @@ public:
 
 private:
     std::unordered_map<int, Player> m_players;
+    std::unordered_map<int, std::chrono::steady_clock::time_point > m_playerDeltaTime;
     mutable std::vector<MapPosition> m_mapChanges;
     Arena m_arena;
     Cast m_raycast;

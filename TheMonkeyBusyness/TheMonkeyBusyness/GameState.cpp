@@ -1,7 +1,6 @@
 #include "GameState.h"
 #include <stdexcept>
 #include <crow.h>
-
 void GameState::AddPlayer(int playerId) {
     if (m_players.find(playerId) != m_players.end()) {
         throw std::runtime_error("Player ID already exists");
@@ -33,7 +32,7 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId)
     return "Mario";
 }
 
-void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection) {
+void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection, double deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
@@ -46,7 +45,7 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
     player->UpdateRotation(lookDirection);
 }
 
-void GameState::ProcessShoot(int playerId, const Vector2& mousePosition) {
+void GameState::ProcessShoot(int playerId, const Vector2& mousePosition, double deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
@@ -98,9 +97,26 @@ void GameState::UpdateBullets(float deltaTime) {
     }
 }
 
+int GameState::CalculateDeltaTime(int playerId)
+{
+    double deltaTime;
+    auto now = std::chrono::steady_clock::now();
+    if (m_playerDeltaTime.find(playerId) != m_playerDeltaTime.end()) {
+        deltaTime = std::chrono::duration_cast<std::chrono::seconds>(now - m_playerDeltaTime[playerId]).count();
+        return deltaTime;
+    }
+    else {
+        m_playerDeltaTime.insert({ playerId,now });
+        return 0;
+    }
+
+
+}
+
 bool GameState::IsGameOver() const {
     return m_players.size() <= 1; // Game is over when one or no players are left
 }
+
 
 crow::json::wvalue GameState::ToJson() const {
     crow::json::wvalue gameStateJson;

@@ -5,6 +5,7 @@
 GameManager gameManager;
 LobbyManager lobbyManager;
 
+
 //ANDREI TODO sterge baza asta de date temporara si foloseste baza de date reala. Poti sa stergi direct aici, ai un comentariu mai jos in care explic restul
 std::unordered_map<std::string, std::pair<int, std::string>> mockDatabase = {
     {"mario", {1, "mario"}},
@@ -332,6 +333,7 @@ int main() {
 
                 //Broadcast the message back to all connected clients
                 if (gameState != nullptr) {
+                    double deltaTime = gameState->CalculateDeltaTime(playerId);
                     if (is_shooting == 1) {
                         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
                     }

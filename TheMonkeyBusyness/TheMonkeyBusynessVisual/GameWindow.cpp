@@ -18,8 +18,8 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
 
     m_timer = new QTimer(this);
     QObject::connect(m_timer, &QTimer::timeout, [this]() {
-        FetchGameState();  // Fetch game state from the server
         SendInputToServer(); // Send player input to the server
+        //FetchGameState();  
         update();  // Trigger repaint
         });
 
@@ -35,14 +35,26 @@ GameWindow::~GameWindow()
 void GameWindow::startConnection() {
     ix::initNetSystem();
     // Set the URL to the WebSocket server you are trying to connect to
-    webSocket.setUrl("ws://localhost:8080/webSocket");
+    webSocket.setUrl(m_player.GetServerUrl() + "/webSocket");
 
     // Set up the 'on message' callback
-    webSocket.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
+    webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
         {
-            if (msg->type == ix::WebSocketMessageType::Message)
+            if (response->type == ix::WebSocketMessageType::Message)
             {
-                std::cout << msg->str << std::endl;
+                // Extract the payload (JSON string) from the WebSocket response
+                const std::string& jsonPayload = response->str;
+
+                // Parse the JSON payload using crow::json::load
+                auto jsonResponse = crow::json::load(jsonPayload);
+
+                
+                UpdateGameState(jsonResponse);
+                
+            }
+            else if (response->type == ix::WebSocketMessageType::Error)
+            {
+                std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
             }
         }
     );
@@ -128,7 +140,7 @@ void GameWindow::UpdateGameState(const crow::json::rvalue& jsonResponse) {
 
 void GameWindow::SendInputToServer() {
     // Movement payload
-   /* std::string payload = R"({
+  /*  std::string payload = R"({
         "playerId":)" + std::to_string(m_player.GetId()) + R"(,
         "gameId":)" + std::to_string(m_player.GetGameId()) + R"(,
         "deltaX":)" + std::to_string(m_playerInput.m_direction.x()) + R"(,
@@ -156,10 +168,20 @@ void GameWindow::SendInputToServer() {
             cpr::Body{ shootPayload }
         );
 
-    }*/ 
+    } */
     // will replace /is_shooting and /player_move with /webSocket
     //will send a json w player movement and rotation at the same time.
-    sendMessage("works");
+
+    std::string payload = R"({
+        "playerId":)" + std::to_string(m_player.GetId()) + R"(,
+        "gameId":)" + std::to_string(m_player.GetGameId()) + R"(,
+        "deltaX":)" + std::to_string(m_playerInput.m_direction.x()) + R"(,
+        "deltaY":)" + std::to_string(m_playerInput.m_direction.y()) + R"(,
+        "is_shooting":)" + std::to_string((int)m_playerInput.is_shooting) + R"(,
+        "mouseX":)" + std::to_string(m_playerInput.m_mousePosition.x()) + R"(,
+        "mouseY":)" + std::to_string(m_playerInput.m_mousePosition.y()) + R"(})";
+        
+    sendMessage(payload);
 }
 
 void GameWindow::DestroyMapWall(int x, int y) {

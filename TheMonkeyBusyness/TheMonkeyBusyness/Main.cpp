@@ -220,7 +220,7 @@ int main() {
         });
 
     // Returns the state of the game serialized. Everything the client needs to know from the server while in the game. Things like player's health, coordinates and direction, bullet coordinates and direction, map changes.
-    CROW_ROUTE(app, "/game_state").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
+  /*  CROW_ROUTE(app, "/game_state").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
 
         auto gameIdStr = req.url_params.get("gameId");
         if (!gameIdStr) {
@@ -236,7 +236,7 @@ int main() {
         auto jsonResponse = gameState->ToJson();
 
         return crow::response(jsonResponse.dump());
-        });
+        });*/
 
     // Route to send the entire arena (used at game start or round start)
     CROW_ROUTE(app, "/game_arena").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
@@ -312,11 +312,36 @@ int main() {
         std::cout << "WebSocket connection opened!" << std::endl;
         // You can store the connection object if needed for broadcasting messages
             })
-        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
+        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
                 // Handle incoming messages
-                std::cout << "Received message: " << data << std::endl;
-                // Example: Broadcast the message back to all connected clients
-                conn.send_text(data);
+                auto json = crow::json::load(data);
+
+                int playerId = json["playerId"].i();
+                int gameId = json["gameId"].i();
+                float deltaX = json["deltaX"].d();
+                float deltaY = json["deltaY"].d();
+                float mouseX = json["mouseX"].d();
+                float mouseY = json["mouseY"].d();
+                int is_shooting = json["is_shooting"].i();
+               
+                GameState* gameState = nullptr;
+
+                if (gameId != -1) {
+                    gameState = gameManager.GetGameState(gameId);
+                }
+
+                //Broadcast the message back to all connected clients
+                if (gameState != nullptr) {
+                    if (is_shooting == 1) {
+                        gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
+                    }
+                    gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY));
+                    auto jsonResponse = gameState->ToJson();
+                    conn.send_text(jsonResponse.dump());
+                }
+                else {
+                    conn.send_text("0");
+                }
             })
         .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
                 std::cout << "WebSocket connection closed: " << reason << std::endl;

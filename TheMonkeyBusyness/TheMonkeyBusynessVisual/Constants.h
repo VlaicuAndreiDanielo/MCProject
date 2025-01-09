@@ -25,5 +25,5 @@ namespace PlayerConfig {
 
 // Timing and Updates
 namespace TimingConfig {
-    constexpr int kGameLoopIntervalMs = 64; // Game loop interval (milliseconds)
+    constexpr int kGameLoopIntervalMs = 16; // Game loop interval (milliseconds)
 }

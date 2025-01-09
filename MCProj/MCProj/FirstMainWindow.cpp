@@ -698,14 +698,14 @@ void FirstMainWindow::ShowLoginForm() {
         m_loginForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
 
         // Conectare pentru butonul Back
-        connect(m_loginForm, &LoginForm::backRequested, [=]() {
+        connect(m_loginForm, &LoginForm::BackRequested, [=]() {
             m_loginForm->close(); // Închide fereastra Login
             m_loginForm = nullptr; // Resetează pointerul
             ShowMainScreen(); // Reveniți la ecranul principal
             });
 
         // Conectare pentru sesiune începută
-        connect(m_loginForm, &LoginForm::sessionStarted, [=]() {
+        connect(m_loginForm, &LoginForm::SessionStarted, [=]() {
             m_loginForm->close(); // Închide LoginForm
             m_loginForm = nullptr; // Resetează pointerul
             close(); // Închide MainWindow
@@ -724,14 +724,14 @@ void FirstMainWindow::ShowSignInForm() {
         m_signInForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
 
         // Conectare pentru butonul Back
-        connect(m_signInForm, &SignInForm::backRequested, [=]() {
+        connect(m_signInForm, &SignInForm::BackRequested, [=]() {
             m_signInForm->close(); // Închide fereastra Sign In
             m_signInForm = nullptr; // Resetează pointerul
             ShowMainScreen(); // Reveniți la ecranul principal
             });
 
         // Conectare pentru sesiune începută
-        connect(m_signInForm, &SignInForm::sessionStarted, [=]() {
+        connect(m_signInForm, &SignInForm::SessionStarted, [=]() {
             m_signInForm->close(); // Închide SignInForm
             m_signInForm = nullptr; // Resetează pointerul
             close(); // Închide MainWindow

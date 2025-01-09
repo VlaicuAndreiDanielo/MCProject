@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Monkeys">
       <UniqueIdentifier>{8eb589e0-9961-451b-a30a-dc8282587007}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DataBase">
+      <UniqueIdentifier>{dfc7daf0-7b53-42f3-b446-0673adf2c8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Monkeys\DataBase">
+      <UniqueIdentifier>{959cea72-4fee-410a-b4b2-e9993e43b727}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arena.cpp">
@@ -74,6 +80,18 @@
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserDatabase.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files\DataBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +151,18 @@
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Header Files\Monkeys\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UserDatabase.h">
+      <Filter>Header Files\Monkeys\DataBase</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

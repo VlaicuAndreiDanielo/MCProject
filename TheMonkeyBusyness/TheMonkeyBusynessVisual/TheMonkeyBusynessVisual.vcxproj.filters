@@ -21,6 +21,12 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Header Files\LogIn and SingIn">
+      <UniqueIdentifier>{9d522f49-4e24-4814-9d79-5e6efac03d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LogIn and SingIn">
+      <UniqueIdentifier>{a0a51fc1-346c-4735-9cf5-e9790e1cedb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +38,27 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstMainWindow.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyWindow.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="LogInForm.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayWindow.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionManager.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
+    <ClCompile Include="SignInForm.cpp">
+      <Filter>Source Files\LogIn and SingIn</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputHandler.h">
@@ -39,6 +66,27 @@
     </ClInclude>
     <ClInclude Include="GameWindow.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstMainWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </ClInclude>
+    <ClInclude Include="LogInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionManager.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </ClInclude>
+    <ClInclude Include="SignInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

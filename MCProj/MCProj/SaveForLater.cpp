@@ -112,8 +112,8 @@
 //    QString password = m_passwordField->text(); // Citește parola
 //    QString confirmPassword = m_confirmPasswordField->text(); // Confirmă parola
 //
-//    UserDatabase db("userdatabase.db");
-//    db.createTable(); // Asigură-te că tabela există
+//    UserDatabase m_db("userdatabase.m_db");
+//    m_db.createTable(); // Asigură-te că tabela există
 //
 //    if (!m_usernameField || !m_passwordField || !m_confirmPasswordField) {
 //        QMessageBox::critical(this, "Error", "Input fields are not initialized.");
@@ -140,7 +140,7 @@
 //    }
 //
 //    // Verifică dacă numele de utilizator există deja
-//    if (db.userExists(username.toStdString())) {
+//    if (m_db.UserExists(username.toStdString())) {
 //        QMessageBox::warning(this, "Sign Up Failed", "Username already exists.");
 //        return;
 //    }
@@ -153,7 +153,7 @@
 //
 //    // Creează utilizatorul și adaugă-l în baza de date
 //    User newUser(username.toStdString(), password.toStdString());
-//    db.addUser(newUser);
+//    m_db.addUser(newUser);
 //
 //    QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
 //    close(); // Închide SignInForm
@@ -208,8 +208,8 @@
 //        //QString confirmPassword = m_confirmPasswordField->text(); // Confirmă parola
 //        std::cout << "ConfirmPassword: " << confirmPassword.toStdString() << std::endl;
 //
-//        UserDatabase db("userdatabase.db");
-//        db.createTable();
+//        UserDatabase m_db("userdatabase.m_db");
+//        m_db.createTable();
 //
 //        if (!m_usernameField || !m_passwordField || !m_confirmPasswordField) {
 //            QMessageBox::critical(this, "Error", "Input fields are not initialized.");
@@ -233,7 +233,7 @@
 //        }
 //
 //        // Verifică dacă numele de utilizator există deja
-//        if (db.userExists(username.toStdString())) {
+//        if (m_db.UserExists(username.toStdString())) {
 //            QMessageBox::warning(this, "Sign Up Failed", "Username already exists.");
 //            return;
 //        }
@@ -246,7 +246,7 @@
 //
 //        // Creează utilizatorul și adaugă-l în baza de date
 //        User newUser(username.toStdString(), password.toStdString());
-//        db.addUser(newUser);
+//        m_db.addUser(newUser);
 //
 //        QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
 //        close(); // Închide SignInForm

@@ -229,6 +229,9 @@
     <ClCompile Include="UserDatabase.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="userdatabase.db" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
   <ImportGroup Label="ExtensionTargets">

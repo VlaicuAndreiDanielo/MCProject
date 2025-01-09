@@ -140,4 +140,9 @@
       <Filter>Header Files\LogIn and SingIn</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="userdatabase.db">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

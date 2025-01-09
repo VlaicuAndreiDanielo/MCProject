@@ -15,7 +15,6 @@ public:
     
     // Game Lifecycle
     bool IsGameOver() const;
-    int CalculateDeltaTime(int playerId);
     // Player Management
     void AddPlayer(int playerId);
     void RemovePlayer(int playerId);
@@ -24,7 +23,7 @@ public:
     std::string GetPlayerNameFromDatabase(int playerId);
 
     // Updates
-    void ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection);
+    void ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection,float deltaTime);
     void ProcessShoot(int playerId, const Vector2& mousePosition);
     void UpdateGame(float deltaTime);
 
@@ -35,7 +34,6 @@ public:
 
 private:
     std::unordered_map<int, Player> m_players;
-    std::unordered_map<int, std::chrono::steady_clock::time_point > m_playerDeltaTime;
     mutable std::vector<MapPosition> m_mapChanges;
     Arena m_arena;
     Cast m_raycast;

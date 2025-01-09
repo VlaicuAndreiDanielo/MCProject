@@ -333,11 +333,11 @@ int main() {
 
                 //Broadcast the message back to all connected clients
                 if (gameState != nullptr) {
-                    double deltaTime = gameState->CalculateDeltaTime(playerId);
+                    //std::cout << std::fixed <<gameManager.GetDeltaTime();
                     if (is_shooting == 1) {
                         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
                     }
-                    gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY));
+                    gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY), gameManager.GetDeltaTime());
                     auto jsonResponse = gameState->ToJson();
                     conn.send_text(jsonResponse.dump());
                 }

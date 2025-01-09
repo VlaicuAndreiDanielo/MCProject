@@ -27,10 +27,12 @@ void Player::SetMonkeyType(Character* character)
 	m_Character = character;
 }
 
-void Player::UpdatePosition(const Vector2& direction)
+void Player::UpdatePosition(const Vector2& direction, float deltaTime)
 {
-	this->m_position.x += direction.x * m_Character->GetSpeed();
-	this->m_position.y += direction.y * m_Character->GetSpeed();
+	Vector2 normalizedDir = Vector2::Normalize(direction);
+	
+	this->m_position.x += normalizedDir.x * m_Character->GetSpeed() * deltaTime;
+	this->m_position.y += normalizedDir.y * m_Character->GetSpeed() * deltaTime;
 }
 
 void Player::UpdatePosition(const float x, const float y)

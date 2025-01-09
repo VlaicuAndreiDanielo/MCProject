@@ -16,7 +16,7 @@ public:
     // Update loop
     bool StartGameLoop(int gameId);
     void StopGameLoop(int gameId);
-
+    float GetDeltaTime();
     // Access game state
     GameState* GetGameState(int gameId);
 
@@ -25,6 +25,7 @@ private:
     std::unordered_map<int, std::thread> m_gameThreads;
     std::unordered_map<int, bool> m_runningGames;
     std::mutex m_gameMutex;
+    float deltaTime;
     int m_nextGameId;
 
 private:

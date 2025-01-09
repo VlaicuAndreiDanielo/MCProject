@@ -32,20 +32,20 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId)
     return "Mario";
 }
 
-void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection, double deltaTime) {
+void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection, float deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
     }
     if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
-            player->UpdatePosition(movement);
+            player->UpdatePosition(movement, deltaTime);
         }
     }
     player->UpdateRotation(lookDirection);
 }
 
-void GameState::ProcessShoot(int playerId, const Vector2& mousePosition, double deltaTime) {
+void GameState::ProcessShoot(int playerId, const Vector2& mousePosition) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
@@ -97,21 +97,7 @@ void GameState::UpdateBullets(float deltaTime) {
     }
 }
 
-int GameState::CalculateDeltaTime(int playerId)
-{
-    double deltaTime;
-    auto now = std::chrono::steady_clock::now();
-    if (m_playerDeltaTime.find(playerId) != m_playerDeltaTime.end()) {
-        deltaTime = std::chrono::duration_cast<std::chrono::seconds>(now - m_playerDeltaTime[playerId]).count();
-        return deltaTime;
-    }
-    else {
-        m_playerDeltaTime.insert({ playerId,now });
-        return 0;
-    }
 
-
-}
 
 bool GameState::IsGameOver() const {
     return m_players.size() <= 1; // Game is over when one or no players are left

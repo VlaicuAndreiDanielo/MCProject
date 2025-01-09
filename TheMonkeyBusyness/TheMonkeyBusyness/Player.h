@@ -20,7 +20,7 @@ public:
 	void SetMonkeyType(Character* character);
 	Weapon m_weapon;
 
-	void UpdatePosition(const Vector2 &vector);
+	void UpdatePosition(const Vector2 &vector, float deltaTime);
 	void UpdatePosition(const float x, const float y);
 	void UpdateRotation(const Vector2& mousePos);
 	void Shoot(const Vector2& mousePosition);

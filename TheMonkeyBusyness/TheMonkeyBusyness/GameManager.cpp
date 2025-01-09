@@ -84,6 +84,11 @@ void GameManager::StopGameLoop(int gameId) {
     m_gameThreads.erase(gameId);
 }
 
+float GameManager::GetDeltaTime()
+{
+    return deltaTime;
+}
+
 GameState* GameManager::GetGameState(int gameId) {
     std::lock_guard<std::mutex> lock(m_gameMutex);
 
@@ -95,32 +100,34 @@ GameState* GameManager::GetGameState(int gameId) {
 
 void GameManager::GameLoop(int gameId) {
     const std::chrono::milliseconds frameDuration(GameConfig::kFrameDurationMs);
-    auto previousTime = std::chrono::high_resolution_clock::now();
+    auto previousTime = std::chrono::steady_clock::now();
+    std::chrono::nanoseconds totalTime = std::chrono::nanoseconds::zero();
 
     while (m_runningGames[gameId]) {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> elapsed = currentTime - previousTime;
+        auto currentTime = std::chrono::steady_clock::now();
+
+        // Accumulate elapsed time
+        totalTime += (currentTime - previousTime);
         previousTime = currentTime;
 
-        float deltaTime = elapsed.count();
+        // Check if enough time has passed for a frame
+        if (totalTime >= std::chrono::duration_cast<std::chrono::nanoseconds>(frameDuration)) {
+            // Calculate deltaTime in seconds
+            deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(totalTime).count();
 
-        // Update the game state with the accurate deltaTime
-        {
-            std::lock_guard<std::mutex> lock(m_gameMutex);
-            if (m_games.find(gameId) != m_games.end()) {
-                m_games[gameId]->UpdateGame(deltaTime);
+            // Update the game state with deltaTime
+            {
+                std::lock_guard<std::mutex> lock(m_gameMutex);
+                if (m_games.find(gameId) != m_games.end()) {
+                    m_games[gameId]->UpdateGame(deltaTime);
+                }
+                else {
+                    break;
+                }
             }
-            else {
-                break;
-            }
-        }
 
-        // Sleep to maintain a consistent frame rate
-        auto endTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> frameTime = endTime - currentTime;
-
-        if (frameTime < frameDuration) {
-            std::this_thread::sleep_for(frameDuration - frameTime);
+            // Reset totalTime after processing the frame
+            totalTime = std::chrono::nanoseconds::zero();
         }
     }
 }

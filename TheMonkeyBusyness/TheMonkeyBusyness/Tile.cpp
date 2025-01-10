@@ -4,7 +4,7 @@
 Tile::Tile(TileType type)
     : m_tileType{ type }, m_hp{ 0 }, m_playerOccupied{ false }, m_isPassable{ true }, m_isShootable{ true } {
     if (type == TileType::DestructibleWall) {
-        m_hp = 3; // Default HP for destructible walls
+        m_hp = 30; // Default HP for destructible walls
     }
     updateProperties();
 }
@@ -16,7 +16,7 @@ Tile::~Tile() {
 void Tile::setType(TileType type) {
     m_tileType = type;
     if (type == TileType::DestructibleWall) {
-        m_hp = 3; // Reset HP for destructible walls
+        m_hp = 30; // Reset HP for destructible walls
     }
     else {
         m_hp = 0; // Other tiles have no HP

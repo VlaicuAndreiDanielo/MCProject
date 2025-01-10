@@ -8,5 +8,6 @@
 class Cast {
 public:
     GameObject* Raycast(Vector2 origin, Vector2 direction, float maxDistance);
+	GameObject* Raycast(Vector2 origin, Vector2 direction, float maxDistance, Vector2& CastResult);
 	Arena* m_arena;
 };

@@ -70,28 +70,34 @@ void GameState::UpdateBullets(float deltaTime) {
         for (size_t i = 0; i < bullets.size();) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
-            
-            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+            Vector2 RayCastLocation;
+            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
                 //TODO Rob pentru tipurile de ziduri care se sparg, in momentul in care s-au spart adauga coordonatele in containerul de mai jos
                 //m_mapChanges.emplace_back(x, y)
                 //Poti sa stergi urmatorul if daca nu l-am facut bine,l-am facut repede ca sa testez
-                if (tempTile->getType() == TileType::DestructibleWall)
+                if (tempTile->getType() == TileType::DestructibleWall || tempTile->getType() == TileType::FakeDestructibleWall)
                 {
-                    int x = static_cast<int>((bullet.GetPosition().x + GameConfig::kTileSize / 2) / GameConfig::kTileSize);
-                    int y = static_cast<int>((bullet.GetPosition().y + GameConfig::kTileSize / 2) / GameConfig::kTileSize);
+                    tempTile->takeDamage(bullet.GetDamage());
+                    if (tempTile->getHP() <= 0) {
+                        int x = (std::floor(RayCastLocation.x / GameConfig::kTileSize));
+                        int y = (std::floor(RayCastLocation.y / GameConfig::kTileSize));
 
-                    m_mapChanges.push_back({x, y});
-
+                        m_mapChanges.push_back({ x, y });
+                        player.m_weapon.deactivateBullet(i);
+                    }
+                    else {
+                        player.m_weapon.deactivateBullet(i);
+                    }
                     //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
                 }
-                
-                if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
-                    ++i;
-                }
                 else {
-                    player.m_weapon.deactivateBullet(i);
+                    if (tempTile->getType() != TileType::IndestructibleWall) {
+                        ++i;
+                    }
+                    else {
+                        player.m_weapon.deactivateBullet(i);
+                    }
                 }
-
             }
         }
     }

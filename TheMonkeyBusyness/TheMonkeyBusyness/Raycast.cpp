@@ -12,3 +12,15 @@ GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance)
 	return gameTile;
 	
 }
+
+GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance, Vector2& CastResult)
+{
+	Vector2 hitLocation = origin + direction * maxDistance;
+	CastResult = hitLocation;
+	//TO DO: Remove duplicate code
+	hitLocation /= GameConfig::kTileSize;
+	hitLocation.x = std::floor(hitLocation.x);
+	hitLocation.y = std::floor(hitLocation.y);
+	GameObject* gameTile = &m_arena->GetTile(hitLocation.y, hitLocation.x);
+	return gameTile;
+}

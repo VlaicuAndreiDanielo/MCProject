@@ -229,7 +229,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
             case 5: painter.fillRect(square, Qt::darkGreen); break;  // Grass
             case 6: painter.fillRect(square, Qt::red); break;  // Lava
             case 7: painter.fillRect(square, Qt::darkMagenta); break;  // Teleporter
-            case 8: painter.fillRect(square, Qt::darkYellow); break;  // Teleporter
+            case 8: painter.fillRect(square, Qt::darkYellow); break;  // Exploding wall
             default: painter.fillRect(square, Qt::black); break;  // FakeDestructibleWall
             }
             painter.drawRect(square);

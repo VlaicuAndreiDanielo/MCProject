@@ -2,15 +2,10 @@
 #include "GameManager.h"
 #include "LobbyManager.h"
 #include <crow/websocket.h>
+#include "UserDatabase.h"
 GameManager gameManager;
 LobbyManager lobbyManager;
-
-
-//ANDREI TODO sterge baza asta de date temporara si foloseste baza de date reala. Poti sa stergi direct aici, ai un comentariu mai jos in care explic restul
-std::unordered_map<std::string, std::pair<int, std::string>> mockDatabase = {
-    {"mario", {1, "mario"}},
-    {"player2", {2, "securepassword"}}
-};
+UserDatabase m_db("userdatabase.db");
 
 int main() {
     crow::SimpleApp app;
@@ -162,7 +157,7 @@ int main() {
 
         int lobbyId = json["lobbyId"].i();
         int playerId = json["playerId"].i();
-
+        //int lobbyId = 1;
         auto* lobby = lobbyManager.GetLobby(lobbyId);
         if (!lobby) {
             return crow::response(404, "Lobby not found");
@@ -192,8 +187,8 @@ int main() {
         }
         });
 
-    // Validates the username and password and returns the playerId associated with the credentials
-    CROW_ROUTE(app, "/login").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
+   // Validates the username and password and returns the playerId associated with the credentials
+    CROW_ROUTE(app, "/login").methods(crow::HTTPMethod::POST)([&](const crow::request& req) {
         auto body = crow::json::load(req.body);
         if (!body || !body.has("username") || !body.has("password")) {
             return crow::response(400, "Invalid request");
@@ -202,23 +197,46 @@ int main() {
         std::string username = body["username"].s();
         std::string password = body["password"].s();
 
-
-        /*
-        ANDREI TODO acum folosesc o baza de date de test care e un unordered map.Aici primesc de la client usernameul si parola introduse si trebuie verificat
-        daca exista si sunt corecte in baza de date reala. Daca exista si sunt valide returneaza ID ul unic al playerului asociat cu acele date.
-        Trebuie sa modifici doar ce am pus cu //TEMP .Acolo am folosit baza asta de date temporara, restul lasa asa
-        */
-        auto it = mockDatabase.find(username);  //TEMP 
-        if (it != mockDatabase.end() && it->second.second == password) {  //TEMP intra in if ul asta doar daca ai gasit userul
-            int playerId = it->second.first;  //TEMP dar tot trebuie sa pui in variabila playerId ce gasesti in baza de date pentru user
+        if (m_db.AuthenticateUser(username, password)) {
+            int userId = m_db.GetUserIdByUsername(username);
 
             crow::json::wvalue response;
-            response["playerId"] = playerId;
+            response["playerId"] = userId;
             return crow::response(response);
         }
 
-        return crow::response(401, "Invalid credentials");
+        return crow::response(401, "Incorrect username or password.");
         });
+
+    CROW_ROUTE(app, "/signin").methods(crow::HTTPMethod::POST)([&](const crow::request& req) {
+        auto body = crow::json::load(req.body);
+        if (!body || !body.has("username") || !body.has("password")) {
+            return crow::response(400, "Invalid request");
+        }
+
+        std::string username = body["username"].s();
+        std::string password = body["password"].s();
+
+        // Check if the username already exists in the database
+        if (m_db.UserExists(username)) {
+            return crow::response(409, "Username already exists.");
+        }
+
+        // Create the new user
+        User newUser(username, password);
+        try {
+            m_db.AddUser(newUser);
+            int userId = m_db.GetUserIdByUsername(username);
+
+            crow::json::wvalue response;
+            response["playerId"] = userId;
+            return crow::response(response);
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("Error creating user: ") + e.what());
+        }
+        });
+
 
     // Returns the state of the game serialized. Everything the client needs to know from the server while in the game. Things like player's health, coordinates and direction, bullet coordinates and direction, map changes.
   /*  CROW_ROUTE(app, "/game_state").methods(crow::HTTPMethod::GET)([](const crow::request& req) {

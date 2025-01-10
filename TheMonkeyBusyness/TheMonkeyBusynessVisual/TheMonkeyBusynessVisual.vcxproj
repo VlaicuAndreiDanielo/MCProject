@@ -11,13 +11,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FirstMainWindow.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="LobbyWindow.cpp" />
+    <ClCompile Include="LogInForm.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayWindow.cpp" />
+    <ClCompile Include="SessionManager.cpp" />
+    <ClCompile Include="SignInForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="FirstMainWindow.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="InputHandler.h" />
+    <QtMoc Include="LobbyWindow.h" />
+    <QtMoc Include="LogInForm.h" />
+    <ClInclude Include="Player.h" />
+    <QtMoc Include="PlayWindow.h" />
+    <ClInclude Include="SessionManager.h" />
+    <QtMoc Include="SignInForm.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D3AF52DB-B03A-4018-B112-468BB7D756EE}</ProjectGuid>
@@ -54,6 +68,7 @@
     <QtInstall>6.8.0_msvc2022_64</QtInstall>
     <QtModules>quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <MocMacroNames>Q_OBJECT;Q_GADGET;Q_NAMESPACE;Q_NAMESPACE_EXPORT;$(MocMacroNames)</MocMacroNames>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />

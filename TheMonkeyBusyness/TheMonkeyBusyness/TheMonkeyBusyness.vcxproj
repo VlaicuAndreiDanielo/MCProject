@@ -147,11 +147,15 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Gorilla.cpp" />
     <ClCompile Include="HowlerMonkey.cpp" />
+    <ClCompile Include="Lobby.cpp" />
+    <ClCompile Include="LobbyManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Orangutan.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="User.cpp" />
+    <ClCompile Include="UserDatabase.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
@@ -166,12 +170,16 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gorilla.h" />
     <ClInclude Include="HowlerMonkey.h" />
+    <ClInclude Include="Lobby.h" />
+    <ClInclude Include="LobbyManager.h" />
     <ClInclude Include="Orangutan.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ConstantValues.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="UserDatabase.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="weaponsConfig.h" />

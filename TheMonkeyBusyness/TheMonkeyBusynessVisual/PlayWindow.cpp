@@ -2,7 +2,7 @@
 #include "LobbyWindow.h"
 #include <QMessageBox>
 
-PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
+PlayWindow::PlayWindow(int playerId, QWidget* parent) : m_playerId(playerId), QMainWindow(parent) {
     setWindowTitle("Game Window");
     showFullScreen(); // Setează fereastra fullscreen
 
@@ -105,14 +105,14 @@ PlayWindow::PlayWindow(QWidget* parent) : QMainWindow(parent) {
     // Conectare buton pt controale
     connect(m_controlsButton, &QPushButton::clicked, this, &PlayWindow::ShowControls);
 
-
+    
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
 }
 
 void PlayWindow::OpenLobbyWindow() {
     if (!m_lobbyWindow) { // Creează fereastra doar dacă nu există deja
-        m_lobbyWindow = new LobbyWindow();
+        m_lobbyWindow = new LobbyWindow(m_playerId);
         connect(m_lobbyWindow, &LobbyWindow::LobbyWindowClosed, this, &PlayWindow::HandleLobbyWindowClosed);
 
         m_lobbyWindow->showFullScreen(); // Afișează fereastra în modul fullscreen
@@ -138,4 +138,9 @@ void PlayWindow::ShowControls() {
     )";
 
     QMessageBox::information(this, "Game Controls", controlsText);
+}
+
+int PlayWindow::GetId()
+{
+    return m_playerId;
 }

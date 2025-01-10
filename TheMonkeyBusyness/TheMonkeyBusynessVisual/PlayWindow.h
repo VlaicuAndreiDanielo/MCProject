@@ -16,12 +16,14 @@ class PlayWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit PlayWindow(QWidget* parent = nullptr);
+    explicit PlayWindow(int playerId, QWidget* parent = nullptr);
 private slots:
     void OpenLobbyWindow(); // Slot pentru deschiderea ferestrei Lobby
     void HandleLobbyWindowClosed(); // Gestionarea închiderii LobbyWindow
     void ShowControls(); //pt afisarea controalelor
+    int GetId();
 private:
+    int m_playerId;
     QLabel* m_titleLabel;
     QVBoxLayout* m_layout;
     QPushButton* m_playButton; // Butonul Play

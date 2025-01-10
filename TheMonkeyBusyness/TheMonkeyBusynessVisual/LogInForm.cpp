@@ -1,6 +1,6 @@
 ﻿#include "LoginForm.h"
 #include "PlayWindow.h"
-#include "UserDatabase.h"
+#include "Player.h"
 #include "SessionManager.h"
 
 
@@ -98,55 +98,37 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
 
     connect(m_backButton, &QPushButton::clicked, this, &LoginForm::BackRequested); // Emit semnalul backRequested
     // Conectează butonul Submit
-    connect(m_submitButton, &QPushButton::clicked, [=]() {
+    connect(m_submitButton, &QPushButton::clicked, [this]() {
         QString username = m_usernameField->text();
         QString password = m_passwordField->text();
 
-        std::string usernameStd = username.toUtf8().constData(); // Conversia aceasta este functionala
-        std::cout << "Username: " << usernameStd << std::endl;
-        std::string passwordStd = password.toUtf8().constData(); // Conversia aceasta este functionala
-        std::cout << "Password: " << passwordStd << std::endl;
-
-
-        UserDatabase m_db("userdatabase.db");
-        if (!m_usernameField || !m_passwordField) {
-            QMessageBox::critical(this, "Error", "Input fields are not initialized properly!");
-            return;
-        }
         if (username.isEmpty() || password.isEmpty()) {
             QMessageBox::warning(this, "Login Failed", "Username or password cannot be empty!");
             return;
         }
 
-        // Verifică dacă utilizatorul există în baza de date
-        if (!m_db.UserExists(usernameStd)) {
-            QMessageBox::warning(this, "Login Failed", "Username does not exist.");
-            return;
-        }
+        std::string usernameStd = username.toUtf8().constData();
+        std::string passwordStd = password.toUtf8().constData();
 
-        // Verifică dacă parola este corectă
-        if (!m_db.AuthenticateUser(usernameStd, passwordStd)) {
-            QMessageBox::warning(this, "Login Failed", "Invalid password.");
-            return;
+        // Communicate with the server using Player::LogIn
+        std::string serverUrl = "http://localhost:8080"; // Update this to match your server's address
+        int playerId = Player::LogIn(serverUrl, usernameStd, passwordStd);
+
+        if (playerId == -1) {
+            QMessageBox::warning(this, "Login Failed", "Invalid username or password.");
         }
-        else
-        {
+        else {
             QMessageBox::information(this, "Login Successful", "Welcome back!");
 
-            // Setează username-ul în SessionManager
-            SessionManager::SetCurrentUsername(username);
-
-            // Emit semnalul
+            // Emit session started signal
             emit SessionStarted();
 
-            // Deschide PlayWindow după logare reușită
-            PlayWindow* playWindow = new PlayWindow();
-            playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
+            // Open the main PlayWindow
+            PlayWindow* playWindow = new PlayWindow(playerId);
+            playWindow->setAttribute(Qt::WA_DeleteOnClose);
             playWindow->show();
-            m_db.ShowAllUsers();
-            close(); // Închide LogInForm
+
+            close();
         }
-
         });
-
 }

@@ -1,6 +1,6 @@
 ﻿#include "SignInForm.h"
 #include "PlayWindow.h"
-#include "UserDatabase.h"
+#include "Player.h"
 #include "SessionManager.h"
 
 
@@ -259,91 +259,41 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         });
 
 }*/
-    connect(m_submitButton, &QPushButton::clicked, [=]() {
+    connect(m_submitButton, &QPushButton::clicked, [this]() {
+        QString username = m_usernameField->text();
+        QString password = m_passwordField->text();
+        QString confirmPassword = m_confirmPasswordField->text();
 
-        qDebug() << "m_usernameField created: " << (m_usernameField != nullptr);
-        qDebug() << "m_passwordField created: " << (m_passwordField != nullptr);
-        qDebug() << "m_confirmPasswordField created: " << (m_confirmPasswordField != nullptr);
-
-        if (m_usernameField->text().isEmpty()) {
-            qDebug() << "Username field is empty!";
-            return;
-        }
-        if (m_passwordField->text().isEmpty()) {
-            qDebug() << "Password field is empty!";
-            return;
-        }
-        if (m_confirmPasswordField->text().isEmpty()) {
-            qDebug() << "Confirm Password field is empty!";
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            QMessageBox::warning(this, "Sign In Failed", "All fields must be filled!");
             return;
         }
 
-        QString username = m_usernameField->text(); //m_usernameField->displayText();
-        QString password = m_passwordField->text(); //m_passwordField->displayText();
-        QString confirmPassword = m_confirmPasswordField->text(); //m_confirmPasswordField->displayText();
-        // Conversie robustă
-        std::string usernameStd = username.toUtf8().constData(); // Conversia aceasta este functionala
-        std::string passwordStd = password.toUtf8().constData(); // Conversia aceasta este functionala
-        std::string confirmPasswordStd = confirmPassword.toUtf8().constData(); // Conversia aceasta este functionala
-
-        std::cout << "Username: " << usernameStd << std::endl;
-        std::cout << "Password: " << passwordStd << std::endl;
-        std::cout << "ConfirmPassword: " << confirmPasswordStd << std::endl;
-
-        UserDatabase m_db("userdatabase.db");
-        m_db.CreateTable();
-
-        if (!m_usernameField || !m_passwordField || !m_confirmPasswordField) {
-            QMessageBox::critical(this, "Error", "Input fields are not initialized.");
-            return;
-        }
-        std::cout << "Username: " << usernameStd << ", Password: " << passwordStd << std::endl;
-        if (username.isEmpty() || password.isEmpty()) {
-            QMessageBox::warning(this, "Error", "Username or password cannot be empty!");
-            return;
-        }
-        // Verificare folosind funcția din clasa User
-        User tempUser(usernameStd, passwordStd);
-        if (!tempUser.IsValidUsername(usernameStd)) {
-            QMessageBox::warning(this, "Validation Error", "Invalid username format.");
-            return;
-        }
-
-        if (!tempUser.IsValidPassword(passwordStd)) {
-            QMessageBox::warning(this, "Validation Error", "Invalid password format.");
-            return;
-        }
-
-        // Verifică dacă numele de utilizator există deja
-        if (m_db.UserExists(usernameStd)) {
-            QMessageBox::warning(this, "Sign Up Failed", "Username already exists.");
-            return;
-        }
-
-        // Verifică dacă parolele coincid
         if (password != confirmPassword) {
-            QMessageBox::warning(this, "Sign Up Failed", "Passwords do not match.");
+            QMessageBox::warning(this, "Sign In Failed", "Passwords do not match!");
             return;
         }
 
-        // Creează utilizatorul și adaugă-l în baza de date
-        User newUser(usernameStd, passwordStd);
-        m_db.AddUser(newUser);
-        QMessageBox::information(this, "Sign Up Successful", "Account created successfully!");
+        std::string serverUrl = "http://localhost:8080"; // Adjust this to match your server's address
+        std::string usernameStd = username.toUtf8().constData();
+        std::string passwordStd = password.toUtf8().constData();
 
-        // Setează username-ul în SessionManager
-        SessionManager::SetCurrentUsername(username);
+        // Use the Player::SignIn function to create a new user
+        int playerId = Player::SignIn(serverUrl, usernameStd, passwordStd);
 
-        // Emit semnalul
-        emit SessionStarted();
+        if (playerId == -1) {
+            QMessageBox::warning(this, "Sign In Failed", "Username already exists or other error.");
+        }
+        else {
+            QMessageBox::information(this, "Sign In Successful", "Account created successfully!");
 
-        // Deschide PlayWindow după crearea contului
-        PlayWindow* playWindow = new PlayWindow();
-        playWindow->setAttribute(Qt::WA_DeleteOnClose); // Eliberare memorie la închidere
-        playWindow->show();
-        m_db.ShowAllUsers();
+            emit SessionStarted();
 
-        close(); // Închide SignInForm
+            PlayWindow* playWindow = new PlayWindow(playerId);
+            playWindow->setAttribute(Qt::WA_DeleteOnClose);
+            playWindow->show();
+
+            close();
+        }
         });
-
 }

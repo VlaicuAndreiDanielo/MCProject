@@ -31,6 +31,26 @@ int Player::LogIn(const std::string& serverUrl, const std::string& username, con
     return jsonResponse["playerId"].i();
 }
 
+int Player::SignIn(const std::string& serverUrl, const std::string& username, const std::string& password) {
+    cpr::Response response = cpr::Post(
+        cpr::Url{ serverUrl + "/signin" }, // Assuming the Crow route for sign-in is `/signin`
+        cpr::Header{ {"Content-Type", "application/json"} },
+        cpr::Body{ R"({"username":")" + username + R"(","password":")" + password + R"("})" }
+    );
+
+    // Check if the response is successful
+    if (response.status_code == 200) {
+        auto jsonResponse = crow::json::load(response.text);
+        if (jsonResponse && jsonResponse.has("playerId")) {
+            return jsonResponse["playerId"].i(); // Return the player's ID on successful sign-in
+        }
+    }
+
+    // Return -1 if the sign-in failed
+    return -1;
+}
+
+
 // Lobby-related methods
 int Player::CreateLobby() {
     cpr::Response response = cpr::Post(

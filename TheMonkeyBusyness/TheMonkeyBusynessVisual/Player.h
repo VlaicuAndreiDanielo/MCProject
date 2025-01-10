@@ -11,7 +11,7 @@ public:
 
     // Static method for logging in
     static int LogIn(const std::string& serverUrl, const std::string& username, const std::string& password);
-
+    static int SignIn(const std::string& serverUrl, const std::string& username, const std::string& password);
     // Lobby-related methods
     int CreateLobby();
     bool JoinLobby(int lobbyId);

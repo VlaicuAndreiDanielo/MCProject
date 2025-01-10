@@ -16,13 +16,14 @@
 #include <QSizePolicy>
 #include <QInputDialog> 
 #include <qdatetime.h>
+#include "GameWindow.h"
 
 
 class LobbyWindow : public QWidget {
     Q_OBJECT
 
 public:
-    explicit LobbyWindow(QWidget* parent = nullptr);
+    explicit LobbyWindow(int playerId, QWidget* parent = nullptr);
 signals:
     void LobbyWindowClosed(); // Semnal personalizat pentru închiderea ferestrei
 
@@ -32,7 +33,7 @@ private:
     QPushButton* m_createLobbyButton;
     QPushButton* m_quitButton;
     QListWidget* m_lobbyList;
-
+    int m_playerId;
     void SetupUI();
 
 private slots:

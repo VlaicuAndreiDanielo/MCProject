@@ -73,20 +73,22 @@
     <ClInclude Include="FirstMainWindow.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
-    <ClInclude Include="LobbyWindow.h">
-      <Filter>Header Files\LogIn and SingIn</Filter>
-    </ClInclude>
-    <ClInclude Include="LogInForm.h">
-      <Filter>Header Files\LogIn and SingIn</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayWindow.h">
-      <Filter>Header Files\LogIn and SingIn</Filter>
-    </ClInclude>
     <ClInclude Include="SessionManager.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
     <ClInclude Include="SignInForm.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="LobbyWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="PlayWindow.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="LogInForm.h">
+      <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

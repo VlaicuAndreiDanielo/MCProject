@@ -8,7 +8,7 @@
 #include <QMessageBox>
 
 
-LobbyWindow::LobbyWindow(QWidget* parent) : QWidget(parent) {
+LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {
     SetupUI();
 }
 
@@ -145,7 +145,23 @@ void LobbyWindow::SetupUI() {
 void LobbyWindow::OnPlayButtonClicked() {
     if (m_lobbyList->currentItem()) {
         QString selectedLobby = m_lobbyList->currentItem()->text();
-        QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
+        //QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
+        // Start the game window
+        std::string serverUrl = "http://localhost:8080";
+        Player player(m_playerId, serverUrl);
+        
+        player.SetReady();
+        auto lobbyDetails = player.GetLobbyDetails();
+
+        int gameId = player.StartGame();  // Start the game and get gameId
+        if (gameId == -1) {
+            return;
+        }
+
+        GameWindow gameWindow(player);
+        gameWindow.show();
+        emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
+        close();
     }
     else {
         QMessageBox::warning(this, "Play", "Please select a lobby to play.");

@@ -28,7 +28,13 @@ Lobby* LobbyManager::GetLobby(int lobbyId) {
     std::lock_guard<std::mutex> lock(m_lobbyMutex);
 
     auto it = m_lobbies.find(lobbyId);
-    return it != m_lobbies.end() ? &it->second : nullptr;
+    if (it != m_lobbies.end()) {
+        //std::cout << "Lobby found: ID = " << lobbyId << std::endl;
+        return &it->second;
+    }
+
+    //std::cerr << "Lobby not found: ID = " << lobbyId << std::endl;
+    return nullptr;
 }
 
 bool LobbyManager::AddPlayerToLobby(int lobbyId, int playerId) {

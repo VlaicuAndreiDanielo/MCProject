@@ -58,7 +58,7 @@ void LobbyWindow::SetupUI() {
     leftLayout->addWidget(m_titleLabel, 0, Qt::AlignCenter);
 
     // Buton Play
-    m_playButton = new QPushButton("Play", this);
+    m_playButton = new QPushButton("Start Game", this);
     m_playButton->setStyleSheet(R"(
         QPushButton {
             background-color: rgba(255, 215, 0, 200);
@@ -145,23 +145,25 @@ void LobbyWindow::SetupUI() {
 void LobbyWindow::OnPlayButtonClicked() {
     if (m_lobbyList->currentItem()) {
         QString selectedLobby = m_lobbyList->currentItem()->text();
-        //QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
+        QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
         // Start the game window
         std::string serverUrl = "http://localhost:8080";
         Player player(m_playerId, serverUrl);
         
-        player.SetReady();
-        auto lobbyDetails = player.GetLobbyDetails();
+        player.SetLobbyId(m_playerId);
+        //player.SetReady();
 
-        int gameId = player.StartGame();  // Start the game and get gameId
-        if (gameId == -1) {
+        //auto lobbyDetails = player.GetLobbyDetails();
+
+       // int gameId = player.StartGame();  // Start the game and get gameId
+        /*if (gameId == -1) {
             return;
-        }
-
-        GameWindow gameWindow(player);
-        gameWindow.show();
+        }*/
         emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
         close();
+        GameWindow gameWindow(player);
+        gameWindow.show();
+        
     }
     else {
         QMessageBox::warning(this, "Play", "Please select a lobby to play.");
@@ -180,6 +182,11 @@ void LobbyWindow::OnCreateLobbyButtonClicked() {
         // Obținem numele utilizatorului conectat (de exemplu, "Player1")
         QString username = SessionManager::GetCurrentUsername();
         qDebug() << "Current logged-in user: " << username;
+
+        if (username.isEmpty()) {
+            QMessageBox::warning(this, "Error", "No username set. Please log in again.");
+            return;
+        }
 
         // Obținem data și ora curentă
         QString currentDateTime = QDateTime::currentDateTime().toString("dd/MM/yyyy HH:mm:ss");

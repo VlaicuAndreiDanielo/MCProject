@@ -108,14 +108,23 @@ int main() {
         int playerId = json["playerId"].i();
         bool isReady = json["isReady"].b();
 
-        auto* lobby = lobbyManager.GetLobby(lobbyId);
+        /*auto* lobby = lobbyManager.GetLobby(lobbyId);
         if (lobby) {
             lobby->SetReady(playerId, isReady);
             return crow::response(200, "Ready status updated");
         }
         else {
             return crow::response(404, "Lobby not found");
+        }*/
+        auto* lobby = lobbyManager.GetLobby(1);
+        if (!lobby) {
+            std::cerr << "Error: Lobby not found for ID = " << lobbyId << std::endl;
+            return crow::response(404, "Lobby not found");
         }
+
+        lobby->SetReady(playerId, isReady);
+        std::cout << "Player " << playerId << " set ready = " << isReady << " in lobby " << lobbyId << std::endl;
+        return crow::response(200, "Ready status updated");
         });
 
     // Returns the information needed to display everything about a lobby in the GUI
@@ -128,6 +137,7 @@ int main() {
         int lobbyId = std::stoi(lobbyIdStr);
         auto* lobby = lobbyManager.GetLobby(lobbyId);
         if (!lobby) {
+            std::cerr << "Lobby not found for lobbyId: " << lobbyId << std::endl;
             return crow::response(404, "Lobby not found");
         }
 
@@ -145,6 +155,7 @@ int main() {
         }
         response["players"] = std::move(playersJson);
 
+        std::cout << "Lobby details retrieved for ID = " << lobbyId << std::endl;
         return crow::response(response);
         });
 
@@ -158,13 +169,16 @@ int main() {
         int lobbyId = json["lobbyId"].i();
         int playerId = json["playerId"].i();
         //int lobbyId = 1;
+        std::cout << "Attempting to start game with lobbyId: " << lobbyId << std::endl;
         auto* lobby = lobbyManager.GetLobby(lobbyId);
         if (!lobby) {
+            std::cerr << "Error: Lobby with ID " << lobbyId << " not found." << std::endl;
             return crow::response(404, "Lobby not found");
         }
 
         // Check if the player is the host, only he can start the game
         if (lobby->GetHostId() != playerId) {
+            std::cerr << "Error: Player " << playerId << " is not the host of lobby " << lobbyId << "." << std::endl;
             return crow::response(403, "Only the host can start the game");
         }
 
@@ -180,9 +194,11 @@ int main() {
 
             crow::json::wvalue response;
             response["gameId"] = gameId;
+            std::cout << "Game started with ID = " << gameId << std::endl;
             return crow::response(response);
         }
         catch (const std::exception& e) {
+            std::cerr << "Error starting game: " << e.what() << std::endl;
             return crow::response(500, e.what());
         }
         });

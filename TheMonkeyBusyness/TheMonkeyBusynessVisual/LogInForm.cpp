@@ -22,7 +22,7 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
 
     // Creează titlul
     QLabel* titleLabel = new QLabel("Login", this);
-    QFont titleFont("Arial", 24, QFont::Bold);
+    QFont titleFont("Arial", 36, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setStyleSheet("color: rgba(255, 223, 0, 255);");
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -119,6 +119,8 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
         }
         else {
             QMessageBox::information(this, "Login Successful", "Welcome back!");
+            // Salvează numele utilizatorului în `SessionManager`
+            SessionManager::SetCurrentUsername(username);
 
             // Emit session started signal
             emit SessionStarted();

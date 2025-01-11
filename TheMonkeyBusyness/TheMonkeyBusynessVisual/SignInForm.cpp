@@ -22,7 +22,7 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
 
     // Creează titlul
     QLabel* titleLabel = new QLabel("Sign In", this);
-    QFont titleFont("Arial", 24, QFont::Bold);
+    QFont titleFont("Arial", 36, QFont::Bold);
     titleLabel->setFont(titleFont);
     titleLabel->setStyleSheet("color: rgba(255, 223, 0, 255);");
     titleLabel->setAlignment(Qt::AlignCenter);
@@ -286,6 +286,8 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
         }
         else {
             QMessageBox::information(this, "Sign In Successful", "Account created successfully!");
+            // Salvează numele utilizatorului în `SessionManager`
+            SessionManager::SetCurrentUsername(username);
 
             emit SessionStarted();
 

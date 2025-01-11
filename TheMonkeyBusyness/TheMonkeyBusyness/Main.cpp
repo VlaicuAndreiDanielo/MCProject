@@ -17,6 +17,7 @@ int main() {
         }
 
         int hostId = json["hostId"].i();
+        std::cout << "Created Lobby with host id " << hostId;
         int lobbyId = lobbyManager.CreateLobby(hostId);
 
         crow::json::wvalue response;

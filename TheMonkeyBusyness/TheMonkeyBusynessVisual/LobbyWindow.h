@@ -2,6 +2,7 @@
 #ifndef LOBBYWINDOW_H
 #define LOBBYWINDOW_H
 
+#include "Player.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
@@ -16,7 +17,7 @@
 #include <QtWidgets/QInputDialog>
 #include <QtCore/QDateTime>
 #include <QtCore/QCoreApplication>
-
+#include <unordered_map>
 
 class LobbyWindow : public QWidget {
     Q_OBJECT
@@ -32,8 +33,12 @@ private:
     QPushButton* m_createLobbyButton;
     QPushButton* m_quitButton;
     QListWidget* m_lobbyList;
+    //std::unordered_map<>
+    std::string serverUrl = "http://localhost:8080";
+    Player* m_player;
     int m_playerId;
     void SetupUI();
+    void GetLobbiesFromServer();
 
 private slots:
     void OnPlayButtonClicked();

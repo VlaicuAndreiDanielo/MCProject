@@ -11,7 +11,9 @@
 
 
 LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {
+    m_player = new Player(playerId, serverUrl);
     SetupUI();
+    GetLobbiesFromServer();
 }
 
 void LobbyWindow::SetupUI() {
@@ -144,28 +146,33 @@ void LobbyWindow::SetupUI() {
     connect(m_quitButton, &QPushButton::clicked, this, &LobbyWindow::OnQuitButtonClicked);
 }
 
+void LobbyWindow::GetLobbiesFromServer()
+{
+    // TO DO: Get all lobbies from server and display them on all clients over here
+}
+
 void LobbyWindow::OnPlayButtonClicked() {
     if (m_lobbyList->currentItem()) {
         QString selectedLobby = m_lobbyList->currentItem()->text();
         QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
         // Start the game window
-        std::string serverUrl = "http://localhost:8080";
-        Player player(m_playerId, serverUrl);
         
-        player.SetLobbyId(m_playerId);
-        //player.SetReady();
+       
+        //m_player->SetLobbyId(m_playerId);
+        m_player->JoinLobby(0);
+        m_player->SetReady();
+        //auto lobbyDetails = m_player->GetLobbyDetails();
 
-        //auto lobbyDetails = player.GetLobbyDetails();
-
-       // int gameId = player.StartGame();  // Start the game and get gameId
-        /*if (gameId == -1) {
+        int gameId = m_player->StartGame();  // Start the game and get gameId
+        if (gameId == -1) {
             return;
-        }*/
-        emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
-        close();
-        GameWindow gameWindow(player);
-        gameWindow.show();
-        
+        }
+
+        GameWindow* gameWindow = new GameWindow(*m_player);
+        gameWindow->show();
+
+        //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
+        close();     
     }
     else {
         QMessageBox::warning(this, "Play", "Please select a lobby to play.");
@@ -205,7 +212,8 @@ void LobbyWindow::OnCreateLobbyButtonClicked() {
         // Configurăm stilul textului
         newItem->setForeground(QBrush(QColor(0, 0, 0))); // Text negru
         newItem->setFont(QFont("Courier", 12, QFont::Bold)); // Font monospaced pentru aliniere corectă
-
+        m_player->SetLobbyId(m_playerId);
+        m_player->CreateLobby();
         // Adăugăm elementul în listă
         m_lobbyList->addItem(newItem);
         QMessageBox::information(this, "Create Lobby", "New lobby created: " + lobbyName);
@@ -217,6 +225,8 @@ void LobbyWindow::OnCreateLobbyButtonClicked() {
 
 
 void LobbyWindow::OnQuitButtonClicked() {
+    m_player->LeaveLobby();
+    delete(m_player);
     emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
     close();
 }

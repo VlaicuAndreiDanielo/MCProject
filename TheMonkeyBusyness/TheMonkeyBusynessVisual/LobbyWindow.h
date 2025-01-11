@@ -2,21 +2,20 @@
 #ifndef LOBBYWINDOW_H
 #define LOBBYWINDOW_H
 
-#include <QWidget>
-#include <QPushButton>
-#include <QLabel>
-#include <QListWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <qscreen.h>
-#include <qmessagebox.h>
-#include <QCoreApplication>
-#include <QPixmap>
-#include <QPalette>
-#include <QSizePolicy>
-#include <QInputDialog> 
-#include <qdatetime.h>
-#include "GameWindow.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMessageBox>
+#include <QtGui/QScreen>
+#include <QtGui/QPixmap>
+#include <QtGui/QPalette>        
+#include <QtWidgets/QSizePolicy> 
+#include <QtWidgets/QInputDialog>
+#include <QtCore/QDateTime>
+#include <QtCore/QCoreApplication>
 
 
 class LobbyWindow : public QWidget {

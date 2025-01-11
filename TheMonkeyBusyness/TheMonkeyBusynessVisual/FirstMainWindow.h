@@ -53,11 +53,11 @@
 #ifndef FIRSTMAINWINDOW_H
 #define FIRSTMAINWINDOW_H
 
-#include <QMainWindow>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QGraphicsDropShadowEffect>
+#include <QtWidgets/QMainWindow>            
+#include <QtWidgets/QPushButton>          
+#include <QtWidgets/QVBoxLayout>          
+#include <QtWidgets/QLabel>               
+#include <QtWidgets/QGraphicsDropShadowEffect>
 #include <QPixmap>
 #include <QPalette>
 #include <QCoreApplication>

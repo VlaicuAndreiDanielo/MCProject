@@ -1,6 +1,6 @@
 ﻿#include "PlayWindow.h"
 #include "LobbyWindow.h"
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox> 
 
 PlayWindow::PlayWindow(int playerId, QWidget* parent) : m_playerId(playerId), QMainWindow(parent) {
     setWindowTitle("Game Window");

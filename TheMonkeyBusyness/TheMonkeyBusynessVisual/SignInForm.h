@@ -1,20 +1,16 @@
 ﻿#ifndef SIGNINFORM_H
 #define SIGNINFORM_H
 
-#include <QDialog>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QGraphicsDropShadowEffect>
-#include <QPixmap>
-#include <QPalette>
-#include <QCoreApplication>
-#include <qmessagebox.h>
-#include <QVBoxLayout>
+#include <QtWidgets/QDialog>                
+#include <QtWidgets/QPushButton>          
+#include <QtWidgets/QLineEdit>             
+#include <QtWidgets/QLabel>                
+#include <QtWidgets/QVBoxLayout>           
+#include <QtWidgets/QGraphicsDropShadowEffect> 
+#include <QtGui/QPixmap>                   
+#include <QtGui/QPalette>                 
+#include <QtCore/QCoreApplication>       
+#include <QtWidgets/QMessageBox>
 
 class SignInForm : public QDialog {
     Q_OBJECT

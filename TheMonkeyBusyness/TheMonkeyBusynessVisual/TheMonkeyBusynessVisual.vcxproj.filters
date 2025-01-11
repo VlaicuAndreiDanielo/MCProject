@@ -70,13 +70,7 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FirstMainWindow.h">
-      <Filter>Header Files\LogIn and SingIn</Filter>
-    </ClInclude>
     <ClInclude Include="SessionManager.h">
-      <Filter>Header Files\LogIn and SingIn</Filter>
-    </ClInclude>
-    <ClInclude Include="SignInForm.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,6 +83,12 @@
     </QtMoc>
     <QtMoc Include="LogInForm.h">
       <Filter>Header Files\LogIn and SingIn</Filter>
+    </QtMoc>
+    <QtMoc Include="FirstMainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SignInForm.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

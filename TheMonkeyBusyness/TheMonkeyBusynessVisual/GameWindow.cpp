@@ -216,7 +216,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
         height() / 2.0 - m_player.GetPosition().second);
     painter.translate(playerOffset);
 
-    // Draw the map
+    // Draw the map 
     for (int i = 0; i < m_map.size(); ++i) {
         for (int j = 0; j < m_map[i].size(); ++j) {
             QRect square(j * RenderConfig::kTileSize, i * RenderConfig::kTileSize, RenderConfig::kTileSize, RenderConfig::kTileSize);

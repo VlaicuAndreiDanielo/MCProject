@@ -1,11 +1,13 @@
 ﻿/*Versiunea cu QListWidget pt lobbyuri*/
 #include "LobbyWindow.h"
 #include "SessionManager.h"
-#include <QGraphicsDropShadowEffect>
-#include <QCoreApplication>
-#include <QPixmap>
-#include <QPalette>
-#include <QMessageBox>
+#include "GameWindow.h"
+#include "Player.h"
+#include <QtWidgets/QGraphicsDropShadowEffect> 
+#include <QtCore/QCoreApplication>             
+#include <QtGui/QPixmap>                       
+#include <QtGui/QPalette>                      
+#include <QtWidgets/QMessageBox> 
 
 
 LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {

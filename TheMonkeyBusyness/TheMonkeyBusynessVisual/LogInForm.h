@@ -1,20 +1,16 @@
 ﻿#ifndef LOGINFORM_H
 #define LOGINFORM_H
 
-#include <QDialog>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QGraphicsDropShadowEffect>
-#include <QPixmap>
-#include <QPalette>
-#include <qmessagebox.h>
-#include <QCoreApplication>
+#include <QtWidgets/QDialog>                
+#include <QtWidgets/QPushButton>           
+#include <QtWidgets/QLineEdit>            
+#include <QtWidgets/QLabel>               
+#include <QtWidgets/QVBoxLayout>          
+#include <QtWidgets/QGraphicsDropShadowEffect> 
+#include <QtGui/QPixmap>                   
+#include <QtGui/QPalette>                  
+#include <QtWidgets/QMessageBox>          
+#include <QtCore/QCoreApplication>
 
 
 class LoginForm : public QDialog {

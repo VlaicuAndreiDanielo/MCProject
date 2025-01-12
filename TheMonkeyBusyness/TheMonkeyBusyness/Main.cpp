@@ -95,8 +95,9 @@ int main() {
 
         response["lobbies"] = std::move(lobbyList);
         return crow::response(response);
-        });
+    });
 
+  
 
     // Sets a player ready/not ready to start the game in a lobby
     CROW_ROUTE(app, "/set_ready").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
@@ -144,14 +145,14 @@ int main() {
 
         crow::json::wvalue response;
         response["lobbyId"] = lobby->GetLobbyId();
-        response["hostId"] = lobby->GetHostId();
+        response["hostId"] = lobby->GetHostId(); //not needed client sided. If you did not create the lobby, you are not the host
 
         crow::json::wvalue playersJson = crow::json::wvalue::list();
         size_t index = 0;
         for (const auto& [playerId, isReady] : lobby->GetPlayers()) {
             crow::json::wvalue playerJson;
             playerJson["playerId"] = playerId;
-            playerJson["isReady"] = isReady;
+            playerJson["isReady"] = isReady; // no need & time for a isReady button so this needs to be removed
             playersJson[index++] = std::move(playerJson);
         }
         response["players"] = std::move(playersJson);

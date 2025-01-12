@@ -18,7 +18,7 @@ public:
     bool LeaveLobby();
     bool SetReady();
     crow::json::wvalue GetActiveLobbies();
-    crow::json::wvalue GetLobbyDetails();
+    crow::json::wvalue GetLobbyDetails(int lobbyId);
 
     // Game-related methods
     int StartGame();

@@ -132,10 +132,10 @@ crow::json::wvalue Player::GetActiveLobbies() {
 }
 
 
-crow::json::wvalue Player::GetLobbyDetails() {
+crow::json::wvalue Player::GetLobbyDetails(int lobbyId) {
     cpr::Response response = cpr::Get(
         cpr::Url{ m_serverUrl + "/get_lobby_details" },
-        cpr::Parameters{ {"lobbyId", std::to_string(m_lobbyId)} }
+        cpr::Parameters{ {"lobbyId", std::to_string(lobbyId)} }
     );
 
     if (response.status_code == 200) {

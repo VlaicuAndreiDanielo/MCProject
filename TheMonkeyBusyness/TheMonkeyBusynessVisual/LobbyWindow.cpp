@@ -144,35 +144,118 @@ void LobbyWindow::SetupUI() {
     connect(m_playButton, &QPushButton::clicked, this, &LobbyWindow::OnPlayButtonClicked);
     connect(m_createLobbyButton, &QPushButton::clicked, this, &LobbyWindow::OnCreateLobbyButtonClicked);
     connect(m_quitButton, &QPushButton::clicked, this, &LobbyWindow::OnQuitButtonClicked);
+    connect(m_lobbyList, &QListWidget::itemClicked, this, &LobbyWindow::OnItemClicked);
 }
 
 void LobbyWindow::GetLobbiesFromServer()
 {
+    crow::json::wvalue lobbyJson = m_player->GetActiveLobbies();
+    if (lobbyJson["lobbies"].t() != crow::json::type::List) {
+        QMessageBox::information(this, "Create Lobby","No lobbies");
+        return;
+    }
+    
+
+
+    std::vector<int> lobbyIds;
+    for (size_t i = 0; i < lobbyJson["lobbies"].size(); ++i) {
+        try {
+            std::string id = lobbyJson["lobbies"][i].dump();
+            lobbyIds.push_back(std::stoi(id));  
+        }
+        catch (const std::exception& e) {
+            QMessageBox::information(this, "Create Lobby", "Error converting lobby ID");
+        }
+    }
+    
+    GetLobbyData(lobbyIds);
+
     // TO DO: Get all lobbies from server and display them on all clients over here
+}
+
+void LobbyWindow::GetLobbyData(std::vector<int> lobbyIds)
+{
+    for (int id : lobbyIds) {
+        GetLobbyData(id);
+    }
+}
+
+void LobbyWindow::GetLobbyData(int id)
+{
+    crow::json::wvalue lobbyDataJson = m_player->GetLobbyDetails(id);
+    try {
+        int playerCount = lobbyDataJson["players"].size();
+        LoadLobby(id, playerCount);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error converting lobby ID: " << e.what() << std::endl;
+    }
+}
+
+
+
+void LobbyWindow::LoadLobby(int id, int playerCount)
+{
+    for (auto it = m_lobbyData.begin(); it != m_lobbyData.end(); ) {
+        if (it->second != id) {
+            if (!m_lobbyData.empty()) {
+                m_player->SetLobbyId(id);
+                m_player->JoinLobby(id);
+                m_player->SetHost(true);
+                m_player->SetReady();
+            }
+            ++it; // Move to the next element if no erase happens
+        }
+        else {
+            int row = m_lobbyList->row(it->first);  // Get the row index of the item
+            if (row != -1) {
+                m_lobbyList->takeItem(row);
+                delete it->first;
+            }
+            it = m_lobbyData.erase(it);
+        }
+    }
+    QString lobbyName = QString("Room %1").arg(id);
+    QString playerCountString = QString("Players %1/4").arg(playerCount);
+
+    // Formatăm șirul de caractere
+    QString formattedEntry = QString("%1 %2")
+        .arg(lobbyName.leftJustified(15, ' '))  // Username completat cu spații
+        .arg(playerCountString.rightJustified(15, ' '));
+
+    // Creează un nou element în listă
+    QListWidgetItem* newItem = new QListWidgetItem(formattedEntry, m_lobbyList);
+
+    m_lobbyData.insert({ newItem, id });
+
+    // Configurăm stilul textului
+    newItem->setForeground(QBrush(QColor(0, 0, 0))); // Text negru
+    newItem->setFont(QFont("Courier", 40, QFont::Bold)); // Font monospaced pentru aliniere corectă
+
+    // Adăugăm elementul în listă
+    m_lobbyList->addItem(newItem);
 }
 
 void LobbyWindow::OnPlayButtonClicked() {
     if (m_lobbyList->currentItem()) {
         QString selectedLobby = m_lobbyList->currentItem()->text();
-        QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
-        // Start the game window
-        
-       
-        //m_player->SetLobbyId(m_playerId);
-        m_player->JoinLobby(0);
-        m_player->SetReady();
-        //auto lobbyDetails = m_player->GetLobbyDetails();
+        if (m_player->GetIsHost()) {
+            QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
+            // Start the game window
 
-        int gameId = m_player->StartGame();  // Start the game and get gameId
-        if (gameId == -1) {
-            return;
+            int gameId = m_player->StartGame();
+            if (gameId == -1) {
+                return;
+            }
+            GameWindow* gameWindow = new GameWindow(*m_player);
+            gameWindow->show();
+
+            //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
+            close();
         }
-
-        GameWindow* gameWindow = new GameWindow(*m_player);
-        gameWindow->show();
-
-        //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
-        close();     
+        else {
+            QMessageBox::information(this,"Play", "You are not the host, dummy.");
+        }
     }
     else {
         QMessageBox::warning(this, "Play", "Please select a lobby to play.");
@@ -180,47 +263,15 @@ void LobbyWindow::OnPlayButtonClicked() {
 }
 
 void LobbyWindow::OnCreateLobbyButtonClicked() {
-    // Deschide un dialog pentru a cere utilizatorului să introducă numele lobby-ului
-    bool ok;
-    QString lobbyName = QInputDialog::getText(this, "Create Lobby",
-        "Enter lobby name:", QLineEdit::Normal,
-        "", &ok);
-
-    // Dacă utilizatorul a dat click pe OK și a introdus un nume valid
-    if (ok && !lobbyName.trimmed().isEmpty()) {
-        // Obținem numele utilizatorului conectat (de exemplu, "Player1")
-        QString username = SessionManager::GetCurrentUsername();
-        qDebug() << "Current logged-in user: " << username;
-
-        if (username.isEmpty()) {
-            QMessageBox::warning(this, "Error", "No username set. Please log in again.");
-            return;
-        }
-
-        // Obținem data și ora curentă
-        QString currentDateTime = QDateTime::currentDateTime().toString("dd/MM/yyyy HH:mm:ss");
-
-        // Formatăm șirul de caractere
-        QString formattedEntry = QString("Name: %1 Creator: %2 Date: %3")
-            .arg(lobbyName.leftJustified(35, ' '))  // Numele lobby-ului completat cu spații
-            .arg(username.leftJustified(35, ' '))  // Username completat cu spații
-            .arg(currentDateTime.leftJustified(25, ' ')); // Data și ora completată cu spații
-
-        // Creează un nou element în listă
-        QListWidgetItem* newItem = new QListWidgetItem(formattedEntry, m_lobbyList);
-
-        // Configurăm stilul textului
-        newItem->setForeground(QBrush(QColor(0, 0, 0))); // Text negru
-        newItem->setFont(QFont("Courier", 12, QFont::Bold)); // Font monospaced pentru aliniere corectă
-        m_player->SetLobbyId(m_playerId);
-        m_player->CreateLobby();
-        // Adăugăm elementul în listă
-        m_lobbyList->addItem(newItem);
-        QMessageBox::information(this, "Create Lobby", "New lobby created: " + lobbyName);
+    if (m_player->GetIsHost()) {
+        QMessageBox::information(this, "Play", "Can't create a lobby while hosting one");
+        return;
     }
-    else {
-        QMessageBox::warning(this, "Create Lobby", "Lobby name cannot be empty.");
-    }
+    m_player->CreateLobby();
+    GetLobbiesFromServer();
+    update();
+    //m_player->JoinLobby()
+       
 }
 
 
@@ -229,5 +280,19 @@ void LobbyWindow::OnQuitButtonClicked() {
     delete(m_player);
     emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
     close();
+}
+
+void LobbyWindow::OnItemClicked(QListWidgetItem* item)
+{
+    if (m_player->GetLobbyId() != m_lobbyData[item]) {
+        m_player->LeaveLobby();
+        QMessageBox::information(this, "Play", "You have joined the lobby " + item->text());
+        int lobbyId = m_lobbyData[item];
+        m_player->SetHost(false);
+        m_player->SetLobbyId(lobbyId);
+        m_player->JoinLobby(lobbyId);
+        m_player->SetReady();
+        update();
+    }
 }
 

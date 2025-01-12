@@ -359,7 +359,8 @@ int main() {
                 float mouseX = json["mouseX"].d();
                 float mouseY = json["mouseY"].d();
                 int is_shooting = json["is_shooting"].i();
-               
+                int width = json["width"].i();
+                int height = json["height"].i();
                 GameState* gameState = nullptr;
 
                 if (gameId != -1) {
@@ -369,6 +370,7 @@ int main() {
                 //Broadcast the message back to all connected clients
                 if (gameState != nullptr) {
                     //std::cout << std::fixed <<gameManager.GetDeltaTime();
+                    gameState->SetResolution(width, height,playerId);
                     if (is_shooting == 1) {
                         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
                     }

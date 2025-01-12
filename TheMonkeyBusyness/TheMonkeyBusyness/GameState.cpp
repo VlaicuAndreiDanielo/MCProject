@@ -20,9 +20,21 @@ Player* GameState::GetPlayer(int playerId) {
 
 Player GameState::InitializePlayer(int playerId) {
     std::string playerName = GetPlayerNameFromDatabase(playerId);
+    bool isOverlapping = false;
+    std::pair<int, int> spawn;
+    do {
+        spawn = m_arena.GetSpawn();
+        for (auto& [playerId, player] : m_players)
+        {
+            if (player.GetPosition().x == spawn.first && player.GetPosition().y == spawn.second) {
+                isOverlapping == true;
+            }
+        }
+    } while (isOverlapping);
+    
 
-    return Player(m_arena.GetSpawn().first * GameConfig::kTileSize + GameConfig::kTileSize / 2,
-        m_arena.GetSpawn().second * GameConfig::kTileSize + GameConfig::kTileSize / 2,
+    return Player(spawn.first * GameConfig::kTileSize + GameConfig::kTileSize / 2,
+        spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2,
         playerId, playerName);
 }
 
@@ -62,6 +74,11 @@ void GameState::UpdateGame(float deltaTime)
     }
 
     UpdateBullets(deltaTime);
+}
+
+void GameState::SetResolution(int width, int height, int playerId)
+{
+    m_players[playerId].SetScreenSize(width, height);
 }
 
 void GameState::UpdateBullets(float deltaTime) {

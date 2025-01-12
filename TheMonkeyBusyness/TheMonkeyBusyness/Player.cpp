@@ -108,8 +108,8 @@ crow::json::wvalue Player::ToJson() const
 
 Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 {
-	int mouseOffsetX = mousePos.x - (GameConfig::kScreenWidth / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
-		int mouseOffsetY = mousePos.y - (GameConfig::kScreenHeight / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+	int mouseOffsetX = mousePos.x - (m_screenWidth / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
+		int mouseOffsetY = mousePos.y - (m_screenHeight / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
 		m_direction.x = mouseOffsetX - m_position.x;
 		m_direction.y = mouseOffsetY - m_position.y;
 		m_direction.Normalize();

@@ -111,6 +111,7 @@ Tile& Arena::GetTile(int line, int col)
 
 std::pair<int, int> Arena::GetSpawn()
 {
+
     return m_spawnPositions[0];
 }
 

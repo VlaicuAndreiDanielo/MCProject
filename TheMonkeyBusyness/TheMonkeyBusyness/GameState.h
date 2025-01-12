@@ -26,7 +26,7 @@ public:
     void ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection,float deltaTime);
     void ProcessShoot(int playerId, const Vector2& mousePosition);
     void UpdateGame(float deltaTime);
-
+    void SetResolution(int width, int height,int playerId);
     // Serialization
     crow::json::wvalue ToJson() const;
     crow::json::wvalue MapChangesToJson() const;

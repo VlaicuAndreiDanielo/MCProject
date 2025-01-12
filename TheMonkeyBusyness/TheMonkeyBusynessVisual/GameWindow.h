@@ -19,10 +19,7 @@ public:
     explicit GameWindow(Player& player, QWidget* parent = nullptr);
     ~GameWindow();
 
-    //websocket functions
-    void startConnection();
-    void sendMessage(const std::string& message);
-    void closeConnection();
+    
 private:
     // Core Components
     Player& m_player;                     // Reference to the Player object
@@ -46,6 +43,11 @@ private:
     void UpdateOtherPlayers(const crow::json::rvalue& playerData);
     void ProcessBullets(const crow::json::rvalue& playerData);
     void ProcessMapChanges(const crow::json::rvalue& mapChanges);
+
+    //websocket functions
+    void startConnection();
+    void sendMessage(const std::string& message);
+    void closeConnection();
 
     // Map Handling
     void DestroyMapWall(int x, int y);

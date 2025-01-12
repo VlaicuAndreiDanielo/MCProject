@@ -24,7 +24,7 @@ public:
 
 private:
     int m_lobbyId;                    
-    int m_hostId;                   
+    int m_hostId; 
     std::unordered_map<int, bool> m_players; // Players and their ready status
 
 };

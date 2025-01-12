@@ -17,6 +17,9 @@
 #include <QtWidgets/QInputDialog>
 #include <QtCore/QDateTime>
 #include <QtCore/QCoreApplication>
+#include <QtCore/qtimer.h>
+#include <ixwebsocket/IXWebSocket.h>
+#include <ixwebsocket/IXNetSystem.h>
 #include <map>
 
 class LobbyWindow : public QWidget {
@@ -24,10 +27,18 @@ class LobbyWindow : public QWidget {
 
 public:
     explicit LobbyWindow(int playerId, QWidget* parent = nullptr);
+    ~LobbyWindow();
 signals:
     void LobbyWindowClosed(); // Semnal personalizat pentru închiderea ferestrei
 
+   
 private:
+    //websocket functions
+    void StartConnectionWebSocket();
+    void SendMessageWebSocket(const std::string& message);
+    void CloseConnectionWebSocket();
+    QTimer* m_timer;
+    ix::WebSocket webSocket;
     QLabel* m_titleLabel;
     QPushButton* m_playButton;
     QPushButton* m_createLobbyButton;

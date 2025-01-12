@@ -14,6 +14,67 @@ LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), Q
     m_player = new Player(playerId, serverUrl);
     SetupUI();
     GetLobbiesFromServer();
+    StartConnectionWebSocket();
+
+    m_timer = new QTimer(this);
+    QObject::connect(m_timer, &QTimer::timeout, [this]() {
+        std::string payload = R"({
+        "playerId":)" + std::to_string(m_player->GetId()) + R"(})";
+        SendMessageWebSocket(payload);
+    });
+
+    m_timer->start(TimingConfig::kGameLoopIntervalMs);
+}
+
+LobbyWindow::~LobbyWindow()
+{
+    CloseConnectionWebSocket();
+}
+
+void LobbyWindow::StartConnectionWebSocket()
+{
+    ix::initNetSystem();
+    // Set the URL to the WebSocket server you are trying to connect to
+    webSocket.setUrl(m_player->GetServerUrl() + "/lobbysocket");
+
+    // Set up the 'on message' callback
+    webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
+    {
+            if (response->type == ix::WebSocketMessageType::Message)
+            {
+                // Extract the payload (JSON string) from the WebSocket response
+                const std::string& jsonPayload = response->str;
+                // Parse the JSON payload using crow::json::load
+                auto jsonResponse = crow::json::load(jsonPayload);
+
+                int startGame = jsonResponse["startCheck"].i();
+                if (startGame == 1) {
+                    m_player->SetGameId(jsonResponse["gameId"].i());
+                    GameWindow* gameWindow = new GameWindow(*m_player);
+                    gameWindow->show();
+                    CloseConnectionWebSocket();
+                    //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
+                    close();
+                }
+
+            }
+            else if (response->type == ix::WebSocketMessageType::Error)
+            {
+                std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
+            }
+    });
+
+    webSocket.start();
+}
+
+void LobbyWindow::SendMessageWebSocket(const std::string& message)
+{
+    webSocket.send(message);
+}
+
+void LobbyWindow::CloseConnectionWebSocket()
+{
+    webSocket.stop();
 }
 
 void LobbyWindow::SetupUI() {
@@ -196,25 +257,34 @@ void LobbyWindow::GetLobbyData(int id)
 
 void LobbyWindow::LoadLobby(int id, int playerCount)
 {
-    for (auto it = m_lobbyData.begin(); it != m_lobbyData.end(); ) {
-        if (it->second != id) {
-            if (!m_lobbyData.empty()) {
+    if (m_lobbyData.empty()) {
+        m_player->SetLobbyId(id);
+        m_player->JoinLobby(id);
+        m_player->SetHost(true);
+        m_player->SetReady();
+    }
+    else {
+        for (auto it = m_lobbyData.begin(); it != m_lobbyData.end(); ) {
+            if (it->second != id) {
+                
                 m_player->SetLobbyId(id);
                 m_player->JoinLobby(id);
                 m_player->SetHost(true);
                 m_player->SetReady();
+                
+                ++it; // Move to the next element if no erase happens
             }
-            ++it; // Move to the next element if no erase happens
-        }
-        else {
-            int row = m_lobbyList->row(it->first);  // Get the row index of the item
-            if (row != -1) {
-                m_lobbyList->takeItem(row);
-                delete it->first;
+            else {
+                int row = m_lobbyList->row(it->first);  // Get the row index of the item
+                if (row != -1) {
+                    m_lobbyList->takeItem(row);
+                    delete it->first;
+                }
+                it = m_lobbyData.erase(it);
             }
-            it = m_lobbyData.erase(it);
         }
     }
+    
     QString lobbyName = QString("Room %1").arg(id);
     QString playerCountString = QString("Players %1/4").arg(playerCount);
 
@@ -240,16 +310,17 @@ void LobbyWindow::OnPlayButtonClicked() {
     if (m_lobbyList->currentItem()) {
         QString selectedLobby = m_lobbyList->currentItem()->text();
         if (m_player->GetIsHost()) {
-            QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
+            //QMessageBox::information(this, "Play", "Starting game with lobby: " + selectedLobby);
             // Start the game window
 
             int gameId = m_player->StartGame();
+            m_player->SetGameId(gameId);
             if (gameId == -1) {
                 return;
             }
             GameWindow* gameWindow = new GameWindow(*m_player);
             gameWindow->show();
-
+            CloseConnectionWebSocket();
             //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
             close();
         }
@@ -286,8 +357,8 @@ void LobbyWindow::OnItemClicked(QListWidgetItem* item)
 {
     if (m_player->GetLobbyId() != m_lobbyData[item]) {
         m_player->LeaveLobby();
-        QMessageBox::information(this, "Play", "You have joined the lobby " + item->text());
         int lobbyId = m_lobbyData[item];
+        QMessageBox::information(this, "Play", "You have joined the lobby " + lobbyId);
         m_player->SetHost(false);
         m_player->SetLobbyId(lobbyId);
         m_player->JoinLobby(lobbyId);

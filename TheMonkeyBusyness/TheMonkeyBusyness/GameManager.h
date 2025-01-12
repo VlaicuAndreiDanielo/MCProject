@@ -17,6 +17,7 @@ public:
     bool StartGameLoop(int gameId);
     void StopGameLoop(int gameId);
     float GetDeltaTime();
+    std::unordered_map<int, GameState*> GetAllGames();
     // Access game state
     GameState* GetGameState(int gameId);
 

@@ -1,7 +1,7 @@
 #include "LobbyManager.h"
 #include <stdexcept>
 #include <algorithm>
-
+#include <iostream>
 LobbyManager::LobbyManager() : m_nextLobbyId(GameConfig::kfirstLobbyId) {}
 
 int LobbyManager::CreateLobby(int hostId) {

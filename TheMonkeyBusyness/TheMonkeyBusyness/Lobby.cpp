@@ -1,14 +1,14 @@
 #include "Lobby.h"
 #include <stdexcept>
 #include "ConstantValues.h"
-
+#include "iostream"
 Lobby::Lobby(int lobbyId, int hostId)
     : m_lobbyId(lobbyId), m_hostId(hostId) {
     m_players[hostId] = false; // Host is initially not ready
 }
 
 bool Lobby::AddPlayer(int playerId) {
-    if (m_players.size() >= HasMaximumPlayers()) {
+    if (HasMaximumPlayers()) {
         return false; // Lobby is full
     }
     m_players[playerId] = false;

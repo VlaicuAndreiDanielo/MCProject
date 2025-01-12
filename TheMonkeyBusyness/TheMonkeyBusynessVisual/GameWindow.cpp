@@ -42,7 +42,7 @@ void GameWindow::startConnection() {
         {
             if (response->type == ix::WebSocketMessageType::Message)
             {
-                // Extract the payload (JSON string) from the WebSocket response
+                 //Extract the payload (JSON string) from the WebSocket response
                 const std::string& jsonPayload = response->str;
 
                 // Parse the JSON payload using crow::json::load

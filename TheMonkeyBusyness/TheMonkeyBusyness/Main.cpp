@@ -82,37 +82,61 @@ int main() {
         }
         });
 
-    CROW_ROUTE(app, "/lobbysocket")
-        .websocket(&app)
-        .onopen([&](crow::websocket::connection& conn) {
-        std::cout << "WebSocket connection opened!" << std::endl;
-        // You can store the connection object if needed for broadcasting messages
-        })
-        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
-                // Handle incoming messages
-                auto json = crow::json::load(data);
+    CROW_ROUTE(app, "/startgameclient").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
+        
+        auto playerIdStr = req.url_params.get("playerId");
+        if (!playerIdStr) {
+            return crow::response(400, "Invalid request: missing playerId");
+        }
 
-                int playerId = json["playerId"].i();
-                
-                crow::json::wvalue startJson;
+        int playerId = std::stoi(playerIdStr);
 
-                for (auto [gameId, gameState] : gameManager.GetAllGames()) {
-                    if (gameState->GetPlayer(playerId) != nullptr) {
-                        startJson["startCheck"] = 1;
-                        startJson["gameId"] = gameId;
-                        auto jsonResponse = startJson;
-                        conn.send_text(jsonResponse.dump());
-                    }
-                }
+        crow::json::wvalue startJson;
 
-                startJson["startCheck"] = 0;
+        for (auto [gameId, gameState] : gameManager.GetAllGames()) {
+            if (gameState->GetPlayer(playerId) != nullptr) {
+                startJson["startCheck"] = 1;
+                startJson["gameId"] = gameId;
                 auto jsonResponse = startJson;
-                conn.send_text(jsonResponse.dump());
-               
-                })
-                .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
-                std::cout << "WebSocket connection closed: " << reason << std::endl;
+                return crow::response(jsonResponse);
+            }
+        }
+        startJson["startCheck"] = 0;
+        auto jsonResponse = startJson;
+        return crow::response(400, "The game hasn't started yet");
         });
+
+    //CROW_ROUTE(app, "/lobbysocket")
+    //    .websocket(&app)
+    //    .onopen([&](crow::websocket::connection& conn) {
+    //    std::cout << "WebSocket connection opened!" << std::endl;
+    //    // You can store the connection object if needed for broadcasting messages
+    //    })
+    //    .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
+    //            // Handle incoming messages
+    //            auto json = crow::json::load(data);
+
+    //            int playerId = json["playerId"].i();
+    //            
+    //            crow::json::wvalue startJson;
+
+    //            for (auto [gameId, gameState] : gameManager.GetAllGames()) {
+    //                if (gameState->GetPlayer(playerId) != nullptr) {
+    //                    startJson["startCheck"] = 1;
+    //                    startJson["gameId"] = gameId;
+    //                    auto jsonResponse = startJson;
+    //                    conn.send_text(jsonResponse.dump());
+    //                }
+    //            }
+
+    //            startJson["startCheck"] = 0;
+    //            auto jsonResponse = startJson;
+    //            conn.send_text(jsonResponse.dump());
+    //           
+    //            })
+    //            .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+    //            std::cout << "WebSocket connection closed: " << reason << std::endl;
+    //    });
 
         CROW_ROUTE(app, "/get_active_lobbies").methods(crow::HTTPMethod::GET)([]() {
         auto activeLobbies = lobbyManager.GetActiveLobbyIds();
@@ -371,14 +395,14 @@ int main() {
         return crow::response(200, "Shooting registered");
         });*/
     
-    std::unordered_set<crow::websocket::connection*> connections;
+    //std::unordered_set<crow::websocket::connection*> connections;
     std::mutex gameStateMutex;
 
     CROW_ROUTE(app, "/webSocket")
         .websocket(&app)
         .onopen([&](crow::websocket::connection& conn) {
         std::cout << "WebSocket connection opened!" << std::endl;
-        connections.insert(&conn); // Store the connection
+       // connections.insert(&conn); // Store the connection
             })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
                 // Handle incoming messages
@@ -410,9 +434,9 @@ int main() {
                     }
                     gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY), gameManager.GetDeltaTime());
                     auto jsonResponse = gameState->ToJson();
-                    for (auto* connection : connections) {
-                        connection->send_text(jsonResponse.dump());
-                    }
+                   
+                    conn.send_text(jsonResponse.dump());
+                    
                 }
                 else {
                     conn.send_text("0");

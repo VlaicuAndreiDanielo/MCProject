@@ -38,7 +38,9 @@ private:
     void SendMessageWebSocket(const std::string& message);
     void CloseConnectionWebSocket();
     QTimer* m_timer;
-    ix::WebSocket webSocket;
+    ix::WebSocket* webSocket;
+    bool startedGame = false;
+    bool host = false;
     QLabel* m_titleLabel;
     QPushButton* m_playButton;
     QPushButton* m_createLobbyButton;
@@ -49,6 +51,7 @@ private:
     std::string serverUrl = "http://localhost:8080";
     Player* m_player;
     int m_playerId;
+    void CheckStart();
     void SetupUI();
     void GetLobbiesFromServer();
     void GetLobbyData(std::vector<int> lobbyIds);

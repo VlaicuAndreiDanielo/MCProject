@@ -12,15 +12,17 @@
 
 LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {
     m_player = new Player(playerId, serverUrl);
+    webSocket = new ix::WebSocket();
     SetupUI();
     GetLobbiesFromServer();
-    StartConnectionWebSocket();
+    //StartConnectionWebSocket();
 
     m_timer = new QTimer(this);
     QObject::connect(m_timer, &QTimer::timeout, [this]() {
-        std::string payload = R"({
-        "playerId":)" + std::to_string(m_player->GetId()) + R"(})";
-        SendMessageWebSocket(payload);
+       /* std::string payload = R"({
+        "playerId":)" + std::to_string(m_player->GetId()) + R"(})";*/
+       // SendMessageWebSocket(payload);
+        CheckStart();
     });
 
     m_timer->start(TimingConfig::kGameLoopIntervalMs);
@@ -28,53 +30,85 @@ LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), Q
 
 LobbyWindow::~LobbyWindow()
 {
-    CloseConnectionWebSocket();
+    //CloseConnectionWebSocket();
 }
 
-void LobbyWindow::StartConnectionWebSocket()
+//void LobbyWindow::StartConnectionWebSocket()
+//{
+//    ix::initNetSystem();
+//    // Set the URL to the WebSocket server you are trying to connect to
+//    webSocket->setUrl(m_player->GetServerUrl() + "/lobbysocket");
+//
+//    // Set up the 'on message' callback
+//    webSocket->setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
+//    {
+//            if (response->type == ix::WebSocketMessageType::Message)
+//            {
+//                // Extract the payload (JSON string) from the WebSocket response
+//                const std::string& jsonPayload = response->str;
+//                // Parse the JSON payload using crow::json::load
+//                auto jsonResponse = crow::json::load(jsonPayload);
+//
+//                int startGame = jsonResponse["startCheck"].i();
+//                if (startGame == 1) {
+//                    if (!startedGame) {
+//                        startedGame = true;
+//                        m_player->SetGameId(jsonResponse["gameId"].i());
+//                        GameWindow* gameWindow = new GameWindow(*m_player);
+//                        gameWindow->show();
+//                        //CloseConnectionWebSocket();
+//                        //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
+//                        close();
+//                    }
+//                }
+//
+//            }
+//            else if (response->type == ix::WebSocketMessageType::Error)
+//            {
+//                std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
+//            }
+//    });
+//
+//    webSocket->start();
+//}
+
+//void LobbyWindow::SendMessageWebSocket(const std::string& message)
+//{
+//    webSocket->send(message);
+//}
+//
+//void LobbyWindow::CloseConnectionWebSocket()
+//{
+//    if (webSocket->getReadyState() == ix::ReadyState::Open || webSocket->getReadyState() == ix::ReadyState::Connecting) {
+//        static bool connectionClosed = false; // Prevent double-close
+//        if (!connectionClosed) {
+//            connectionClosed = true;
+//            webSocket->stop();
+//        }
+//    }
+//}
+
+void LobbyWindow::CheckStart()
 {
-    ix::initNetSystem();
-    // Set the URL to the WebSocket server you are trying to connect to
-    webSocket.setUrl(m_player->GetServerUrl() + "/lobbysocket");
+    cpr::Response response = cpr::Get(
+        cpr::Url{ m_player->GetServerUrl() + "/startgameclient"},
+        cpr::Parameters{ {"playerId", std::to_string(m_player->GetId())} }
+    );
 
-    // Set up the 'on message' callback
-    webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
-    {
-            if (response->type == ix::WebSocketMessageType::Message)
-            {
-                // Extract the payload (JSON string) from the WebSocket response
-                const std::string& jsonPayload = response->str;
-                // Parse the JSON payload using crow::json::load
-                auto jsonResponse = crow::json::load(jsonPayload);
-
-                int startGame = jsonResponse["startCheck"].i();
-                if (startGame == 1) {
-                    m_player->SetGameId(jsonResponse["gameId"].i());
-                    GameWindow* gameWindow = new GameWindow(*m_player);
-                    gameWindow->show();
-                    CloseConnectionWebSocket();
-                    //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
-                    close();
-                }
-
+    if (response.status_code == 200) {
+        auto jsonResponse = crow::json::load(response.text);
+        int startGame = jsonResponse["startCheck"].i();
+        if (startGame == 1) {
+            if (!startedGame && !host) {
+                startedGame = true;
+                m_player->SetGameId(jsonResponse["gameId"].i());
+                m_timer->stop();
+                GameWindow* gameWindow = new GameWindow(*m_player);
+                gameWindow->show();
+                close();
             }
-            else if (response->type == ix::WebSocketMessageType::Error)
-            {
-                std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
-            }
-    });
-
-    webSocket.start();
-}
-
-void LobbyWindow::SendMessageWebSocket(const std::string& message)
-{
-    webSocket.send(message);
-}
-
-void LobbyWindow::CloseConnectionWebSocket()
-{
-    webSocket.stop();
+        }
+    }
 }
 
 void LobbyWindow::SetupUI() {
@@ -317,10 +351,12 @@ void LobbyWindow::OnPlayButtonClicked() {
             m_player->SetGameId(gameId);
             if (gameId == -1) {
                 return;
-            }
+            } 
+            m_timer->stop();
+            host = true;
             GameWindow* gameWindow = new GameWindow(*m_player);
             gameWindow->show();
-            CloseConnectionWebSocket();
+            //CloseConnectionWebSocket();
             //emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
             close();
         }

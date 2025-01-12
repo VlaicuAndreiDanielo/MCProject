@@ -89,6 +89,11 @@ float GameManager::GetDeltaTime()
     return deltaTime;
 }
 
+std::unordered_map<int, GameState*> GameManager::GetAllGames()
+{
+    return m_games;
+}
+
 GameState* GameManager::GetGameState(int gameId) {
     std::lock_guard<std::mutex> lock(m_gameMutex);
 

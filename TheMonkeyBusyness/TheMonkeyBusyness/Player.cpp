@@ -71,6 +71,11 @@ bool Player::IsAlive() const
 	return m_Character->GetHealth() > 0;
 }
 
+void Player::Damage(int damageValue)
+{
+	m_Character->SetHealth(m_Character->GetHealth() - damageValue);
+}
+
 void Player::SetScreenSize(const int screenWidth, const int screenHeight)
 {
 	m_screenWidth = screenWidth;

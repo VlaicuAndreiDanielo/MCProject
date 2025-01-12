@@ -6,6 +6,7 @@ void GameState::AddPlayer(int playerId) {
         throw std::runtime_error("Player ID already exists");
     }
     m_raycast.m_arena = &m_arena;
+    m_raycast.m_players = &m_players;
     m_players[playerId] = InitializePlayer(playerId);
 }
 
@@ -49,7 +50,7 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
     if (!player) {
         return; // Player not found
     }
-    if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+    if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange, *player); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
             player->UpdatePosition(movement, deltaTime);
         }
@@ -88,10 +89,13 @@ void GameState::UpdateBullets(float deltaTime) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
             Vector2 RayCastLocation;
-            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
-                //TODO Rob pentru tipurile de ziduri care se sparg, in momentul in care s-au spart adauga coordonatele in containerul de mai jos
-                //m_mapChanges.emplace_back(x, y)
-                //Poti sa stergi urmatorul if daca nu l-am facut bine,l-am facut repede ca sa testez
+            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player); Player * tempPlayer = dynamic_cast<Player*>(hit)) {
+                std::cout << "Damaging the player";
+               tempPlayer->Damage(bullet.GetDamage());
+               player.m_weapon.deactivateBullet(i);
+            }
+            if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
+                //
                 if (tempTile->getType() == TileType::DestructibleWall || tempTile->getType() == TileType::FakeDestructibleWall)
                 {
                     tempTile->takeDamage(bullet.GetDamage());

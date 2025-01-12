@@ -231,8 +231,8 @@ void GameWindow::paintEvent(QPaintEvent* event) {
             case 5: painter.fillRect(square, Qt::darkGreen); break;  // Grass
             case 6: painter.fillRect(square, Qt::red); break;  // Lava
             case 7: painter.fillRect(square, Qt::darkMagenta); break;  // Teleporter
-            case 8: painter.fillRect(square, Qt::darkYellow); break;  // Exploding wall
-            default: painter.fillRect(square, Qt::black); break;  // FakeDestructibleWall
+            case 8: painter.fillRect(square, Qt::darkYellow); break;  // FakeDestructibleWall 
+            default: painter.fillRect(square, Qt::black); break;  // We don't know what happened here
             }
             painter.drawRect(square);
         }
@@ -252,36 +252,40 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     painter.setBrush(Qt::cyan);
     painter.drawRect(playerRect);
 
+   
+    painter.restore();
+
     // Set pen for text
     painter.setPen(Qt::white);
 
     // Draw local player's name above the rectangle
-    painter.drawText(-RenderConfig::kPlayerSize / 2, -RenderConfig::kPlayerSize - 5, QString::fromStdString(m_player.GetName()));
+    painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 5, QString::fromStdString(m_player.GetName()));
 
     // Draw local player's health below the rectangle
-    painter.drawText(-RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(m_player.GetHealth()));
-
-    painter.restore();
+    painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(m_player.GetHealth()));
 
 
     // Draw other players
     for (const auto& [name, data] : m_playersData) {
         const auto& [health, position, direction] = data;
 
-        int x = position.first - m_player.GetPosition().first + (width() / 2);
-        int y = position.second - m_player.GetPosition().second + (height() / 2);
+        /*int x = position.first - m_player.GetPosition().first + (width() / 2);
+        int y = position.second - m_player.GetPosition().second + (height() / 2);*/
 
         // Draw player rectangle
-        QRect playerRect(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
-        painter.setBrush(Qt::green);
+        QRect playerRect(- RenderConfig::kPlayerSize / 2, - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
+        painter.save();
+        painter.setBrush(Qt::magenta);
+        painter.translate(position.first, position.second);
+        painter.rotate(CalculateAngle(direction));
         painter.drawRect(playerRect);
-
+        painter.restore();
         // Draw player's name above the rectangle
         painter.setPen(Qt::white);
-        painter.drawText(x - RenderConfig::kPlayerSize / 2, y - RenderConfig::kPlayerSize - 5, QString::fromStdString(name));
+        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 5, QString::fromStdString(name));
 
         // Draw player's health below the rectangle
-        painter.drawText(x - RenderConfig::kPlayerSize / 2, y + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
+        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
     }
 
     // Draw bullets

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <chrono>
+#include <mutex>
 class Character
 {
 public:
@@ -11,11 +12,16 @@ public:
 
 	virtual void ActivateSpecialAbility() = 0;
 	virtual void MonkeyEvolution() = 0; 
-
+	mutable std::mutex healthMutex;
 	virtual ~Character() = default;
-
-	int GetHealth() const { return m_HP; }
-	int GetSpeed() const { return m_speed; }
+	void SetHealth(int value)  {
+		std::lock_guard<std::mutex> lock(healthMutex);
+		m_HP = value; }
+	int GetHealth() const {
+		std::lock_guard<std::mutex> lock(healthMutex);
+		return m_HP; }
+	int GetSpeed() const {
+				return m_speed; }
 	float GetCooldownTime() const { return m_cooldownTime; }
 	
 protected:

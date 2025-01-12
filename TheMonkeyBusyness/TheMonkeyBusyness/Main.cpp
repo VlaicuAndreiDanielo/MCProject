@@ -395,14 +395,15 @@ int main() {
         return crow::response(200, "Shooting registered");
         });*/
     
-    //std::unordered_set<crow::websocket::connection*> connections;
+    std::unordered_set<crow::websocket::connection*> connections;
     std::mutex gameStateMutex;
-
+    std::mutex connectionsMutex;
     CROW_ROUTE(app, "/webSocket")
         .websocket(&app)
         .onopen([&](crow::websocket::connection& conn) {
         std::cout << "WebSocket connection opened!" << std::endl;
-       // connections.insert(&conn); // Store the connection
+        std::lock_guard<std::mutex> lock(connectionsMutex);
+        connections.insert(&conn);
             })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
                 // Handle incoming messages
@@ -435,15 +436,23 @@ int main() {
                     gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY), gameManager.GetDeltaTime());
                     auto jsonResponse = gameState->ToJson();
                    
-                    conn.send_text(jsonResponse.dump());
+                    std::lock_guard<std::mutex> lock(connectionsMutex); // Lock the connections
+                    for (auto& connection : connections) {
+                        connection->send_text(jsonResponse.dump());
+                    }
                     
                 }
                 else {
-                    conn.send_text("0");
+                    std::lock_guard<std::mutex> lock(connectionsMutex); // Lock the connections
+                    for (auto& connection : connections) {
+                        connection->send_text("0");
+                    }
                 }
             })
         .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
                 std::cout << "WebSocket connection closed: " << reason << std::endl;
+                std::lock_guard<std::mutex> lock(connectionsMutex);
+                connections.erase(&conn);
             });
 
     // Start server

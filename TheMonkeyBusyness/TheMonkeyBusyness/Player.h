@@ -26,7 +26,7 @@ public:
 	void Shoot(const Vector2& mousePosition);
 	void Update(float deltaTime);
 	bool IsAlive() const;
-
+	void Damage(int damageValue);
 	void SetScreenSize(const int screenWidth, const int screenHeight);
 
 	const std::string& GetName() const;

@@ -109,10 +109,17 @@ Tile& Arena::GetTile(int line, int col)
     return this->m_mapa[line][col];
 }
 
-std::pair<int, int> Arena::GetSpawn()
-{
+std::pair<int, int> Arena::GetSpawn() {
+    if (m_spawnPositions.empty()) {
+        throw std::runtime_error("No spawn positions available!");
+    }
 
-    return m_spawnPositions[0];
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, m_spawnPositions.size() - 1);
+
+    int randomIndex = distrib(gen);
+    return m_spawnPositions[randomIndex];
 }
 
 void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {

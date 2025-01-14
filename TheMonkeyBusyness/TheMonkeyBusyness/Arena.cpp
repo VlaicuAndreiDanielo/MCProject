@@ -251,6 +251,90 @@ void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType
     }
 }
 
+void Arena::generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+    int startX, startY, endX, endY;
+    int edge = rand() % 4;
+
+    // Determine the start edge and set the opposite edge for the endpoint
+    switch (edge) {
+    case 0: // Top to Bottom
+        startX = rand() % (dim - 2) + 1;
+        startY = 1;
+        endX = rand() % (dim - 2) + 1;
+        endY = dim - 2;
+        break;
+
+    case 1: // Bottom to Top
+        startX = rand() % (dim - 2) + 1;
+        startY = dim - 2;
+        endX = rand() % (dim - 2) + 1;
+        endY = 1;
+        break;
+
+    case 2: // Left to Right
+        startX = 1;
+        startY = rand() % (dim - 2) + 1;
+        endX = dim - 2;
+        endY = rand() % (dim - 2) + 1;
+        break;
+
+    case 3: // Right to Left
+        startX = dim - 2;
+        startY = rand() % (dim - 2) + 1;
+        endX = 1;
+        endY = rand() % (dim - 2) + 1;
+        break;
+    }
+
+    int x = startX, y = startY;
+    int width = dim / 20; // River width
+
+    int directionX = (endX > startX) ? 1 : (endX < startX) ? -1 : 0;
+    int directionY = (endY > startY) ? 1 : (endY < startY) ? -1 : 0;
+
+    // Generate the river path
+    while ((x != endX || y != endY) && x > 0 && x < dim - 1 && y > 0 && y < dim - 1) {
+        for (int dx = -width / 2; dx <= width / 2; ++dx) {
+            for (int dy = -width / 2; dy <= width / 2; ++dy) {
+                int nx = x + dx, ny = y + dy;
+                if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1) {
+                    mapa[ny][nx].setType(type);
+                }
+            }
+        }
+
+        if (rand() % 100 < 20) {
+            directionX += (rand() % 3) - 1;
+            directionY += (rand() % 3) - 1;
+        }
+
+        directionX = std::clamp(directionX, -1, 1);
+        directionY = std::clamp(directionY, -1, 1);
+
+        x += directionX;
+        y += directionY;
+    }
+
+    // Place teleporters at opposite edges to ensure accessibility
+    placeOppositeEdgeTeleporters(mapa, dim, { startX, startY }, { endX, endY });
+}
+
+void Arena::placeOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end) {
+    // Place teleporter at the start edge
+    if (mapa[start.second][start.first].getType() == TileType::Empty) {
+        mapa[start.second][start.first].setType(TileType::Teleporter);
+    }
+
+    // Place teleporter at the end edge
+    if (mapa[end.second][end.first].getType() == TileType::Empty) {
+        mapa[end.second][end.first].setType(TileType::Teleporter);
+    }
+
+    // Pair the teleporters
+    m_teleporterConnections[start] = end;
+    m_teleporterConnections[end] = start;
+}
+
 void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
     if (type == TileType::Water)

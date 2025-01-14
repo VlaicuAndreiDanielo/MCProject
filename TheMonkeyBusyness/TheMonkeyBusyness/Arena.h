@@ -58,6 +58,8 @@ public:
     void generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability);
     void transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability);
     void generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+    void generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+    void placeOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end);
     //void draw(QPainter& painter)const;
 
     Tile& GetTile(int line, int col);

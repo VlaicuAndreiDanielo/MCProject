@@ -1,6 +1,7 @@
 #include "GameState.h"
 #include <stdexcept>
 #include <crow.h>
+#include <chrono>
 void GameState::AddPlayer(int playerId) {
     if (m_players.find(playerId) != m_players.end()) {
         throw std::runtime_error("Player ID already exists");
@@ -112,11 +113,11 @@ void GameState::UpdateBullets(float deltaTime) {
                     //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
                 }
                 else {
-                    if (tempTile->getType() != TileType::IndestructibleWall) {
-                        ++i;
+                    if (tempTile->getType() == TileType::IndestructibleWall) {
+                        player.m_weapon.deactivateBullet(i);
                     }
                     else {
-                        player.m_weapon.deactivateBullet(i);
+                        ++i;
                     }
                 }
             }

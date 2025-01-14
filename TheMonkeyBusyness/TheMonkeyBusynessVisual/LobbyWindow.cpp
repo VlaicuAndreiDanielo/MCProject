@@ -12,7 +12,7 @@
 
 LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {
     m_player = new Player(playerId, serverUrl);
-    webSocket = new ix::WebSocket();
+    //webSocket = new ix::WebSocket();
     SetupUI();
     GetLobbiesFromServer();
     //StartConnectionWebSocket();

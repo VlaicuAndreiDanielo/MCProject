@@ -9,96 +9,35 @@ Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
     this->m_mapa = generate_map(dim, numSpawns);
 }
 
-std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns)
-{
-    // Initializare harta cu spatii goale
+std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns) {
+    // Initialize map with empty spaces
     std::vector<std::vector<Tile>> mapa(dim, std::vector<Tile>(dim, Tile(TileType::Empty)));
 
+    // Create indestructible walls around the edges
     for (int i = 0; i < dim; i++) {
         mapa[i][0].setType(TileType::IndestructibleWall);
         mapa[i][dim - 1].setType(TileType::IndestructibleWall);
     }
-
     for (int j = 0; j < dim; j++) {
         mapa[0][j].setType(TileType::IndestructibleWall);
         mapa[dim - 1][j].setType(TileType::IndestructibleWall);
     }
 
+    // Generate liquids
     generateBigLiquid(mapa, dim);
     generateSmallLiquid(mapa, dim);
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(0, 100);
+    // Generate destructible walls
+    generateDestructibleWalls(mapa, 35); // 35% chance for initial destructible walls
 
-    for (int y = 1; y < dim - 1; ++y) {
-        for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% sanse pentru ziduri initiale
-                mapa[y][x].setType(TileType::DestructibleWall);
-            }
-        }
-    }
+    // Transform destructible walls into other types
+    transformDestructibleWalls(mapa, dim, 10, 10); // 10% chance for indestructible, 10% for fake destructible
 
-    // Iteratii de Cellular Automata
-    int iterations = 2;
-    for (int it = 0; it < iterations; ++it) {
-        std::vector<std::vector<Tile>> newMap = mapa;
-
-        for (int y = 1; y < dim - 1; ++y) {
-            for (int x = 1; x < dim - 1; ++x) {
-                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::DestructibleWall) {
-                    continue;  // Skip further processing for this tile
-                }
-
-                int wallCount = 0;
-                // Numara peretii vecini
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        if (dx == 0 && dy == 0) continue;
-                        if (mapa[y + dy][x + dx].getType() == TileType::DestructibleWall) {
-                            wallCount++;
-                        }
-                    }
-                }
-
-                // Aplica regula Cellular Automata
-                if (wallCount >= 4) {
-                    newMap[y][x].setType(TileType::DestructibleWall); // mai multi pereti vecini -> devine obstacol
-                }
-                else {
-                    newMap[y][x].setType(TileType::Empty); // mai putini pereti vecini -> devine spatiu liber
-                }
-            }
-        }
-        mapa = newMap;
-    }
-
-    // Transform some destructible walls into indestructible or fake destructible walls
-    for (int y = 1; y < dim - 1; ++y) {
-        for (int x = 1; x < dim - 1; ++x) {
-            if (mapa[y][x].getType() == TileType::DestructibleWall) {
-                int randomValue = distrib(gen);
-                if (randomValue < 10) {
-                    mapa[y][x].setType(TileType::IndestructibleWall); // 10% chance for indestructible wall
-                }
-                else if (randomValue < 20) {
-                    mapa[y][x].setType(TileType::FakeDestructibleWall); // 10% chance for fake destructible wall
-                }
-            }
-        }
-    }
-
-    for (int y = 1; y < dim - 1; ++y) {
-        for (int x = 1; x < dim - 1; ++x) {
-            if (distrib(gen) < 15 && mapa[y][x].getType() == TileType::Empty) { // 15% chance for grass
-                mapa[y][x].setType(TileType::Grass);
-            }
-        }
-    }
+    // Add grass
     generateGrass(mapa);
 
+    // Generate spawns and teleporters
     generateInitialSpawns(mapa, numSpawns, 8);
-
     placeTeleporters(mapa);
 
     return mapa;

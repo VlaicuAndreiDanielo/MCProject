@@ -159,6 +159,21 @@ void Arena::applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim,
     }
 }
 
+void Arena::generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100);
+
+    for (int y = 1; y < mapa.size() - 1; ++y) {
+        for (int x = 1; x < mapa[0].size() - 1; ++x) {
+            if (distrib(gen) < probability && mapa[y][x].getType() == TileType::Empty) {
+                mapa[y][x].setType(TileType::DestructibleWall);
+            }
+        }
+    }
+    applyCellularAutomata(mapa, mapa.size(), 3, TileType::DestructibleWall);
+}
+
 void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
 

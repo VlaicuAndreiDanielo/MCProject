@@ -431,48 +431,21 @@ void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numS
 }
 
 void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
-    // Define the number of iterations for cellular automata
-    int iterations = 3;
+    // Initialize random grass tiles
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100);
 
-    // Perform Cellular Automata to add grass
-    for (int it = 0; it < iterations; ++it) {
-        std::vector<std::vector<Tile>> newMap = mapa;
-
-        for (int y = 1; y < m_dim - 1; ++y) {
-            for (int x = 1; x < m_dim - 1; ++x) {
-                // Skip tiles that are already obstacles or spawn points
-                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != TileType::Grass) {
-                    continue;
-                }
-
-                int grassCount = 0;
-
-                // Count adjacent grass tiles
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        if (dx == 0 && dy == 0) continue; // Skip the center tile
-                        int nx = x + dx;
-                        int ny = y + dy;
-
-                        if (nx >= 0 && nx < m_dim && ny >= 0 && ny < m_dim &&
-                            mapa[ny][nx].getType() == TileType::Grass) {
-                            ++grassCount;
-                        }
-                    }
-                }
-
-                // Apply Cellular Automata rules for grass growth
-                if (mapa[y][x].getType() == TileType::Empty && grassCount >= 3) {
-                    newMap[y][x].setType(TileType::Grass); // Empty tiles with enough grass neighbors become grass
-                }
-                else if (mapa[y][x].getType() == TileType::Grass && grassCount < 2) {
-                    newMap[y][x].setType(TileType::Empty); // Grass with too few neighbors reverts to empty
-                }
+    for (int y = 1; y < mapa.size() - 1; ++y) {
+        for (int x = 1; x < mapa[0].size() - 1; ++x) {
+            if (distrib(gen) < 35 && mapa[y][x].getType() == TileType::Empty) { // 35% chance for initial grass
+                mapa[y][x].setType(TileType::Grass);
             }
         }
-
-        mapa = newMap; // Update the map for the next iteration
     }
+
+    // Use the generic cellular automata function for grass refinement
+    applyCellularAutomata(mapa, mapa.size(), 3, TileType::Grass);
 }
 
 std::pair<int, int> Arena::getConnectedTeleporter(int x, int y) const {

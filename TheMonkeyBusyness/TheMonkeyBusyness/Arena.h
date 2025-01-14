@@ -54,6 +54,7 @@ public:
     void pairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
     void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
     std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
+    void applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type);
     //void draw(QPainter& painter)const;
 
     Tile& GetTile(int line, int col);

@@ -122,6 +122,43 @@ std::pair<int, int> Arena::GetSpawn() {
     return m_spawnPositions[randomIndex];
 }
 
+void Arena::applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type) {
+    for (int it = 0; it < iterations; ++it) {
+        std::vector<std::vector<Tile>> newMap = mapa;
+
+        for (int y = 1; y < dim - 1; ++y) {
+            for (int x = 1; x < dim - 1; ++x) {
+                // Skip tiles that are not the specified type or empty
+                if (mapa[y][x].getType() != TileType::Empty && mapa[y][x].getType() != type) {
+                    continue;
+                }
+
+                int count = 0;
+
+                // Count neighboring tiles
+                for (int dy = -1; dy <= 1; ++dy) {
+                    for (int dx = -1; dx <= 1; ++dx) {
+                        if (dx == 0 && dy == 0) continue; // Skip the center tile
+                        if (mapa[y + dy][x + dx].getType() == type) {
+                            count++;
+                        }
+                    }
+                }
+
+                // Apply Cellular Automata rules
+                if (count >= 4) {
+                    newMap[y][x].setType(type); // More neighbors -> becomes specified type
+                }
+                else {
+                    newMap[y][x].setType(TileType::Empty); // Fewer neighbors -> becomes empty
+                }
+            }
+        }
+
+        mapa = newMap; // Update the map after each iteration
+    }
+}
+
 void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
 

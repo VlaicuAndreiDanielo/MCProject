@@ -196,104 +196,53 @@ void Arena::transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int
 
 void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     TileType type = getRandomLiquid();
-
-    int centerX = dim / 2;
-    int centerY = dim / 2;
-
     bool isRiver = rand() % 2 == 0;
 
     if (isRiver) {
-        auto generateRiver = [&](TileType type) {
-            int startX, startY, endX, endY;
-            int edge = rand() % 4;
-
-            // Choose a starting edge
-            switch (edge) {
-            case 0: startX = rand() % (dim - 2) + 1; startY = 1; endX = startX; endY = dim - 2; break; // Top to Bottom
-            case 1: startX = rand() % (dim - 2) + 1; startY = dim - 2; endX = startX; endY = 1; break; // Bottom to Top
-            case 2: startX = 1; startY = rand() % (dim - 2) + 1; endX = dim - 2; endY = startY; break; // Left to Right
-            case 3: startX = dim - 2; startY = rand() % (dim - 2) + 1; endX = 1; endY = startY; break; // Right to Left
-            }
-
-            int x = startX, y = startY;
-            int width = 3;  // River width
-            int riverLength = std::abs(endX - startX) + std::abs(endY - startY);
-            int gapPosition = rand() % (riverLength / 2) + riverLength / 4;
-
-            int stepCount = 0;
-            int directionX = (endX > startX) ? 1 : (endX < startX) ? -1 : 0;
-            int directionY = (endY > startY) ? 1 : (endY < startY) ? -1 : 0;
-
-            while ((x != endX || y != endY) && x > 0 && x < dim - 1 && y > 0 && y < dim - 1) {
-                if (stepCount != gapPosition) {
-                    for (int dx = -width / 2; dx <= width / 2; ++dx) {
-                        for (int dy = -width / 2; dy <= width / 2; ++dy) {
-                            int nx = x + dx, ny = y + dy;
-                            if (nx >= 1 && nx < dim - 1 && ny >= 1 && ny < dim - 1) {
-                                mapa[ny][nx].setType(type);
-                            }
-                        }
-                    }
-                }
-
-                if (rand() % 100 < 20) {
-                    directionX += (rand() % 3) - 1;
-                    directionY += (rand() % 3) - 1;
-                }
-
-                if (directionX > 1) directionX = 1;
-                if (directionX < -1) directionX = -1;
-                if (directionY > 1) directionY = 1;
-                if (directionY < -1) directionY = -1;
-
-                x += directionX;
-                y += directionY;
-                ++stepCount;
-            }
-            };
-
-        generateRiver(type);
+        generateRiver(mapa, dim, type);
     }
     else {
-        FastNoiseLite noise;
-        noise.SetSeed(static_cast<int>(time(0)));
-        noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
+        generateLake(mapa, dim, type);
+    }
+}
 
-        // Decide the liquid type (either Water or Lava) for the entire feature
-        TileType liquidType = (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
+void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+    FastNoiseLite noise;
+    noise.SetSeed(static_cast<int>(time(0)));
+    noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
 
-        // Randomly choose the center point for the lake
-        int centerX = dim / 5 + rand() % (dim / 2);
-        int centerY = dim / 5 + rand() % (dim / 2);
+    TileType liquidType = (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
 
-        // Define the maximum radius of the lake
-        int maxRadius = dim / 7 + rand() % (dim / 8);
+    // Randomly choose the center point for the lake
+    int centerX = dim / 5 + rand() % (dim / 2);
+    int centerY = dim / 5 + rand() % (dim / 2);
 
-        // Generate the lake
-        for (int y = 0; y < dim; ++y) {
-            for (int x = 0; x < dim; ++x) {
-                // Calculate distance from the center
-                float distance = std::sqrt(std::pow(x - centerX, 2) + std::pow(y - centerY, 2));
+    int maxRadius = dim / 7 + rand() % (dim / 8);
 
-                // Add Perlin noise to the distance calculation
-                float noiseValue = noise.GetNoise((float)x, (float)y);
+    // Generate the lake
+    for (int y = 0; y < dim; ++y) {
+        for (int x = 0; x < dim; ++x) {
+            // Calculate distance from the center
+            float distance = std::sqrt(std::pow(x - centerX, 2) + std::pow(y - centerY, 2));
 
-                // Base condition for being part of the lake
-                if (distance + noiseValue * maxRadius / 4.0f <= maxRadius) {
-                    // Ensure we don't overwrite existing important tiles
-                    if (mapa[y][x].getType() == TileType::Empty) {
-                        mapa[y][x].setType(liquidType);
-                    }
+            // Add Perlin noise to the distance calculation
+            float noiseValue = noise.GetNoise((float)x, (float)y);
+
+            // Base condition for being part of the lake
+            if (distance + noiseValue * maxRadius / 4.0f <= maxRadius) {
+                // Ensure we don't overwrite existing important tiles
+                if (mapa[y][x].getType() == TileType::Empty) {
+                    mapa[y][x].setType(liquidType);
                 }
+            }
 
-                // Add fragmentation if it's lava and near the edge of the lake
-                if (liquidType == TileType::Lava) {
-                    float edgeDistance = maxRadius - distance;
-                    if (edgeDistance >= 0 && edgeDistance < 3.0f) { // Edge threshold for fragmentation
-                        if (noise.GetNoise((float)x, (float)y) > 0.6f) { // Add jagged noise
-                            if (mapa[y][x].getType() == TileType::Empty) {
-                                mapa[y][x].setType(TileType::Lava); // Add lava fragments
-                            }
+            // Add fragmentation if it's lava and near the edge of the lake
+            if (liquidType == TileType::Lava) {
+                float edgeDistance = maxRadius - distance;
+                if (edgeDistance >= 0 && edgeDistance < 3.0f) { // Edge threshold for fragmentation
+                    if (noise.GetNoise((float)x, (float)y) > 0.6f) { // Add jagged noise
+                        if (mapa[y][x].getType() == TileType::Empty) {
+                            mapa[y][x].setType(TileType::Lava); // Add lava fragments
                         }
                     }
                 }

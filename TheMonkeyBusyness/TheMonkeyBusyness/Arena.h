@@ -57,6 +57,7 @@ public:
     void applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type);
     void generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability);
     void transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability);
+    void generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
     //void draw(QPainter& painter)const;
 
     Tile& GetTile(int line, int col);

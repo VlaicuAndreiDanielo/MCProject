@@ -1,33 +1,14 @@
-#pragma once
-#include <iostream>
-#include <concepts>
+#include "Vector2.h"
 #include <cmath>
 #include <stdexcept>
-#include "ConstantValues.h"
-template <std::floating_point T>
-class Vector2 {
-	//static_assert(std::is_floating_point_v<T>, "Vector2 can only be instantiated with floating-point types (float or double).");
-public:
-	T x;
-	T y;
-	Vector2(T x = 0, T y = 0);
-	static Vector2 Normalize(const Vector2 vector2);
-	void Normalize();
-	Vector2 operator*(const Vector2 &vector)const;
-	Vector2 operator*(const T scalar)const;
-	Vector2& operator*=(const T scalar);
-	Vector2 operator/(const T scalar)const;
-	Vector2& operator/=(const T scalar);
-	Vector2 operator+(const Vector2& vector) const;
-	Vector2& operator+=(const Vector2& vector);
-	Vector2 operator-(const Vector2& other) const;
-	bool operator==(const Vector2& other) const;
-	bool operator!=(const Vector2& other) const;
-	friend std::ostream& operator<<(std::ostream& os, const Vector2& vector); 
-	T GetAngleFromNormalizedVector() const;
-};
+//#include "ConstantValues.h"
 
-//Moved All implemenation into the header to avoid template linker errors
+template class VECTOR2_API Vector2<float>;
+template class VECTOR2_API Vector2<double>;
+template class VECTOR2_API Vector2<long double>;
+
+constexpr float kPi = 3.14159265358979323846f;
+constexpr float kDefaultRotationOffset = 90.0f;
 
 template <std::floating_point T>
 Vector2<T>::Vector2(T x, T y) : x(x), y(y)
@@ -115,10 +96,10 @@ T Vector2<T>::GetAngleFromNormalizedVector() const
 	T angleInRadians = atan2(this->y, this->x);
 
 	// Convert radians to degrees
-	T angleInDegrees = angleInRadians * (180.0f / MathConfig::kPi);
+	T angleInDegrees = angleInRadians * (180.0f /kPi);
 
 	// Adjust the angle: since (0, -1) is 0 degrees, we need to shift by 90 degrees
-	angleInDegrees = fmod(angleInDegrees + GameConfig::kDefaultRotationOffset, 360.0f);
+	angleInDegrees = fmod(angleInDegrees + kDefaultRotationOffset, 360.0f);
 
 	// If angle is negative, make it positive
 	if (angleInDegrees < 0) {

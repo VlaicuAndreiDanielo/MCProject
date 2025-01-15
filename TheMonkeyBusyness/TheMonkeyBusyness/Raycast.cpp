@@ -2,7 +2,7 @@
 #include "iostream"
 #include "math.h"
 #include "ConstantValues.h"
-GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance, Player& sender)
+GameObject* Cast::Raycast(Vector2<float> origin, Vector2<float> direction, float maxDistance, Player& sender)
 {
 	Vector2 hitLocation = origin + direction * maxDistance;
 
@@ -15,9 +15,9 @@ GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance, 
 	return HandleTileHit(hitLocation);
 }
 
-GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance, Player& sender, Vector2& CastResult)
+GameObject* Cast::Raycast(Vector2<float> origin, Vector2<float> direction, float maxDistance, Player& sender, Vector2<float>& CastResult)
 {
-	Vector2 hitLocation = origin + direction * maxDistance;
+	Vector2<float> hitLocation = origin + direction * maxDistance;
 	CastResult = hitLocation;
 	if (HandlePlayerHit(hitLocation, sender) != nullptr) {
 		return HandlePlayerHit(hitLocation, sender);
@@ -25,7 +25,7 @@ GameObject* Cast::Raycast(Vector2 origin, Vector2 direction, float maxDistance, 
 	return HandleTileHit(hitLocation);
 }
 
-GameObject* Cast::HandleTileHit(Vector2 &hitLocation)
+GameObject* Cast::HandleTileHit(Vector2<float>& hitLocation)
 {
 	hitLocation /= GameConfig::kTileSize;
 	hitLocation.x = std::floor(hitLocation.x);
@@ -34,16 +34,16 @@ GameObject* Cast::HandleTileHit(Vector2 &hitLocation)
 	return gameTile;
 }
 
-GameObject* Cast::HandlePlayerHit(Vector2& hitLocation, Player& sender)
+GameObject* Cast::HandlePlayerHit(Vector2<float>& hitLocation, Player& sender)
 {
 	int senderId=-1;
-	for (auto [id, player] : *m_players) {
+	for (auto& [id, player] : *m_players) {
 		if (sender.GetPosition() == player.GetPosition()) {
 			senderId = id;
 		}
 	}
-	for (auto [id, player] : *m_players) {
-		Vector2 playerPosition = player.GetPosition();
+	for (auto& [id, player] : *m_players) {
+		Vector2<float> playerPosition = player.GetPosition();
 		float dx = hitLocation.x - playerPosition.x;
 		float dy = hitLocation.y - playerPosition.y;
 		float distanceSquared = dx * dx + dy * dy;

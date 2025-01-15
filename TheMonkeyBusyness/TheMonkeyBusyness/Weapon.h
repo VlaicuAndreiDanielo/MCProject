@@ -15,7 +15,7 @@ public:
 		float speed=WeaponConfig::kBasicSpeed);
 
 	// Primary Actions
-	void Shoot(const Vector2& position, const Vector2& direction);
+	void Shoot(const Vector2<float>& position, const Vector2<float>& direction);
 	void Update(float deltaTime);
 	void deactivateBullet(size_t index);
 

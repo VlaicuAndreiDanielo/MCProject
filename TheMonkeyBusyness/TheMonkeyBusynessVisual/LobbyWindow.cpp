@@ -227,6 +227,7 @@ void LobbyWindow::SetupUI() {
             font-size: 16px;
         }
     )");
+    m_lobbyList->setSelectionMode(QAbstractItemView::SingleSelection);
     m_lobbyList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     rightLayout->addWidget(m_lobbyList);
 
@@ -291,33 +292,22 @@ void LobbyWindow::GetLobbyData(int id)
 
 void LobbyWindow::LoadLobby(int id, int playerCount)
 {
-    if (m_lobbyData.empty()) {
-        m_player->SetLobbyId(id);
-        m_player->JoinLobby(id);
-        m_player->SetHost(true);
-        m_player->SetReady();
-    }
-    else {
-        for (auto it = m_lobbyData.begin(); it != m_lobbyData.end(); ) {
-            if (it->second != id) {
-                
-                m_player->SetLobbyId(id);
-                m_player->JoinLobby(id);
-                m_player->SetHost(true);
-                m_player->SetReady();
-                
-                ++it; // Move to the next element if no erase happens
+  
+    for (auto it = m_lobbyData.begin(); it != m_lobbyData.end(); ) {
+        if (it->second != id) {
+
+            ++it; // Move to the next element if no erase happens
+        }
+        else {
+            int row = m_lobbyList->row(it->first);  // Get the row index of the item
+            if (row != -1) {
+                m_lobbyList->takeItem(row);
+                delete it->first;
             }
-            else {
-                int row = m_lobbyList->row(it->first);  // Get the row index of the item
-                if (row != -1) {
-                    m_lobbyList->takeItem(row);
-                    delete it->first;
-                }
-                it = m_lobbyData.erase(it);
-            }
+            it = m_lobbyData.erase(it);
         }
     }
+    
     
     QString lobbyName = QString("Room %1").arg(id);
     QString playerCountString = QString("Players %1/4").arg(playerCount);
@@ -374,7 +364,11 @@ void LobbyWindow::OnCreateLobbyButtonClicked() {
         QMessageBox::information(this, "Play", "Can't create a lobby while hosting one");
         return;
     }
-    m_player->CreateLobby();
+    int id = m_player->CreateLobby();
+    m_player->SetLobbyId(id);
+    m_player->JoinLobby(id);
+    m_player->SetHost(true);
+    m_player->SetReady();
     GetLobbiesFromServer();
     update();
     //m_player->JoinLobby()
@@ -384,6 +378,7 @@ void LobbyWindow::OnCreateLobbyButtonClicked() {
 
 void LobbyWindow::OnQuitButtonClicked() {
     m_player->LeaveLobby();
+    m_timer->stop();
     delete(m_player);
     emit LobbyWindowClosed(); // Emit semnalul când se apasă Quit
     close();
@@ -391,10 +386,21 @@ void LobbyWindow::OnQuitButtonClicked() {
 
 void LobbyWindow::OnItemClicked(QListWidgetItem* item)
 {
+    m_lobbyList->setCurrentItem(item);
+ 
+    item->setForeground(Qt::yellow);
+
     if (m_player->GetLobbyId() != m_lobbyData[item]) {
+        for (int i = 0; i < m_lobbyList->count(); ++i) {
+            QListWidgetItem* otherItem = m_lobbyList->item(i);
+            if (otherItem != item) {
+                otherItem->setForeground(Qt::black);  // Reset to default text color.
+            }
+        }
+
         m_player->LeaveLobby();
         int lobbyId = m_lobbyData[item];
-        QMessageBox::information(this, "Play", "You have joined the lobby " + lobbyId);
+        //QMessageBox::information(this, "Play", "You have joined the lobby " + QString::number(lobbyId));
         m_player->SetHost(false);
         m_player->SetLobbyId(lobbyId);
         m_player->JoinLobby(lobbyId);

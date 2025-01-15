@@ -7,7 +7,7 @@
 class Bullet : public GameObject
 {
 public:
-	Bullet(const Vector2& position, const Vector2& direction, float speed, float damage);
+	Bullet(const Vector2<float>& position, const Vector2<float>& direction, float speed, float damage);
 
 	Bullet(Bullet&& other) noexcept;
 	Bullet& operator=(Bullet&& other) noexcept;
@@ -20,19 +20,19 @@ public:
 	void Update(float deltaTime);
 	crow::json::wvalue ToJson() const;
 
-	Vector2 GetPosition() const;
-	Vector2 GetDirection() const;
+	Vector2<float> GetPosition() const;
+	Vector2<float> GetDirection() const;
 	float GetSpeed() const;
 	float GetDamage() const;
 
-	void SetPosition(const Vector2& position);
-	void SetDirection(const Vector2& direction);
+	void SetPosition(const Vector2<float>& position);
+	void SetDirection(const Vector2<float>& direction);
 	void SetSpeed(float speed);
 	void SetDamage(float damage);
 
 private:
-	Vector2 m_position;
-	Vector2 m_direction;
+	Vector2<float> m_position;
+	Vector2<float> m_direction;
 	float m_speed;
 	float m_damage;
 };

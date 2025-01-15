@@ -7,17 +7,17 @@ Player::Player(float x, float y, int id, const std::string& name)
 	m_Character = new BasicMonkey();
 }
 
-Vector2 Player::Forward()
+Vector2<float> Player::Forward()
 const {
 	return this->m_direction;
 }
 
-Vector2 Player::GetPosition() const
+Vector2<float> Player::GetPosition() const
 {
 	return m_position;
 }
 
-void Player::SetSpawn(Vector2 location)
+void Player::SetSpawn(Vector2<float> location)
 {
 	m_position = location;
 }
@@ -27,9 +27,9 @@ void Player::SetMonkeyType(Character* character)
 	m_Character = character;
 }
 
-void Player::UpdatePosition(const Vector2& direction, float deltaTime)
+void Player::UpdatePosition(const Vector2<float>& direction, float deltaTime)
 {
-	Vector2 normalizedDir = Vector2::Normalize(direction);
+	Vector2<float> normalizedDir = Vector2<float>::Normalize(direction);
 	
 	this->m_position.x += normalizedDir.x * m_Character->GetSpeed() * deltaTime;
 	this->m_position.y += normalizedDir.y * m_Character->GetSpeed() * deltaTime;
@@ -41,12 +41,12 @@ void Player::UpdatePosition(const float x, const float y)
 	this->m_position.y += y;
 }
 
-void Player::UpdateRotation(const Vector2& mousePos)
+void Player::UpdateRotation(const Vector2<float>& mousePos)
 {
 	this->m_rotationAngle = CalculateLookAtDirection(mousePos).GetAngleFromNormalizedVector();
 }
 
-void Player::Shoot(const Vector2& mousePosition)
+void Player::Shoot(const Vector2<float>& mousePosition)
 {
 	// Update rotation based on current mouse position
 	m_rotationAngle = CalculateLookAtDirection(mousePosition).GetAngleFromNormalizedVector();
@@ -73,7 +73,10 @@ bool Player::IsAlive() const
 
 void Player::Damage(int damageValue)
 {
-	m_Character->SetHealth(m_Character->GetHealth() - damageValue);
+	if (m_Character != nullptr) {
+		int hp = m_Character->GetHealth();
+		m_Character->SetHealth(hp - damageValue);
+	}
 }
 
 void Player::SetScreenSize(const int screenWidth, const int screenHeight)
@@ -111,7 +114,7 @@ crow::json::wvalue Player::ToJson() const
 //}
 // ^ that was needed
 
-Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
+Vector2<float> Player::CalculateLookAtDirection(const Vector2<float>& mousePos)
 {
 	int mouseOffsetX = mousePos.x - (m_screenWidth / 2 - m_position.x); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
 		int mouseOffsetY = mousePos.y - (m_screenHeight / 2 - m_position.y); //nu stiu daca tragi screen size din client sau nu deci voi folosii valorile actuale
@@ -122,11 +125,11 @@ Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
 }
 
 
-Vector2 Player::CalculateBulletSpawnPosition() const
+Vector2<float> Player::CalculateBulletSpawnPosition() const
 {
 	float offsetX = cos((m_rotationAngle - GameConfig::kDefaultRotationOffset) * MathConfig::kPi / 180.0f) * (PlayerConfig::kPlayerSize / 2.0f);
 	float offsetY = sin((m_rotationAngle - GameConfig::kDefaultRotationOffset) * MathConfig::kPi / 180.0f) * (PlayerConfig::kPlayerSize / 2.0f);
 
-	return m_position + Vector2{ offsetX, offsetY };
+	return m_position + Vector2<float>{ offsetX, offsetY };
 }
 

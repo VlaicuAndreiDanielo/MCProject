@@ -25,7 +25,7 @@ private:
     std::unordered_map<std::pair<int, int>, std::pair<int, int>, pair_hash> m_teleporterConnections;
 public:
 
-    Arena(int dim = 100, int numSpawn = 10);
+    Arena(int dim = 50, int numSpawn = 10);
 
     //no need for a singleton now
 

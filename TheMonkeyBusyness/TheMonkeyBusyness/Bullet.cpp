@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-Bullet::Bullet(const Vector2& position, const Vector2& direction, float speed, float damage)
+Bullet::Bullet(const Vector2<float>& position, const Vector2<float>& direction, float speed, float damage)
 	: m_position{ position }, m_direction{ direction }, m_speed{ speed }, m_damage{ damage } {}
 
 Bullet::Bullet(Bullet&& other) noexcept
@@ -37,19 +37,19 @@ crow::json::wvalue Bullet::ToJson() const
 	return bulletJson;
 }
 
-Vector2 Bullet::GetPosition() const {
+Vector2<float> Bullet::GetPosition() const {
 	return m_position;
 }
 
-void Bullet::SetPosition(const Vector2& position) {
+void Bullet::SetPosition(const Vector2<float>& position) {
 	m_position = position;
 }
 
-Vector2 Bullet::GetDirection() const {
+Vector2<float> Bullet::GetDirection() const {
 	return m_direction;
 }
 
-void Bullet::SetDirection(const Vector2& direction) {
+void Bullet::SetDirection(const Vector2<float>& direction) {
 	m_direction = direction;
 }
 

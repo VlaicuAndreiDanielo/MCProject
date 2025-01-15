@@ -12,13 +12,10 @@ public:
 
 	virtual void ActivateSpecialAbility() = 0;
 	virtual void MonkeyEvolution() = 0; 
-	mutable std::mutex healthMutex;
 	virtual ~Character() = default;
 	void SetHealth(int value)  {
-		std::lock_guard<std::mutex> lock(healthMutex);
 		m_HP = value; }
 	int GetHealth() const {
-		std::lock_guard<std::mutex> lock(healthMutex);
 		return m_HP; }
 	int GetSpeed() const {
 				return m_speed; }

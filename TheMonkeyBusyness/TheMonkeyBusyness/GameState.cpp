@@ -46,7 +46,7 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId)
     return "Mario";
 }
 
-void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2& lookDirection, float deltaTime) {
+void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const Vector2<float>& lookDirection, float deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
@@ -59,7 +59,7 @@ void GameState::ProcessMove(int playerId, const Vector2& movement, const Vector2
     player->UpdateRotation(lookDirection);
 }
 
-void GameState::ProcessShoot(int playerId, const Vector2& mousePosition) {
+void GameState::ProcessShoot(int playerId, const Vector2<float>& mousePosition) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
@@ -89,9 +89,8 @@ void GameState::UpdateBullets(float deltaTime) {
         for (size_t i = 0; i < bullets.size();) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
-            Vector2 RayCastLocation;
+            Vector2<float> RayCastLocation;
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player); Player * tempPlayer = dynamic_cast<Player*>(hit)) {
-                std::cout << "Damaging the player";
                tempPlayer->Damage(bullet.GetDamage());
                player.m_weapon.deactivateBullet(i);
             }

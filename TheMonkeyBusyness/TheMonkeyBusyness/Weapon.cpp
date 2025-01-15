@@ -7,7 +7,7 @@ Weapon::Weapon(float damage, float fireRate, float speed)
 	initializeBullets();
 }
 
-void Weapon::Shoot(const Vector2& position, const Vector2& direction) {
+void Weapon::Shoot(const Vector2<float>& position, const Vector2<float>& direction) {
 
 	if (m_timeSinceLastShot >= m_fireRate) {
 		if (!m_inactiveBullets.empty()) {
@@ -50,7 +50,7 @@ void Weapon::initializeBullets()
 	m_inactiveBullets.reserve(WeaponConfig::kMaxBasicBullets);
 
 	for (size_t i = 0; i < WeaponConfig::kMaxBasicBullets; ++i)
-		m_inactiveBullets.push_back(Bullet(Vector2(), Vector2(), m_speed, m_damage));
+		m_inactiveBullets.push_back(Bullet(Vector2<float>(), Vector2<float>(), m_speed, m_damage));
 }
 
 void Weapon::ActivateDamagePowerup(float duration)

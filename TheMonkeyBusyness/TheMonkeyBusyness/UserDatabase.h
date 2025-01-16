@@ -20,6 +20,7 @@ public:
     bool UserExists(const std::string& username);
     int GetUserIdByUsername(const std::string& username);
     bool AuthenticateUser(const std::string& username, const std::string& password);
+    std::string GetUsernameById(int userId);
 
 private:
     sqlite3* m_db;

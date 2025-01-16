@@ -1,4 +1,5 @@
-#include "GameState.h"
+﻿#include "GameState.h"
+#include "UserDatabase.h"
 #include <stdexcept>
 #include <crow.h>
 #include <chrono>
@@ -39,12 +40,26 @@ Player GameState::InitializePlayer(int playerId) {
         spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2,
         playerId, playerName);
 }
+std::string GameState::GetPlayerNameFromDatabase(int playerId) {
+    UserDatabase database("userdatabase.db");
 
-std::string GameState::GetPlayerNameFromDatabase(int playerId)
-{
-    //TODO Andrei metoda asta primeste ca parametru ID ul playerului si ia din baza de date numele asociat si il returneaza
-    return "Mario";
+    // Obține username-ul din baza de date pe baza playerId-ului
+    std::string username = database.GetUsernameById(playerId);
+
+    // Verifică dacă username-ul a fost găsit
+    if (username.empty()) {
+        std::cerr << "Player ID " << playerId << " not found in the database." << std::endl;
+        return "UnknownPlayer"; // Returnează un nume generic dacă nu există în baza de date
+    }
+
+    return username; // Returnează numele utilizatorului
 }
+
+//std::string GameState::GetPlayerNameFromDatabase(int playerId) {
+//    UserDatabase database("userdatabase.db");
+//    return database.GetUsernameById(playerId);
+//}
+
 
 bool isSlowed = false;
 int oldSpeed;

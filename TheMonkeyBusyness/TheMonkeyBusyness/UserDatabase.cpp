@@ -358,3 +358,33 @@ bool UserDatabase::AuthenticateUser(const std::string& username, const std::stri
 
     return isAuthenticated;
 }
+
+std::string UserDatabase::GetUsernameById(int userId) {
+    const std::string querySQL = "SELECT username FROM User WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    // Pregătirea interogării SQL
+    int rc = sqlite3_prepare_v2(m_db, querySQL.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(m_db) << std::endl;
+        return ""; // Returnează un string gol în caz de eroare
+    }
+
+    // Asociază parametrii (id-ul utilizatorului)
+    sqlite3_bind_int(stmt, 1, userId);
+
+    // Execută interogarea și obține username-ul dacă există
+    std::string username;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)); // Extrage username-ul
+    }
+    else {
+        std::cerr << "User ID not found: " << userId << std::endl;
+        username = ""; // Returnează un string gol dacă ID-ul nu este găsit
+    }
+
+    // Finalizează statement-ul
+    sqlite3_finalize(stmt);
+
+    return username; // Returnează username-ul găsit
+}

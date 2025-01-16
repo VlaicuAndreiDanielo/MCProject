@@ -73,3 +73,6 @@ DEBUG:
 - Add the include directory for websocket: Property > Configuration Properties > VC++ Directories > Include Directories > C:\Computers\vcpkg-2024.12.16\vcpkg-2024.12.16\installed\x64-windows\include
 
 - Add the library directory for websocket: Property > Configuration Properties > VC++ Directories > Library Directories > C:\Computers\vcpkg-2024.12.16\vcpkg-2024.12.16\installed\x64-windows\debug\lib
+
+- Add the additional dependencies:
+  Property > Linker > General > Additional Dependencies > ixwebsocket.lib; mbedtls.lib; mbedx509.lib; mbedcrypto.lib; Crypt32.lib; bcrypt.lib

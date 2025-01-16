@@ -29,7 +29,8 @@ Player GameState::InitializePlayer(int playerId) {
         spawn = m_arena.GetSpawn();
         for (auto& [playerId, player] : m_players)
         {
-            if (player.GetPosition().x == spawn.first && player.GetPosition().y == spawn.second) {
+            if (player.GetPosition().x == spawn.first * GameConfig::kTileSize + GameConfig::kTileSize / 2
+                && spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2) {
                 isOverlapping == true;
             }
         }

@@ -1,7 +1,7 @@
 ﻿#include "BasicMonkey.h"
 
 BasicMonkey::BasicMonkey() 
-	: Character(500, 200, 12, 0)
+	: Character(75, 200, 12, 0)
 {}
 
 void BasicMonkey::ActivateSpecialAbility() 

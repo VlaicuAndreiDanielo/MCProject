@@ -35,25 +35,23 @@ public:
 	void StopDoT();
 	void UpdateDot(); // Update pentru damage periodic
 	bool IsUnderDot() const;  // Getter for DoT status
-
 	const std::string& GetName() const;
 
 	crow::json::wvalue ToJson() const;
 private:
 	int m_id;
+	int m_screenWidth;
+	int m_screenHeight;
+	int m_monkeyType;
 	std::string m_name;
 	Character* m_Character;
 	Vector2<float> m_position;
 	Vector2<float> m_direction;
 	float m_rotationAngle{ 0 };
 	float m_size{ PlayerConfig::kPlayerSize };
-	int m_screenWidth;
-	int m_screenHeight;
 	bool m_isUnderDot = false; // If player is under DoT effect
 	std::chrono::steady_clock::time_point m_dotStartTime;
 	float m_dotDuration = 0; // DoT duration in seconds
 	Vector2<float> CalculateLookAtDirection(const Vector2<float>& mousePos);
 	Vector2<float> CalculateBulletSpawnPosition() const;
-
-	int m_playerMonkeyType;
 };

@@ -34,6 +34,7 @@ public:
     Direction GetDirection() const;
     const std::string& GetServerUrl() const;
     int GetHealth() const;
+    int GetMonkeyType()const;
 
     // Mutators
     void SetGameId(int id);
@@ -43,16 +44,18 @@ public:
     void SetPosition(const Position& position);
     void SetDirection(const Direction& direction);
     void SetHealth(int health);
+    void SetMonkey(int monkeyType);
 
 private:
     int m_id;                            // Player's unique ID
     int m_gameId;                        // The game ID the player is participating in
     int m_lobbyId;                       // The lobby ID the player is in
+    int m_health;                        // Player's health
+    int m_monkeyType;                    // Player's monkey type
     bool m_isReady;                      // If player in the lobby is ready to start the game or not
     bool m_isHost;                       // If the player is the host of the lobby
     std::string m_name;                  // Player's name
     std::string m_serverUrl;             // Server URL for requests
     Position m_position;                 // Player's current position
     Direction m_direction;               // Player's current direction
-    int m_health;                        // Player's health
 };

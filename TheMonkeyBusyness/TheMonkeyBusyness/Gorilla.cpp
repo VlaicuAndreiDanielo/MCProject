@@ -1,7 +1,7 @@
 ﻿#include "Gorilla.h"
 
 Gorilla::Gorilla()
-	: Character(1500, 4, 20, 0)
+	: Character(110, 135, 20, 0)
 {}
 
 void Gorilla::ActivateSpecialAbility() 

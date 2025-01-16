@@ -2,7 +2,7 @@
 #include <iostream>
 
 CapuchinMonkey::CapuchinMonkey()
-    : Character(400, 8, 15, 0), m_isAgilityActive(false), m_agilityDuration(15), m_agilityBoostAmount(5), m_baseSpeed(8)
+    : Character(60, 240, 15, 0), m_isAgilityActive(false), m_agilityDuration(15), m_agilityBoostAmount(5), m_baseSpeed(8)
 {}
 
 void CapuchinMonkey::ActivateSpecialAbility() {

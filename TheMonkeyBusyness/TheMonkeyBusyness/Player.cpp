@@ -4,14 +4,12 @@
 Player::Player(float x, float y, int id, const std::string& name)
 	: m_id{ id }, m_name{ name }, m_position{ x, y }
 {
-	// Inițializează generatorul de numere aleatorii
-	srand(static_cast<unsigned int>(time(0)));
-
-	// Generare aleatorie a valorii între 0 și 3
-	int randomCharacter = rand() % 4;
-	m_playerMonkeyType = randomCharacter;
+	auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	std::mt19937 gen(seed);
+	std::uniform_int_distribution<> distrib(0, 3);
+	m_monkeyType = distrib(gen);
 	// Alege caracterul pe baza valorii random
-	switch (randomCharacter) {
+	switch (m_monkeyType) {
 	case 0:
 		m_Character = new BasicMonkey();
 		std::cout << "BasicMonkey selected for " << name << std::endl;
@@ -167,7 +165,7 @@ crow::json::wvalue Player::ToJson() const
 	playerJson["directionX"] = m_direction.x;
 	playerJson["directionY"] = m_direction.y;
 	playerJson["hp"] = m_Character->GetHealth();
-
+	playerJson["monkeyType"] = m_monkeyType;
 	playerJson["weapon"] = m_weapon.ToJson();
 
 	return playerJson;

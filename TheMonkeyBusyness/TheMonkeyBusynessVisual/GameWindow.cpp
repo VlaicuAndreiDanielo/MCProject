@@ -210,6 +210,12 @@ void GameWindow::LoadTextures()
     m_textures[7] = QPixmap(m_basePath + "grass.png");      // Teleporter
     m_textures[8] = QPixmap(m_basePath + "crate.png");
     banana = QPixmap(m_basePath + "banana.png");
+
+    m_monkeyTextures[0] = QPixmap(m_basePath + "monke.png");           
+    m_monkeyTextures[1] = QPixmap(m_basePath + "capucino.png");
+    m_monkeyTextures[2] = QPixmap(m_basePath + "gorilla.png");
+    m_monkeyTextures[3] = QPixmap(m_basePath + "orangutan.png");
+
 }
 
 float CalculateAngle(const Direction direction) {
@@ -259,6 +265,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     }
 
     painter.save();
+    QPixmap monkeyTexture = m_monkeyTextures[m_player.GetMonkeyType()];
 
     // Draw the local player
     QRect playerRect(
@@ -269,8 +276,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
     painter.translate(m_player.GetPosition().first, m_player.GetPosition().second);
     painter.rotate(CalculateAngle(m_player.GetDirection()));
-    painter.setBrush(Qt::cyan);
-    painter.drawRect(playerRect);
+    painter.drawPixmap(playerRect, monkeyTexture);
 
    
     painter.restore();
@@ -287,7 +293,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
     // Draw other players
     for (const auto& [name, data] : m_playersData) {
-        const auto& [health, position, direction] = data;
+        const auto& [health, position, direction, monkeyType] = data;
 
         /*int x = position.first - m_player.GetPosition().first + (width() / 2);
         int y = position.second - m_player.GetPosition().second + (height() / 2);*/
@@ -295,10 +301,10 @@ void GameWindow::paintEvent(QPaintEvent* event) {
         // Draw player rectangle
         QRect playerRect(- RenderConfig::kPlayerSize / 2, - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
         painter.save();
-        painter.setBrush(Qt::magenta);
+        QPixmap monkeyTexture = m_monkeyTextures[monkeyType];
         painter.translate(position.first, position.second);
         painter.rotate(CalculateAngle(direction));
-        painter.drawRect(playerRect);
+        painter.drawPixmap(playerRect, monkeyTexture);
         painter.restore();
         // Draw player's name above the rectangle
         painter.setPen(Qt::white);
@@ -343,7 +349,7 @@ void GameWindow::UpdatePlayerState(const crow::json::rvalue& playerData) {
     m_player.SetPosition(position);
     m_player.SetDirection(direction);
     m_player.SetHealth(playerData["hp"].i());
-
+    m_player.SetMonkey(playerData["monkeyType"].i());
     if (playerData["hp"].i() <= 0) {
         // TODO: Handle player death
     }
@@ -354,12 +360,12 @@ void GameWindow::UpdateOtherPlayers(const crow::json::rvalue& playerData) {
     Position position = { playerData["x"].d(), playerData["y"].d() };
     Direction direction = { playerData["directionX"].d(), playerData["directionY"].d() };
     int health = playerData["hp"].i();
-
+    int monkeyType = playerData["monkeyType"].i();
     if (health <= 0) {
         //TODO Handle other players death
     }
 
-    m_playersData[name] = { health, position, direction };
+    m_playersData[name] = { health, position, direction, monkeyType};
 }
 
 

@@ -184,6 +184,11 @@ Direction Player::GetDirection() const { return m_direction; }
 const std::string& Player::GetServerUrl() const { return m_serverUrl; }
 int Player::GetHealth() const { return m_health; }
 
+int Player::GetMonkeyType() const
+{
+    return m_monkeyType;
+}
+
 void Player::SetGameId(int id) { m_gameId = id; }
 void Player::SetLobbyId(int newLobbyId) { m_lobbyId = newLobbyId; }
 void Player::SetHost(bool hostStatus) { m_isHost = hostStatus; }
@@ -191,3 +196,8 @@ void Player::SetName(const std::string& playerName) { m_name = playerName; }
 void Player::SetPosition(const Position& pos) { m_position = pos; }
 void Player::SetDirection(const Direction& dir) { m_direction = dir; }
 void Player::SetHealth(int hp) { m_health = hp; }
+
+void Player::SetMonkey(int monkeyType)
+{
+    m_monkeyType = monkeyType;
+}

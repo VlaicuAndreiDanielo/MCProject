@@ -6,7 +6,7 @@ using Direction = std::pair<float, float>;
 // Rendering and Dimensions
 namespace RenderConfig {
     constexpr int kTileSize = 40;          // Size of a single grid tile
-    constexpr int kPlayerSize = 30;        // Size of the player
+    constexpr int kPlayerSize = 40;        // Size of the player
     constexpr int kBulletSize = 25;        // Size of bullets
     constexpr int kWindowWidth = 800;      // Default game window width
     constexpr int kWindowHeight = 600;     // Default game window height

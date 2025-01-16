@@ -12,6 +12,7 @@ struct PlayerData {
     int health;
     Position position;
     Direction direction;
+    int monkeyType;
 };
 
 class GameWindow : public QWidget {
@@ -30,10 +31,13 @@ private:
     QTimer* m_timer;                      // Timer for the game loop
     ix::WebSocket webSocket;             // Socket for communications
     QString m_basePath = QCoreApplication::applicationDirPath() + "/Images/";
+   
+    QMap<int, QPixmap> m_monkeyTextures;
     QMap<int, QPixmap> m_textures;
     //banana rendering
     QPixmap banana;
     float m_bulletRotationAngle = 0.0f;
+    
     // Core Game Loop Methods
     void FetchArena();                  // Fetch the whole arena from the server
     void LoadArena(const crow::json::rvalue& arenaData);

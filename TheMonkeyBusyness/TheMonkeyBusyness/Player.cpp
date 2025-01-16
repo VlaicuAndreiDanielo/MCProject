@@ -17,6 +17,10 @@ Vector2<float> Player::GetPosition() const
 	return m_position;
 }
 
+Character* Player::GetCharacter() const {
+	return m_Character;
+}
+
 void Player::SetSpawn(Vector2<float> location)
 {
 	m_position = location;

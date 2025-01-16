@@ -19,6 +19,9 @@ public:
 		return m_HP; }
 	int GetSpeed() const {
 				return m_speed; }
+	void SetSpeed(int value) {
+		m_speed = value;
+	}
 	float GetCooldownTime() const { return m_cooldownTime; }
 	
 protected:

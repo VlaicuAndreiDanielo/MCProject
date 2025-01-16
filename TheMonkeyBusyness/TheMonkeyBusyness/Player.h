@@ -18,6 +18,7 @@ public:
 	Vector2<float> GetPosition()const;
 	void SetSpawn(Vector2<float> location);
 	void SetMonkeyType(Character* character);
+	Character* GetCharacter() const;
 	Weapon m_weapon;
 
 	void UpdatePosition(const Vector2<float> &vector, float deltaTime);

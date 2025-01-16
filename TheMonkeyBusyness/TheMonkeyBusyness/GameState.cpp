@@ -46,14 +46,48 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId)
     return "Mario";
 }
 
+bool isSlowed = false;
+int oldSpeed;
+
 void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const Vector2<float>& lookDirection, float deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
     }
+    
     if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange, *player); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
             player->UpdatePosition(movement, deltaTime);
+        }
+        Character* character = player->GetCharacter();
+        if (!isSlowed)
+        {
+            std::cout << "Old speed is set\n";
+            oldSpeed = character->GetSpeed();
+        }
+        bool isSubmerged = false;
+        if (tempTile->getType() == TileType::Water || tempTile->getType() == TileType::Lava)
+        {
+            isSubmerged = true;
+            std::cout << "Player is submerged!\n";
+            if (isSubmerged && !isSlowed)
+            {
+                isSlowed = true;
+                character->SetSpeed(oldSpeed / 2);
+                std::cout << "Player speed is halved!\n";
+                if (tempTile->getType() == TileType::Lava)
+                {
+                    //fac un cronometru amuzant pt damage over time
+                }
+            }
+        }
+        else if(!isSubmerged && isSlowed)
+        {
+            isSubmerged = false;
+            std::cout << "Player is not submerged!\n";
+            character->SetSpeed(oldSpeed);
+            isSlowed = false;
+            std::cout << "Old speed is reverted to normal!\n";
         }
     }
     player->UpdateRotation(lookDirection);
@@ -95,14 +129,20 @@ void GameState::UpdateBullets(float deltaTime) {
                player.m_weapon.deactivateBullet(i);
             }
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
-                //
+                
                 if (tempTile->getType() == TileType::DestructibleWall || tempTile->getType() == TileType::FakeDestructibleWall)
                 {
+                      
                     tempTile->takeDamage(bullet.GetDamage());
                     if (tempTile->getHP() <= 0) {
                         int x = (std::floor(RayCastLocation.x / GameConfig::kTileSize));
                         int y = (std::floor(RayCastLocation.y / GameConfig::kTileSize));
-
+                    // if fake wall 
+                    //      verific in jurul lui m_arena[x][y] daca exista player 
+                    //      for (auto& [playerId, player] : m_players)  
+                    //              player.damage(300)
+                    // verific in jurul lui m_arena[x][y] daca exista tile destructibil, daca da
+                    //  tempTile->takeDamage(30);
                         m_mapChanges.push_back({ x, y });
                         player.m_weapon.deactivateBullet(i);
                     }

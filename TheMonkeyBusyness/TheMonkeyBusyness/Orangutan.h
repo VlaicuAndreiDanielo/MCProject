@@ -11,5 +11,6 @@ public:
 	~Orangutan() = default;
 private:
 	int GetRandomHealthRegen(int min, int max) const;
+	std::chrono::steady_clock::time_point m_lastAbilityUse;
 };
 

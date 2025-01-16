@@ -4,20 +4,21 @@ Orangutan::Orangutan()
 	: Character(1200, 3, 20, 0)
 {}
 
-void Orangutan::ActivateSpecialAbility() 
-{   //Special Ability = Regereration;
-	if (m_remainingCooldown <= 0) {
+void Orangutan::ActivateSpecialAbility() {
+	auto now = std::chrono::steady_clock::now();
+	if (std::chrono::duration_cast<std::chrono::seconds>(now - m_lastAbilityUse).count() >= m_cooldownTime) {
 		std::cout << "Orangutan activates Regeneration!\n";
-		// Randomizare pentru regenerare
+		m_lastAbilityUse = now;
+
+		// Regeneration logic
 		int regenerationAmount = GetRandomHealthRegen(2, 5);
 		m_HP += regenerationAmount;
 		std::cout << "Orangutan regenerates " << regenerationAmount
 			<< " HP. New HP: " << m_HP << "\n";
-
-		m_remainingCooldown = m_cooldownTime; // Setează cooldown-ul la 60 secunde
 	}
 	else {
-		std::cout << "Ability is on cooldown. Time left: " << m_remainingCooldown << " seconds\n";
+		int timeLeft = m_cooldownTime - std::chrono::duration_cast<std::chrono::seconds>(now - m_lastAbilityUse).count();
+		std::cout << "Ability is on cooldown. Time left: " << timeLeft << " seconds.\n";
 	}
 }
 

@@ -5,16 +5,25 @@ CapuchinMonkey::CapuchinMonkey()
     : Character(400, 8, 15, 0), m_isAgilityActive(false), m_agilityDuration(15), m_agilityBoostAmount(5), m_baseSpeed(8)
 {}
 
-void CapuchinMonkey::ActivateSpecialAbility()
-{   //Agility Boost
-    if (!m_isAgilityActive && m_remainingCooldown <= 0) {
-        std::cout << "CapuchinMonkey activates Agility Boost!\n";
-        m_isAgilityActive = true;
-        m_speed += m_agilityBoostAmount;  // Creștem viteza temporar
-        m_remainingCooldown = m_cooldownTime;  // Setați timpul de cooldown
+void CapuchinMonkey::ActivateSpecialAbility() {
+    auto now = std::chrono::steady_clock::now();
+    if (std::chrono::duration_cast<std::chrono::seconds>(now - m_lastAbilityUse).count() >= m_cooldownTime) {
+        std::cout << "CapuchinMonkey activates its Special Ability!\n";
+        m_lastAbilityUse = now;
+
+        // Your special ability logic
+        // Example: CapuchinMonkey gains a burst of speed
+        m_speed += 5;
+        std::cout << "Speed increased to: " << m_speed << "\n";
+
+        // Reset ability after a short duration
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        m_speed -= 5;
+        std::cout << "Speed normalized to: " << m_speed << "\n";
     }
     else {
-        std::cout << "Ability is on cooldown. Time left: " << m_remainingCooldown << " seconds\n";
+        int timeLeft = m_cooldownTime - std::chrono::duration_cast<std::chrono::seconds>(now - m_lastAbilityUse).count();
+        std::cout << "Ability is on cooldown. Time left: " << timeLeft << " seconds.\n";
     }
 }
 

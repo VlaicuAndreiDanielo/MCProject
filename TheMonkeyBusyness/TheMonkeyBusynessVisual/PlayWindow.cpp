@@ -134,7 +134,8 @@ void PlayWindow::ShowControls() {
         Move Backward: S<br>
         Move Left: A<br>
         Move Right: D<br>
-        Shoot: Space<br>
+        Shoot: Left Click<br>
+        Special ability: Q<br>
     )";
 
     QMessageBox::information(this, "Game Controls", controlsText);

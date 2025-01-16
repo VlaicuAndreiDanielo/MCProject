@@ -420,6 +420,7 @@ int main() {
                 int is_shooting = json["is_shooting"].i();
                 int width = json["width"].i();
                 int height = json["height"].i();
+                int is_specialAblity = json["is_specialAblity"].i();
                 GameState* gameState = nullptr;
 
                 if (gameId != -1) {
@@ -432,6 +433,9 @@ int main() {
                     gameState->SetResolution(width, height,playerId);
                     if (is_shooting == 1) {
                         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
+                    }
+                    if (is_specialAblity == 1) {
+                        //Player activate special abilityio
                     }
                     gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY), gameManager.GetDeltaTime());
                     auto jsonResponse = gameState->ToJson();

@@ -178,6 +178,7 @@ void GameWindow::SendInputToServer() {
         "deltaX":)" + std::to_string(m_playerInput.m_direction.x()) + R"(,
         "deltaY":)" + std::to_string(m_playerInput.m_direction.y()) + R"(,
         "is_shooting":)" + std::to_string((int)m_playerInput.is_shooting) + R"(,
+        "is_specialAblity":)" + std::to_string((int)m_playerInput.is_specialAbility) + R"(,
         "width":)" + std::to_string(width()) + R"(,
         "height":)" + std::to_string(height()) + R"(,
         "mouseX":)" + std::to_string(m_playerInput.m_mousePosition.x()) + R"(,

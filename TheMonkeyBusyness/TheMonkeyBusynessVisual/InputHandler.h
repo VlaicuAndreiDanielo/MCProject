@@ -10,7 +10,7 @@ public:
     QPoint m_direction;
     QPoint m_mousePosition;
     bool is_shooting;
-
+    bool is_specialAbility;
     void Normalize(QPoint& point);
 private:
     std::unordered_map<int, bool> keyStates;

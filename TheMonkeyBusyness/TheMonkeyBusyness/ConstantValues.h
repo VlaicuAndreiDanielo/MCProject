@@ -18,7 +18,7 @@ namespace PlayerConfig {
 
 // Weapon Configuration
 namespace WeaponConfig {
-    constexpr float kBasicSpeed = 150.0f;
+    constexpr float kBasicSpeed = 250.0f;
     constexpr int kBasicDamage = 10;
     constexpr float kBasicFireRate = 0.4f;  //fire rate of 1 means 1 shot every 1s. Fire rate of 0.1 means 10 shots every 1s
     constexpr int kMaxBasicBullets = 100;

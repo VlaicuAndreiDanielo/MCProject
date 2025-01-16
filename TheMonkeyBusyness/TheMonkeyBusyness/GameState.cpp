@@ -109,7 +109,6 @@ void GameState::UpdateGame(float deltaTime)
     for (auto& [playerId, player] : m_players) {
         player.Update(deltaTime);
         player.UpdateDot();
-        std::cout << "UpdateDoT function called!\n";
     }
 
     UpdateBullets(deltaTime);

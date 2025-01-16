@@ -40,6 +40,7 @@ bool InputHandler::eventFilter(QObject* obj, QEvent* event) {
             m_direction.setX(m_direction.x() + 1);
         }
 
+        is_specialAbility = keyStates[Qt::Key_Q];
 
         Normalize(m_direction);
         return true;

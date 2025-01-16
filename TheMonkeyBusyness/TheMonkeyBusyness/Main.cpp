@@ -395,15 +395,13 @@ int main() {
         return crow::response(200, "Shooting registered");
         });*/
     
-    std::unordered_set<crow::websocket::connection*> connections;
+    std::unordered_map<crow::websocket::connection*, int> connections;
     std::mutex gameStateMutex;
     std::mutex connectionsMutex;
     CROW_ROUTE(app, "/webSocket")
         .websocket(&app)
         .onopen([&](crow::websocket::connection& conn) {
         std::cout << "WebSocket connection opened!" << std::endl;
-        std::lock_guard<std::mutex> lock(connectionsMutex);
-        connections.insert(&conn);
             })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
                 // Handle incoming messages
@@ -428,7 +426,11 @@ int main() {
                 }
 
                 //Broadcast the message back to all connected clients
-                if (gameState != nullptr) {
+                if (gameState != nullptr) 
+                {
+                    if (connections.find(&conn) == connections.end()) {
+                       connections[&conn] = gameId;
+                    }
                     //std::cout << std::fixed <<gameManager.GetDeltaTime();
                     gameState->SetResolution(width, height,playerId);
                     if (is_shooting == 1) {
@@ -441,15 +443,19 @@ int main() {
                     auto jsonResponse = gameState->ToJson();
                    
                     std::lock_guard<std::mutex> lock(connectionsMutex); // Lock the connections
-                    for (auto& connection : connections) {
-                        connection->send_text(jsonResponse.dump());
+                    for (auto& [connection,connectionGameId] : connections) {
+                        if (gameId == connectionGameId) {
+                            connection->send_text(jsonResponse.dump());
+                        }
                     }
                     
                 }
                 else {
                     std::lock_guard<std::mutex> lock(connectionsMutex); // Lock the connections
-                    for (auto& connection : connections) {
-                        connection->send_text("0");
+                    for (auto& [connection, connectionGameId] : connections) {
+                        if (gameId == connectionGameId) {
+                            connection->send_text("0");
+                        }
                     }
                 }
             })

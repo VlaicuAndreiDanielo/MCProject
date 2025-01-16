@@ -9,10 +9,13 @@
 #include "GameObject.h"
 #include "ConstantValues.h"
 #include <chrono>
+#include <cstdlib> // Pentru rand() si srand()
+#include <ctime>   // Pentru time()
 
 class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
-	explicit Player(float x = PlayerConfig::kDefaultPositionX, float y = PlayerConfig::kDefaultPositionY, int id = PlayerConfig::kDefaultPlayerId, const std::string& name = PlayerConfig::kDefaultPlayerName);
+	explicit Player(float x = PlayerConfig::kDefaultPositionX, float y = PlayerConfig::kDefaultPositionY, 
+		int id = PlayerConfig::kDefaultPlayerId, const std::string& name = PlayerConfig::kDefaultPlayerName);
 	Vector2<float> Forward() const;
 	Vector2<float> GetPosition()const;
 	void SetSpawn(Vector2<float> location);
@@ -51,4 +54,6 @@ private:
 	float m_dotDuration = 0; // DoT duration in seconds
 	Vector2<float> CalculateLookAtDirection(const Vector2<float>& mousePos);
 	Vector2<float> CalculateBulletSpawnPosition() const;
+
+	int m_playerMonkeyType;
 };

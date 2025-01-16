@@ -1,10 +1,38 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "iostream"
 
 Player::Player(float x, float y, int id, const std::string& name)
 	: m_id{ id }, m_name{ name }, m_position{ x, y }
 {
-	m_Character = new BasicMonkey();
+	// Inițializează generatorul de numere aleatorii
+	srand(static_cast<unsigned int>(time(0)));
+
+	// Generare aleatorie a valorii între 0 și 3
+	int randomCharacter = rand() % 4;
+	m_playerMonkeyType = randomCharacter;
+	// Alege caracterul pe baza valorii random
+	switch (randomCharacter) {
+	case 0:
+		m_Character = new BasicMonkey();
+		std::cout << "BasicMonkey selected for " << name << std::endl;
+		break;
+	case 1:
+		m_Character = new CapuchinMonkey();
+		std::cout << "CapuchinMonkey selected for " << name << std::endl;
+		break;
+	case 2:
+		m_Character = new Gorilla();
+		std::cout << "Gorilla selected for " << name << std::endl;
+		break;
+	case 3:
+		m_Character = new Orangutan();
+		std::cout << "Orangutan selected for " << name << std::endl;
+		break;
+	default:
+		m_Character = new BasicMonkey();
+		std::cout << "Default BasicMonkey selected for " << name << std::endl;
+		break;
+	}
 }
 
 Vector2<float> Player::Forward()

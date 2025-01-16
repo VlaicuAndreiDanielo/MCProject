@@ -10,6 +10,7 @@
 #include "Gorilla.h"
 #include "GameObject.h"
 #include "ConstantValues.h"
+#include <chrono>
 
 class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
@@ -29,6 +30,10 @@ public:
 	bool IsAlive() const;
 	void Damage(int damageValue);
 	void SetScreenSize(const int screenWidth, const int screenHeight);
+	void StartDoT(float durationInSeconds);
+	void StopDoT();
+	void UpdateDot(); // Update pentru damage periodic
+	bool IsUnderDot() const;  // Getter for DoT status
 
 	const std::string& GetName() const;
 
@@ -43,6 +48,9 @@ private:
 	float m_size{ PlayerConfig::kPlayerSize };
 	int m_screenWidth;
 	int m_screenHeight;
+	bool m_isUnderDot = false; // If player is under DoT effect
+	std::chrono::steady_clock::time_point m_dotStartTime;
+	float m_dotDuration = 0; // DoT duration in seconds
 	Vector2<float> CalculateLookAtDirection(const Vector2<float>& mousePos);
 	Vector2<float> CalculateBulletSpawnPosition() const;
 };

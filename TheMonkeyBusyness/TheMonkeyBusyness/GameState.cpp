@@ -62,32 +62,33 @@ void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const 
         Character* character = player->GetCharacter();
         if (!isSlowed)
         {
-            std::cout << "Old speed is set\n";
             oldSpeed = character->GetSpeed();
         }
         bool isSubmerged = false;
         if (tempTile->getType() == TileType::Water || tempTile->getType() == TileType::Lava)
         {
             isSubmerged = true;
-            std::cout << "Player is submerged!\n";
             if (isSubmerged && !isSlowed)
             {
                 isSlowed = true;
                 character->SetSpeed(oldSpeed / 2);
-                std::cout << "Player speed is halved!\n";
-                if (tempTile->getType() == TileType::Lava)
-                {
-                    //fac un cronometru amuzant pt damage over time
+                if (tempTile->getType() == TileType::Lava) {
+                    if (!player->IsUnderDot()) {
+                        player->StartDoT(3.0f); // DoT active for 3s
+                        std::cout << "DoT started!\n";
+                    }
                 }
             }
         }
         else if(!isSubmerged && isSlowed)
         {
             isSubmerged = false;
-            std::cout << "Player is not submerged!\n";
             character->SetSpeed(oldSpeed);
             isSlowed = false;
-            std::cout << "Old speed is reverted to normal!\n";
+            if (player->IsUnderDot()) {
+                player->StopDoT(); // Stop the DoT if the player leaves the lava
+                std::cout << "DoT stopped!\n";
+            }
         }
     }
     player->UpdateRotation(lookDirection);
@@ -107,6 +108,8 @@ void GameState::UpdateGame(float deltaTime)
 {
     for (auto& [playerId, player] : m_players) {
         player.Update(deltaTime);
+        player.UpdateDot();
+        std::cout << "UpdateDoT function called!\n";
     }
 
     UpdateBullets(deltaTime);

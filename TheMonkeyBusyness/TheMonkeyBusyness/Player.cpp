@@ -31,6 +31,44 @@ void Player::SetMonkeyType(Character* character)
 	m_Character = character;
 }
 
+void Player::StartDoT(float durationInSeconds) {
+	if (m_isUnderDot) return; // DoT already active
+	m_isUnderDot = true;
+	m_dotStartTime = std::chrono::steady_clock::now();
+	m_dotDuration = durationInSeconds;
+}
+
+void Player::StopDoT() {
+	m_isUnderDot = false;
+	m_dotDuration = 0;
+}
+
+bool Player::IsUnderDot() const {
+	return m_isUnderDot;
+}
+
+void Player::UpdateDot() {
+	if (!m_isUnderDot) return;
+
+	auto now = std::chrono::steady_clock::now();
+	float elapsedTime = std::chrono::duration<float>(now - m_dotStartTime).count();
+
+	if (elapsedTime >= m_dotDuration) {
+		StopDoT();
+		return;
+	}
+
+	static float timeSinceLastTick = 0.0f;
+	timeSinceLastTick += elapsedTime;
+
+	if (timeSinceLastTick >= 0.3f) { // Tick every 0.3 seconds
+		Damage(5);
+		timeSinceLastTick = 0.0f;
+	}
+
+	m_dotStartTime = now; //Resets reference time
+}
+
 void Player::UpdatePosition(const Vector2<float>& direction, float deltaTime)
 {
 	Vector2<float> normalizedDir = Vector2<float>::Normalize(direction);

@@ -8,8 +8,6 @@ class BasicMonkey : public Character
 public:
 	BasicMonkey();
 	void ActivateSpecialAbility() override;
-	void MonkeyEvolution() override;
-	void Update();
 	~BasicMonkey() = default;
 private:
 	bool m_speedBoostActive;

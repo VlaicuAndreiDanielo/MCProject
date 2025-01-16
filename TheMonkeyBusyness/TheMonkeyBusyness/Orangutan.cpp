@@ -11,8 +11,9 @@ void Orangutan::ActivateSpecialAbility() {
 		m_lastAbilityUse = now;
 
 		// Regeneration logic
-		int regenerationAmount = GetRandomHealthRegen(2, 5);
+		int regenerationAmount = GetRandomHealthRegen(5, 20);
 		m_HP += regenerationAmount;
+		m_speed += (20 - regenerationAmount);
 		std::cout << "Orangutan regenerates " << regenerationAmount
 			<< " HP. New HP: " << m_HP << "\n";
 	}
@@ -22,20 +23,7 @@ void Orangutan::ActivateSpecialAbility() {
 	}
 }
 
-void Orangutan::MonkeyEvolution()
-{
-	if(EvolutionLevel<5){
-		std::cout << "Orangutan is evolving...\n";
-		m_HP += 50;     // Crestem viata
-		m_speed += 2;   // Crestem viteza
-		EvolutionLevel++;
-		std::cout << "New stats - HP: " << m_HP << ", Speed: " << m_speed << "\n";
-		std::cout << "Evolution Level: " << EvolutionLevel << "\n";
-	}
-	else {
-		std::cout << "Orangutan has reached the maximum evolution level (5)!\n";
-	}
-}
+
 
 int Orangutan::GetRandomHealthRegen(int min, int max) const
 {

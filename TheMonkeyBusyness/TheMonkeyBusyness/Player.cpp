@@ -8,6 +8,7 @@ Player::Player(float x, float y, int id, const std::string& name)
 	std::mt19937 gen(seed);
 	std::uniform_int_distribution<> distrib(0, 3);
 	m_monkeyType = distrib(gen);
+	
 	// Alege caracterul pe baza valorii random
 	switch (m_monkeyType) {
 	case 0:
@@ -145,6 +146,11 @@ void Player::Damage(int damageValue)
 		int hp = m_Character->GetHealth();
 		m_Character->SetHealth(hp - damageValue);
 	}
+}
+
+void Player::ActivateAbility()
+{
+	m_Character->ActivateSpecialAbility();
 }
 
 void Player::SetScreenSize(const int screenWidth, const int screenHeight)

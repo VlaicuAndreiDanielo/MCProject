@@ -25,6 +25,7 @@ public:
     // Updates
     void ProcessMove(int playerId, const Vector2<float>& movement, const Vector2<float>& lookDirection,float deltaTime);
     void ProcessShoot(int playerId, const Vector2<float>& mousePosition);
+    void SpecialAbility(int playerId);
     void UpdateGame(float deltaTime);
     void SetResolution(int width, int height,int playerId);
     // Serialization

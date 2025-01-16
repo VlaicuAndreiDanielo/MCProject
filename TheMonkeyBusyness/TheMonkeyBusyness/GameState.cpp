@@ -119,6 +119,15 @@ void GameState::ProcessShoot(int playerId, const Vector2<float>& mousePosition) 
     player->Shoot(mousePosition);
 }
 
+void GameState::SpecialAbility(int playerId)
+{
+    Player* player = GetPlayer(playerId);
+    if (!player) {
+        return; // Player not found
+    }
+    player->ActivateAbility();
+}
+
 
 void GameState::UpdateGame(float deltaTime)
 {

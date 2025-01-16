@@ -30,6 +30,7 @@ public:
 	void Update(float deltaTime);
 	bool IsAlive() const;
 	void Damage(int damageValue);
+	void ActivateAbility();
 	void SetScreenSize(const int screenWidth, const int screenHeight);
 	void StartDoT(float durationInSeconds);
 	void StopDoT();

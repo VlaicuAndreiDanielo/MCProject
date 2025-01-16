@@ -11,7 +11,6 @@ public:
 	virtual void Attack() const;
 
 	virtual void ActivateSpecialAbility() = 0;
-	virtual void MonkeyEvolution() = 0; 
 	virtual ~Character() = default;
 	void SetHealth(int value)  {
 		m_HP = value; }
@@ -29,6 +28,5 @@ protected:
 	int m_speed=0;
 	float m_cooldownTime;
 	float m_remainingCooldown;
-	int EvolutionLevel = 0;
 };
 

@@ -435,7 +435,7 @@ int main() {
                         gameState->ProcessShoot(playerId, Vector2(mouseX, mouseY));
                     }
                     if (is_specialAblity == 1) {
-                        //Player activate special abilityio
+                        gameState->SpecialAbility(playerId);
                     }
                     gameState->ProcessMove(playerId, Vector2(deltaX, deltaY), Vector2(mouseX, mouseY), gameManager.GetDeltaTime());
                     auto jsonResponse = gameState->ToJson();

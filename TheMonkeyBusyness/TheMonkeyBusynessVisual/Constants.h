@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 using Position = std::pair<float, float>;
 using Direction = std::pair<float, float>;
 
@@ -7,7 +7,7 @@ using Direction = std::pair<float, float>;
 namespace RenderConfig {
     constexpr int kTileSize = 40;          // Size of a single grid tile
     constexpr int kPlayerSize = 30;        // Size of the player
-    constexpr int kBulletSize = 10;        // Size of bullets
+    constexpr int kBulletSize = 25;        // Size of bullets
     constexpr int kWindowWidth = 800;      // Default game window width
     constexpr int kWindowHeight = 600;     // Default game window height
 }

@@ -5,6 +5,7 @@
 
 GameWindow::GameWindow(Player& player, QWidget* parent)
     : QWidget(parent), m_player(player), m_playerInput(this) {
+    LoadTextures();
     FetchArena(); // Fetch the entire arena
 
     setMouseTracking(true);
@@ -18,9 +19,13 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
 
     m_timer = new QTimer(this);
     QObject::connect(m_timer, &QTimer::timeout, [this]() {
-        SendInputToServer(); // Send player input to the server
+        SendInputToServer(); 
+        m_bulletRotationAngle += 5.0f; 
+        if (m_bulletRotationAngle >= 360.0f) {
+            m_bulletRotationAngle -= 360.0f;
+        }
         //FetchGameState();  
-        update();  // Trigger repaint
+        update();  
         });
 
     m_timer->start(TimingConfig::kGameLoopIntervalMs);
@@ -193,6 +198,20 @@ void GameWindow::DestroyMapWall(int x, int y) {
     }
 }
 
+void GameWindow::LoadTextures()
+{
+    m_textures[0] = QPixmap(m_basePath + "grass.png");           // Empty
+    m_textures[1] = QPixmap(m_basePath + "grass.png");           // Spawn
+    m_textures[2] = QPixmap(m_basePath + "brick.png");  // Indestructible Wall
+    m_textures[3] = QPixmap(m_basePath + "crate.png");    // Destructible Wall
+    m_textures[4] = QPixmap(m_basePath + "water.png");           // Water
+    m_textures[5] = QPixmap(m_basePath + "grassDark.png");           // Grass
+    m_textures[6] = QPixmap(m_basePath + "lava.png");            // Lava
+    m_textures[7] = QPixmap(m_basePath + "grass.png");      // Teleporter
+    m_textures[8] = QPixmap(m_basePath + "crate.png");
+    banana = QPixmap(m_basePath + "banana.png");
+}
+
 float CalculateAngle(const Direction direction) {
     float angleInRadians = atan2(direction.second, direction.first);
 
@@ -222,20 +241,20 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     // Draw the map 
     for (int i = 0; i < m_map.size(); ++i) {
         for (int j = 0; j < m_map[i].size(); ++j) {
-            QRect square(j * RenderConfig::kTileSize, i * RenderConfig::kTileSize, RenderConfig::kTileSize, RenderConfig::kTileSize);
-            switch (m_map[i][j]) {
-            case 0: painter.fillRect(square, Qt::green); break;  // Empty
-            case 1: painter.fillRect(square, Qt::black); break;  // Spawn
-            case 2: painter.fillRect(square, Qt::darkRed); break;  // Indestructible Wall
-            case 3: painter.fillRect(square, Qt::yellow); break;  // Destructible Wall
-            case 4: painter.fillRect(square, Qt::blue); break;  // Water
-            case 5: painter.fillRect(square, Qt::darkGreen); break;  // Grass
-            case 6: painter.fillRect(square, Qt::red); break;  // Lava
-            case 7: painter.fillRect(square, Qt::darkMagenta); break;  // Teleporter
-            case 8: painter.fillRect(square, Qt::darkYellow); break;  // FakeDestructibleWall 
-            default: painter.fillRect(square, Qt::black); break;  // We don't know what happened here
+            QRect square(j * RenderConfig::kTileSize, i * RenderConfig::kTileSize,
+                RenderConfig::kTileSize, RenderConfig::kTileSize);
+            int tileType = m_map[i][j];
+
+            if (m_textures.contains(tileType) && !m_textures[tileType].isNull()) {
+                painter.drawPixmap(square, m_textures[tileType].scaled(RenderConfig::kTileSize, RenderConfig::kTileSize));
             }
-            painter.drawRect(square);
+            else {
+                // Fallback for missing texture
+                painter.fillRect(square, Qt::black);
+            }
+
+            // Draw the grid lines (optional)
+            //painter.drawRect(square);
         }
     }
 
@@ -289,12 +308,25 @@ void GameWindow::paintEvent(QPaintEvent* event) {
         painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
     }
 
-    // Draw bullets
-    painter.setBrush(Qt::red);
-    for (const auto& [position, direction] : m_bulletsCoordinates) {
-        QRect bulletRect(position.first - RenderConfig::kBulletSize / 2, position.second - RenderConfig::kBulletSize / 2, RenderConfig::kBulletSize, RenderConfig::kBulletSize);
-        painter.drawEllipse(bulletRect);
-    }
+
+
+   for (const auto& [position, direction] : m_bulletsCoordinates) {
+    QPointF bulletCenter(position.first, position.second);
+
+    painter.save();
+
+    painter.translate(bulletCenter);
+
+    painter.rotate(m_bulletRotationAngle);
+
+    QRect bulletRect(-RenderConfig::kBulletSize / 2, -RenderConfig::kBulletSize / 2,
+                     RenderConfig::kBulletSize, RenderConfig::kBulletSize);
+
+    painter.drawPixmap(bulletRect, banana.scaled(RenderConfig::kBulletSize, RenderConfig::kBulletSize, Qt::KeepAspectRatio));
+
+    painter.restore();
+   }
+
 }
 
 

@@ -3,6 +3,7 @@
 using Position = std::pair<float, float>;
 using Direction = std::pair<float, float>;
 
+    extern std::string gameserverUrl;
 // Rendering and Dimensions
 namespace RenderConfig {
     constexpr int kTileSize = 40;          // Size of a single grid tile

@@ -415,5 +415,5 @@ int main() {
             });
 
     // Start server
-    app.port(8080).multithreaded().run();
+    app.port(8080).bindaddr("0.0.0.0").multithreaded().run();
 }

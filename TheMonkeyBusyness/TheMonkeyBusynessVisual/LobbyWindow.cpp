@@ -11,7 +11,7 @@
 
 
 LobbyWindow::LobbyWindow(int playerId, QWidget* parent) :m_playerId(playerId), QWidget(parent) {
-    m_player = new Player(playerId, serverUrl);
+    m_player = new Player(playerId, gameserverUrl);
     //webSocket = new ix::WebSocket();
     SetupUI();
     GetLobbiesFromServer();

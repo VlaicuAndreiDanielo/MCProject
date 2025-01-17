@@ -33,10 +33,6 @@ signals:
 
    
 private:
-    //websocket functions
-    void StartConnectionWebSocket();
-    void SendMessageWebSocket(const std::string& message);
-    void CloseConnectionWebSocket();
     QTimer* m_timer;
     ix::WebSocket* webSocket;
     bool startedGame = false;
@@ -48,7 +44,7 @@ private:
     QListWidget* m_lobbyList;
     std::map<QListWidgetItem*, int> m_lobbyData;
     //std::unordered_map<>
-    std::string serverUrl = "http://localhost:8080";
+    //std::string serverUrl = "http://localhost:8080";
     Player* m_player;
     int m_playerId;
     void CheckStart();

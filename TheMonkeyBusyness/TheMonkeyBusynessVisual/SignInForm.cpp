@@ -274,12 +274,12 @@ SignInForm::SignInForm(QWidget* parent) : QDialog(parent) {
             return;
         }
 
-        std::string serverUrl = "http://localhost:8080"; // Adjust this to match your server's address
+        //std::string serverUrl = "http://localhost:8080"; // Adjust this to match your server's address
         std::string usernameStd = username.toUtf8().constData();
         std::string passwordStd = password.toUtf8().constData();
 
         // Use the Player::SignIn function to create a new user
-        int playerId = Player::SignIn(serverUrl, usernameStd, passwordStd);
+        int playerId = Player::SignIn(gameserverUrl, usernameStd, passwordStd);
 
         if (playerId == -1) {
             QMessageBox::warning(this, "Sign In Failed", "Username already exists or other error.");

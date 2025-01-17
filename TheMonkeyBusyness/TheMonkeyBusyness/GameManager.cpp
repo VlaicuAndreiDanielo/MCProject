@@ -2,17 +2,15 @@
 #include "LobbyManager.h"
 #include <chrono>
 #include <iostream>
+#include <memory>
 
-extern LobbyManager lobbyManager;  //TODO check if I should make lobbyManager and gameManager singletons.
+extern std::shared_ptr<LobbyManager> lobbyManager;
 
-GameManager::GameManager() : m_nextGameId(GameConfig::kfirstGameId) {}
+GameManager::GameManager() : m_nextGameId(GameConfig::kfirstGameId), deltaTime(0.0f) {}
 
 GameManager::~GameManager() {
     for (auto& [gameId, _] : m_games) {
         StopGameLoop(gameId);
-    }
-    for (auto& [gameId, gameState] : m_games) {
-        delete gameState;
     }
 }
 
@@ -21,13 +19,13 @@ int GameManager::CreateGameFromLobby(int lobbyId) {
 
     int gameId = m_nextGameId++;
 
-    Lobby* lobby = lobbyManager.GetLobby(lobbyId);
+    auto lobby = lobbyManager->GetLobby(lobbyId);
     if (!lobby) {
         throw std::runtime_error("Lobby not found");
     }
 
     // Create game state and add all lobby players
-    GameState* gameState = new GameState();
+    auto gameState = std::make_shared<GameState>();
     const auto& playersMap = lobby->GetPlayers();
     for (const auto& [playerId, isReady] : playersMap) {
         gameState->AddPlayer(playerId);
@@ -43,9 +41,9 @@ void GameManager::DeleteGame(int gameId) {
     StopGameLoop(gameId);
 
     std::lock_guard<std::mutex> lock(m_gameMutex);
-    if (m_games.find(gameId) != m_games.end()) {
-        delete m_games[gameId];
-        m_games.erase(gameId);
+    auto it = m_games.find(gameId);
+    if (it != m_games.end()) {
+        m_games.erase(it);
         m_gameThreads.erase(gameId);
         m_runningGames.erase(gameId);
     }
@@ -89,16 +87,18 @@ float GameManager::GetDeltaTime()
     return deltaTime;
 }
 
-std::unordered_map<int, GameState*> GameManager::GetAllGames()
+std::unordered_map<int, std::shared_ptr<GameState>> GameManager::GetAllGames()
 {
+    std::lock_guard<std::mutex> lock(m_gameMutex);
     return m_games;
 }
 
-GameState* GameManager::GetGameState(int gameId) {
+std::shared_ptr<GameState> GameManager::GetGameState(int gameId) {
     std::lock_guard<std::mutex> lock(m_gameMutex);
 
-    if (m_games.find(gameId) != m_games.end()) {
-        return m_games[gameId];
+    auto it = m_games.find(gameId);
+    if (it != m_games.end()) {
+        return it->second;
     }
     return nullptr;
 }
@@ -123,8 +123,9 @@ void GameManager::GameLoop(int gameId) {
             // Update the game state with deltaTime
             {
                 std::lock_guard<std::mutex> lock(m_gameMutex);
-                if (m_games.find(gameId) != m_games.end()) {
-                    m_games[gameId]->UpdateGame(deltaTime);
+                auto it = m_games.find(gameId);
+                if (it != m_games.end()) {
+                    it->second->UpdateGame(deltaTime);
                 }
                 else {
                     break;

@@ -3,22 +3,27 @@
 #include <stdexcept>
 #include <crow.h>
 #include <chrono>
+#include <iostream>
+
+bool isSlowed = false;  //TODO variabile globale, trebuie mutate. Nu stiu exact cine le-a pus dar sa le mutam.
+int oldSpeed;  //TODO variabile globale, trebuie mutate. Nu stiu exact cine le-a pus dar sa le mutam.
+
 void GameState::AddPlayer(int playerId) {
-    if (m_players.find(playerId) != m_players.end()) {
+    if (m_players->find(playerId) != m_players->end()) {
         throw std::runtime_error("Player ID already exists");
     }
-    m_raycast.m_arena = &m_arena;
-    m_raycast.m_players = &m_players;
-    m_players[playerId] = InitializePlayer(playerId);
+    m_raycast.m_arena = m_arena;
+    m_raycast.m_players = m_players;
+    (*m_players)[playerId] = InitializePlayer(playerId);
 }
 
 void GameState::RemovePlayer(int playerId) {
-    m_players.erase(playerId);
+    m_players->erase(playerId);
 }
 
 Player* GameState::GetPlayer(int playerId) {
-    auto it = m_players.find(playerId);
-    return (it != m_players.end()) ? &it->second : nullptr;
+    auto it = m_players->find(playerId);
+    return (it != m_players->end()) ? &(it->second) : nullptr;
 }
 
 Player GameState::InitializePlayer(int playerId) {
@@ -26,21 +31,23 @@ Player GameState::InitializePlayer(int playerId) {
     bool isOverlapping = false;
     std::pair<int, int> spawn;
     do {
-        spawn = m_arena.GetSpawn();
-        for (auto& [playerId, player] : m_players)
+        spawn = m_arena->GetSpawn();
+        isOverlapping = false; // Reset isOverlapping before checking
+        for (const auto& [pid, player] : *m_players)
         {
             if (player.GetPosition().x == spawn.first * GameConfig::kTileSize + GameConfig::kTileSize / 2
-                && spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2) {
-                isOverlapping == true;
+                && player.GetPosition().y == spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2) {
+                isOverlapping = true;
+                break;
             }
         }
     } while (isOverlapping);
-    
 
     return Player(spawn.first * GameConfig::kTileSize + GameConfig::kTileSize / 2,
         spawn.second * GameConfig::kTileSize + GameConfig::kTileSize / 2,
         playerId, playerName);
 }
+
 std::string GameState::GetPlayerNameFromDatabase(int playerId) {
     UserDatabase database("userdatabase.db");
 
@@ -56,21 +63,16 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId) {
     return username; // Returnează numele utilizatorului
 }
 
-//std::string GameState::GetPlayerNameFromDatabase(int playerId) {
-//    UserDatabase database("userdatabase.db");
-//    return database.GetUsernameById(playerId);
-//}
-
-
-bool isSlowed = false;
-int oldSpeed;
+bool GameState::IsGameOver() const {
+    return m_players->size() <= 1; // Game is over when one or no players are left
+}
 
 void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const Vector2<float>& lookDirection, float deltaTime) {
     Player* player = GetPlayer(playerId);
     if (!player) {
         return; // Player not found
     }
-    
+
     if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange, *player); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
             player->UpdatePosition(movement, deltaTime);
@@ -96,7 +98,7 @@ void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const 
                 }
             }
         }
-        else if(!isSubmerged && isSlowed)
+        else if (!isSubmerged && isSlowed)
         {
             isSubmerged = false;
             character->SetSpeed(oldSpeed);
@@ -128,10 +130,9 @@ void GameState::SpecialAbility(int playerId)
     player->ActivateAbility();
 }
 
-
 void GameState::UpdateGame(float deltaTime)
 {
-    for (auto& [playerId, player] : m_players) {
+    for (auto& [playerId, player] : *m_players) {
         player.Update(deltaTime);
         player.UpdateDot();
     }
@@ -141,35 +142,35 @@ void GameState::UpdateGame(float deltaTime)
 
 void GameState::SetResolution(int width, int height, int playerId)
 {
-    m_players[playerId].SetScreenSize(width, height);
+    (*m_players)[playerId].SetScreenSize(width, height);
 }
 
 void GameState::UpdateBullets(float deltaTime) {
-    for (auto& [playerId, player] : m_players) {
+    for (auto& [playerId, player] : *m_players) {
         auto& bullets = player.m_weapon.GetActiveBullets();
         for (size_t i = 0; i < bullets.size();) {
             auto& bullet = bullets[i];
             bullet.Update(deltaTime);
             Vector2<float> RayCastLocation;
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player); Player * tempPlayer = dynamic_cast<Player*>(hit)) {
-               tempPlayer->Damage(bullet.GetDamage());
-               player.m_weapon.deactivateBullet(i);
+                tempPlayer->Damage(bullet.GetDamage());
+                player.m_weapon.deactivateBullet(i);
             }
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
-                
+
                 if (tempTile->getType() == TileType::DestructibleWall || tempTile->getType() == TileType::FakeDestructibleWall)
                 {
-                      
+
                     tempTile->takeDamage(bullet.GetDamage());
                     if (tempTile->getHP() <= 0) {
                         int x = (std::floor(RayCastLocation.x / GameConfig::kTileSize));
                         int y = (std::floor(RayCastLocation.y / GameConfig::kTileSize));
-                    // if fake wall 
-                    //      verific in jurul lui m_arena[x][y] daca exista player 
-                    //      for (auto& [playerId, player] : m_players)  
-                    //              player.damage(300)
-                    // verific in jurul lui m_arena[x][y] daca exista tile destructibil, daca da
-                    //  tempTile->takeDamage(30);
+                        // if fake wall 
+                        //      verific in jurul lui m_arena[x][y] daca exista player 
+                        //      for (auto& [playerId, player] : m_players)  
+                        //              player.damage(300)
+                        // verific in jurul lui m_arena[x][y] daca exista tile destructibil, daca da
+                        //  tempTile->takeDamage(30);
                         m_mapChanges.push_back({ x, y });
                         player.m_weapon.deactivateBullet(i);
                     }
@@ -191,20 +192,13 @@ void GameState::UpdateBullets(float deltaTime) {
     }
 }
 
-
-
-bool GameState::IsGameOver() const {
-    return m_players.size() <= 1; // Game is over when one or no players are left
-}
-
-
 crow::json::wvalue GameState::ToJson() const {
     crow::json::wvalue gameStateJson;
 
     // Serialize players (this includes their bullets)
     crow::json::wvalue playersJson = crow::json::wvalue::list();
     size_t playerIndex = 0;
-    for (const auto& [playerId, player] : m_players) {
+    for (const auto& [playerId, player] : *m_players) {
         playersJson[playerIndex++] = player.ToJson();
     }
     gameStateJson["players"] = std::move(playersJson);
@@ -233,6 +227,6 @@ crow::json::wvalue GameState::MapChangesToJson() const
 
 crow::json::wvalue GameState::ArenaToJson() const {
     crow::json::wvalue arenaData;
-    arenaData["arena"] = m_arena.ToJson();
+    arenaData["arena"] = m_arena->ToJson();
     return arenaData;
 }

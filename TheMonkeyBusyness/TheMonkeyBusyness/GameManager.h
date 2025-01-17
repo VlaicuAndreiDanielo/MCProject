@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <thread>
 #include <mutex>
+#include <memory>
 #include "GameState.h"
 
 class GameManager {
@@ -17,12 +18,12 @@ public:
     bool StartGameLoop(int gameId);
     void StopGameLoop(int gameId);
     float GetDeltaTime();
-    std::unordered_map<int, GameState*> GetAllGames();
+    std::unordered_map<int, std::shared_ptr<GameState>> GetAllGames();
     // Access game state
-    GameState* GetGameState(int gameId);
+    std::shared_ptr<GameState> GetGameState(int gameId);
 
 private:
-    std::unordered_map<int, GameState*> m_games;
+    std::unordered_map<int, std::shared_ptr<GameState>> m_games;
     std::unordered_map<int, std::thread> m_gameThreads;
     std::unordered_map<int, bool> m_runningGames;
     std::mutex m_gameMutex;

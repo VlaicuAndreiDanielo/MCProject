@@ -150,26 +150,35 @@ void GameState::UpdateBullets(float deltaTime) {
                 player.m_weapon.deactivateBullet(i);
             }
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
-
-                if (tempTile->getType() == TileType::DestructibleWall || tempTile->getType() == TileType::FakeDestructibleWall)
+                TileType tempType = tempTile->getType();
+                if (tempType == TileType::DestructibleWall || tempType == TileType::FakeDestructibleWall)
                 {
-
                     tempTile->takeDamage(bullet.GetDamage());
                     if (tempTile->getHP() <= 0) {
                         int x = (std::floor(RayCastLocation.x / GameConfig::kTileSize));
                         int y = (std::floor(RayCastLocation.y / GameConfig::kTileSize));
-                        // if fake wall 
-                        //      verific in jurul lui m_arena[x][y] daca exista player 
-                        //      for (auto& [playerId, player] : m_players)  
-                        //              player.damage(300)
-                        // verific in jurul lui m_arena[x][y] daca exista tile destructibil, daca da
-                        // tempTile->takeDamage(30);
-                        // (int) TileType::FakeDestructibleWall
-                        m_mapChanges.push_back({ x, y });
-                        player.m_weapon.deactivateBullet(i);
-                    }
-                    else {
-                        player.m_weapon.deactivateBullet(i);
+                        if (tempType == TileType::FakeDestructibleWall) {
+                            // Apply damage to players and destructible tiles in the area around the tile
+                            for (int dx = -1; dx <= 1; ++dx) {
+                                for (int dy = -1; dy <= 1; ++dy) {
+                                    int checkX = x + dx;
+                                    int checkY = y + dy;
+
+                                    for (auto& [playerId, player] : *m_players) {
+                                        // Check if the player's position overlaps with the tile's surrounding area
+                                        if ((int)player.GetPosition().x / GameConfig::kTileSize == checkX &&
+                                            (int)player.GetPosition().y / GameConfig::kTileSize == checkY) {
+                                            // Apply damage to the player
+                                            player.Damage(40);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                        else {
+                            player.m_weapon.deactivateBullet(i);
+                        }
                     }
                     //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
                 }

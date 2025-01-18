@@ -47,11 +47,8 @@ int Tile::getHP() const {
 void Tile::takeDamage(int damage) {
     if (m_tileType == TileType::DestructibleWall || m_tileType == TileType::FakeDestructibleWall) {
         m_hp -= damage;
-        if (m_hp <= 0) {
-            if (m_tileType == TileType::FakeDestructibleWall) {
-                // Trigger explosion (logic to be implemented elsewhere)
-                std::cout << "Fake wall exploded!\n";
-            }
+        if (m_hp <= 0) 
+        {
             m_tileType = TileType::Empty; // Turn into empty tile
             updateProperties(); // Update properties after type change
         }

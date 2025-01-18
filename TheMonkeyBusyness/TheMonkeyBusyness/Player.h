@@ -21,6 +21,10 @@ public:
 	void SetSpawn(Vector2<float> location);
 	void SetMonkeyType(Character* character);
 	Character* GetCharacter() const;
+	void SetOldSpeed(int speed);
+	int GetOldSpeed() const;
+	void SetisSlowed(bool isSlowed);
+	bool IsSlowed() const;
 	Weapon m_weapon;
 
 	void UpdatePosition(const Vector2<float> &vector, float deltaTime);
@@ -45,6 +49,8 @@ private:
 	int m_screenHeight;
 	int m_monkeyType;
 	std::string m_name;
+	int m_oldSpeed;
+	bool m_isSlowed = false;
 	Character* m_Character;
 	Vector2<float> m_position;
 	Vector2<float> m_direction;

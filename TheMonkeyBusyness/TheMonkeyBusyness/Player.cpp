@@ -58,6 +58,25 @@ void Player::SetMonkeyType(Character* character)
 	m_Character = character;
 }
 
+void Player::SetOldSpeed(int speed)
+{
+	m_oldSpeed = speed;
+}
+
+int Player::GetOldSpeed() const 
+{
+	return m_oldSpeed;
+}
+
+void Player::SetisSlowed(bool isSlowed)
+{
+	m_isSlowed = isSlowed;
+}
+
+bool Player::IsSlowed() const {
+	return m_isSlowed;
+}
+
 void Player::StartDoT(float durationInSeconds) {
 	if (m_isUnderDot) return; // DoT already active
 	m_isUnderDot = true;

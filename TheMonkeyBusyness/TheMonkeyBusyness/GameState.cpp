@@ -5,9 +5,6 @@
 #include <chrono>
 #include <iostream>
 
-bool isSlowed = false;  //TODO variabile globale, trebuie mutate. Nu stiu exact cine le-a pus dar sa le mutam.
-int oldSpeed;  //TODO variabile globale, trebuie mutate. Nu stiu exact cine le-a pus dar sa le mutam.
-
 void GameState::AddPlayer(int playerId) {
     if (m_players->find(playerId) != m_players->end()) {
         throw std::runtime_error("Player ID already exists");
@@ -78,31 +75,27 @@ void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const 
             player->UpdatePosition(movement, deltaTime);
         }
         Character* character = player->GetCharacter();
-        if (!isSlowed)
+        if (!player->IsSlowed())
         {
-            oldSpeed = character->GetSpeed();
+            player->SetOldSpeed(character->GetSpeed());
         }
         bool isSubmerged = false;
         if (tempTile->getType() == TileType::Water || tempTile->getType() == TileType::Lava)
         {
             isSubmerged = true;
-            if (isSubmerged && !isSlowed)
-            {
-                isSlowed = true;
-                character->SetSpeed(oldSpeed / 2);
-                if (tempTile->getType() == TileType::Lava) {
-                    if (!player->IsUnderDot()) {
+            player->SetisSlowed(true);
+            character->SetSpeed(player->GetOldSpeed() / 2);
+            if (tempTile->getType() == TileType::Lava) {
+                if (!player->IsUnderDot()) {
                         player->StartDoT(3.0f); // DoT active for 3s
-                        std::cout << "DoT started!\n";
-                    }
                 }
             }
         }
-        else if (!isSubmerged && isSlowed)
+        else if (!isSubmerged && player->IsSlowed())
         {
             isSubmerged = false;
-            character->SetSpeed(oldSpeed);
-            isSlowed = false;
+            character->SetSpeed(player->GetOldSpeed());
+            player->SetisSlowed(false);
             if (player->IsUnderDot()) {
                 player->StopDoT(); // Stop the DoT if the player leaves the lava
                 std::cout << "DoT stopped!\n";
@@ -170,7 +163,8 @@ void GameState::UpdateBullets(float deltaTime) {
                         //      for (auto& [playerId, player] : m_players)  
                         //              player.damage(300)
                         // verific in jurul lui m_arena[x][y] daca exista tile destructibil, daca da
-                        //  tempTile->takeDamage(30);
+                        // tempTile->takeDamage(30);
+                        // (int) TileType::FakeDestructibleWall
                         m_mapChanges.push_back({ x, y });
                         player.m_weapon.deactivateBullet(i);
                     }

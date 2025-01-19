@@ -98,7 +98,6 @@ void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const 
             player->SetisSlowed(false);
             if (player->IsUnderDot()) {
                 player->StopDoT(); // Stop the DoT if the player leaves the lava
-                std::cout << "DoT stopped!\n";
             }
         }
     }
@@ -161,24 +160,32 @@ void GameState::UpdateBullets(float deltaTime) {
                             // Apply damage to players and destructible tiles in the area around the tile
                             for (int dx = -1; dx <= 1; ++dx) {
                                 for (int dy = -1; dy <= 1; ++dy) {
-                                    int checkX = x + dx;
-                                    int checkY = y + dy;
+                                    int checkX = y + dy;
+                                    int checkY = x + dx;
 
                                     for (auto& [playerId, player] : *m_players) {
                                         // Check if the player's position overlaps with the tile's surrounding area
-                                        if ((int)player.GetPosition().x / GameConfig::kTileSize == checkX &&
-                                            (int)player.GetPosition().y / GameConfig::kTileSize == checkY) {
+                                        if ((int)player.GetPosition().y / GameConfig::kTileSize == checkX &&
+                                            (int)player.GetPosition().x / GameConfig::kTileSize == checkY) {
                                             // Apply damage to the player
                                             player.Damage(40);
                                         }
                                     }
 
+                                    Tile* surroundingTile = &m_arena->GetTile(checkX, checkY);
+                                    if (surroundingTile->getType() == TileType::FakeDestructibleWall || surroundingTile->getType() == TileType::DestructibleWall)
+                                    {
+                                        surroundingTile->takeDamage(30);
+                                        m_mapChanges.push_back({ checkY, checkX });
+                                    }
                                 }
                             }
                         }
-                        else {
-                            player.m_weapon.deactivateBullet(i);
-                        }
+                        m_mapChanges.push_back({ x, y });
+                        player.m_weapon.deactivateBullet(i);
+                    }
+                    else {
+                        player.m_weapon.deactivateBullet(i);
                     }
                     //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
                 }

@@ -31,7 +31,7 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns) {
     generateDestructibleWalls(mapa, 35); // 35% chance for initial destructible walls
 
     // Transform destructible walls into other types
-    transformDestructibleWalls(mapa, dim, 10, 10); // 10% chance for indestructible, 10% for fake destructible
+    transformDestructibleWalls(mapa, dim, 10, 20); // 10% chance for indestructible, 20% for fake destructible
 
     // Add grass
     generateGrass(mapa);

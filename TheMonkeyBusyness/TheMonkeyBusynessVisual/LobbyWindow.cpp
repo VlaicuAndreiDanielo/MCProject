@@ -99,8 +99,8 @@ void LobbyWindow::CheckStart()
         auto jsonResponse = crow::json::load(response.text);
         int startGame = jsonResponse["startCheck"].i();
         if (startGame == 1) {
-            if (!startedGame && !host) {
-                startedGame = true;
+            if (!is_startingGame && !is_host) {
+                is_startingGame = true;
                 m_player->SetGameId(jsonResponse["gameId"].i());
                 m_timer->stop();
                 GameWindow* gameWindow = new GameWindow(*m_player);
@@ -343,7 +343,7 @@ void LobbyWindow::OnPlayButtonClicked() {
                 return;
             } 
             m_timer->stop();
-            host = true;
+            is_host = true;
             GameWindow* gameWindow = new GameWindow(*m_player);
             gameWindow->show();
             //CloseConnectionWebSocket();

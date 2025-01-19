@@ -6,7 +6,7 @@
 
 extern std::shared_ptr<LobbyManager> lobbyManager;
 
-GameManager::GameManager() : m_nextGameId(GameConfig::kfirstGameId), deltaTime(0.0f) {}
+GameManager::GameManager() : m_nextGameId(GameConfig::kfirstGameId), m_deltaTime(0.0f) {}
 
 GameManager::~GameManager() {
     for (auto& [gameId, _] : m_games) {
@@ -84,7 +84,7 @@ void GameManager::StopGameLoop(int gameId) {
 
 float GameManager::GetDeltaTime()
 {
-    return deltaTime;
+    return m_deltaTime;
 }
 
 std::unordered_map<int, std::shared_ptr<GameState>> GameManager::GetAllGames()
@@ -118,14 +118,14 @@ void GameManager::GameLoop(int gameId) {
         // Check if enough time has passed for a frame
         if (totalTime >= std::chrono::duration_cast<std::chrono::nanoseconds>(frameDuration)) {
             // Calculate deltaTime in seconds
-            deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(totalTime).count();
+            m_deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(totalTime).count();
 
             // Update the game state with deltaTime
             {
                 std::lock_guard<std::mutex> lock(m_gameMutex);
                 auto it = m_games.find(gameId);
                 if (it != m_games.end()) {
-                    it->second->UpdateGame(deltaTime);
+                    it->second->UpdateGame(m_deltaTime);
                 }
                 else {
                     break;

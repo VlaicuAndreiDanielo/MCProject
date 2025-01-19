@@ -6,10 +6,10 @@
 import TileTypeModule;
 Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
 {
-    this->m_mapa = generate_map(dim, numSpawns);
+    this->m_mapa = GenerateMap(dim, numSpawns);
 }
 
-std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns) {
+std::vector<std::vector<Tile>> Arena::GenerateMap(int dim, int numSpawns) {
     // Initialize map with empty spaces
     std::vector<std::vector<Tile>> mapa(dim, std::vector<Tile>(dim, Tile(TileType::Empty)));
 
@@ -24,21 +24,21 @@ std::vector<std::vector<Tile>> Arena::generate_map(int dim, int numSpawns) {
     }
 
     // Generate liquids
-    generateBigLiquid(mapa, dim);
-    generateSmallLiquid(mapa, dim);
+    GenerateBigLiquid(mapa, dim);
+    GenerateSmallLiquid(mapa, dim);
 
     // Generate destructible walls
-    generateDestructibleWalls(mapa, 35); // 35% chance for initial destructible walls
+    GenerateDestructibleWalls(mapa, 35); // 35% chance for initial destructible walls
 
     // Transform destructible walls into other types
-    transformDestructibleWalls(mapa, dim, 10, 20); // 10% chance for indestructible, 20% for fake destructible
+    TransformDestructibleWalls(mapa, dim, 10, 20); // 10% chance for indestructible, 20% for fake destructible
 
     // Add grass
-    generateGrass(mapa);
+    GenerateGrass(mapa);
 
     // Generate spawns and teleporters
-    generateInitialSpawns(mapa, numSpawns, 8);
-    placeTeleporters(mapa);
+    GenerateInitialSpawns(mapa, numSpawns, 8);
+    PlaceTeleporters(mapa);
 
     return mapa;
 }
@@ -61,7 +61,7 @@ std::pair<int, int> Arena::GetSpawn() {
     return m_spawnPositions[randomIndex];
 }
 
-void Arena::applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type) {
+void Arena::ApplyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type) {
     for (int it = 0; it < iterations; ++it) {
         std::vector<std::vector<Tile>> newMap = mapa;
 
@@ -98,7 +98,7 @@ void Arena::applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim,
     }
 }
 
-void Arena::generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability) {
+void Arena::GenerateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 100);
@@ -110,10 +110,10 @@ void Arena::generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int 
             }
         }
     }
-    applyCellularAutomata(mapa, mapa.size(), 3, TileType::DestructibleWall);
+    ApplyCellularAutomata(mapa, mapa.size(), 3, TileType::DestructibleWall);
 }
 
-void Arena::transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability) {
+void Arena::TransformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 100);
@@ -133,19 +133,19 @@ void Arena::transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int
     }
 }
 
-void Arena::generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
-    TileType type = getRandomLiquid();
+void Arena::GenerateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
+    TileType type = GetRandomLiquid();
     bool isRiver = rand() % 2 == 0;
 
     if (isRiver) {
-        generateRiver(mapa, dim, type);
+        GenerateRiver(mapa, dim, type);
     }
     else {
-        generateLake(mapa, dim, type);
+        GenerateLake(mapa, dim, type);
     }
 }
 
-void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+void Arena::GenerateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
     FastNoiseLite noise;
     noise.SetSeed(static_cast<int>(time(0)));
     noise.SetFrequency(0.1f); // Controls the level of detail in the noise pattern
@@ -190,7 +190,7 @@ void Arena::generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType
     }
 }
 
-void Arena::generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
+void Arena::GenerateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type) {
     int startX, startY, endX, endY;
     int edge = rand() % 4;
 
@@ -255,10 +255,10 @@ void Arena::generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileTyp
     }
 
     // Place teleporters at opposite edges to ensure accessibility
-    placeOppositeEdgeTeleporters(mapa, dim, { startX, startY }, { endX, endY });
+    PlaceOppositeEdgeTeleporters(mapa, dim, { startX, startY }, { endX, endY });
 }
 
-void Arena::placeOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end) {
+void Arena::PlaceOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end) {
     // Place teleporter at the start edge
     if (mapa[start.second][start.first].getType() == TileType::Empty) {
         mapa[start.second][start.first].setType(TileType::Teleporter);
@@ -274,8 +274,8 @@ void Arena::placeOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, i
     m_teleporterConnections[end] = start;
 }
 
-void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
-    TileType type = getRandomLiquid();
+void Arena::GenerateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
+    TileType type = GetRandomLiquid();
     if (type == TileType::Water)
         type = TileType::Lava;
     else
@@ -300,7 +300,7 @@ void Arena::generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim) {
     }
 }
 
-TileType Arena::getRandomLiquid()
+TileType Arena::GetRandomLiquid()
 {
     std::srand(std::time(0));
     return (rand() % 2 == 0) ? TileType::Water : TileType::Lava;
@@ -312,7 +312,7 @@ double calculateDistance(int x1, int y1, int x2, int y2) {
 }
 
 // Function to place spawns with a significant distance between them
-void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numSpawns, int minDistance) {
+void Arena::GenerateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numSpawns, int minDistance) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(1, m_dim - 2); // Avoid borders
@@ -369,7 +369,7 @@ void Arena::generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int numS
     m_spawnPositions = spawnPositions;
 }
 
-void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
+void Arena::GenerateGrass(std::vector<std::vector<Tile>>& mapa) {
     // Initialize random grass tiles
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -384,10 +384,10 @@ void Arena::generateGrass(std::vector<std::vector<Tile>>& mapa) {
     }
 
     // Use the generic cellular automata function for grass refinement
-    applyCellularAutomata(mapa, mapa.size(), 3, TileType::Grass);
+    ApplyCellularAutomata(mapa, mapa.size(), 3, TileType::Grass);
 }
 
-std::pair<int, int> Arena::getConnectedTeleporter(int x, int y) const {
+std::pair<int, int> Arena::GetConnectedTeleporter(int x, int y) const {
     auto it = m_teleporterConnections.find({ x, y });
     if (it != m_teleporterConnections.end()) {
         return it->second;
@@ -395,7 +395,7 @@ std::pair<int, int> Arena::getConnectedTeleporter(int x, int y) const {
     return { -1, -1 }; // Return an invalid location if no connection exists
 }
 
-void Arena::placeTeleporters(std::vector<std::vector<Tile>>& mapa) {
+void Arena::PlaceTeleporters(std::vector<std::vector<Tile>>& mapa) {
     // Random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -421,21 +421,21 @@ void Arena::placeTeleporters(std::vector<std::vector<Tile>>& mapa) {
         borders.pop_back();
 
         // Place teleporter on the first border
-        std::pair<int, int> teleporter1 = generateTeleporterPosition(mapa, border1, borderOffsetDistrib(gen), gen);
+        std::pair<int, int> teleporter1 = GenerateTeleporterPosition(mapa, border1, borderOffsetDistrib(gen), gen);
         teleporters.push_back(teleporter1);
         mapa[teleporter1.second][teleporter1.first].setType(TileType::Teleporter);
 
         // Place teleporter on the second border
-        std::pair<int, int> teleporter2 = generateTeleporterPosition(mapa, border2, borderOffsetDistrib(gen), gen);
+        std::pair<int, int> teleporter2 = GenerateTeleporterPosition(mapa, border2, borderOffsetDistrib(gen), gen);
         teleporters.push_back(teleporter2);
         mapa[teleporter2.second][teleporter2.first].setType(TileType::Teleporter);
     }
 
     // Pair the teleporters
-    pairTeleporters(teleporters);
+    PairTeleporters(teleporters);
 }
 
-std::pair<int, int> Arena::generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen) {
+std::pair<int, int> Arena::GenerateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen) {
     std::uniform_int_distribution<> dimDistrib(1, m_dim - 2); // Avoid corners
     int x = 0, y = 0;
 
@@ -472,7 +472,7 @@ std::pair<int, int> Arena::generateTeleporterPosition(const std::vector<std::vec
     return { x, y };
 }
 
-void Arena::pairTeleporters(const std::vector<std::pair<int, int>>& teleporters) {
+void Arena::PairTeleporters(const std::vector<std::pair<int, int>>& teleporters) {
     if (teleporters.size() < 2) return;
 
     // Create teleporter connections
@@ -484,7 +484,7 @@ void Arena::pairTeleporters(const std::vector<std::pair<int, int>>& teleporters)
     }
 }
 
-void Arena::triggerExplosion(int x, int y) {
+void Arena::TriggerExplosion(int x, int y) {
     std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
 
     for (const auto& [dx, dy] : directions) {
@@ -516,7 +516,7 @@ crow::json::wvalue Arena::ToJson() const {
 
 
 // Afisarea hartii in consola
-void Arena::print_map() const
+void Arena::PrintMap() const
 {
     for (const auto& row : m_mapa) {
         for (const auto& tile : row) {

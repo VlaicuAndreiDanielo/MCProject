@@ -2,6 +2,8 @@
 
 MC Project. Team name: Echipa
 
+Video Project: https://youtu.be/u4TCsvCAmss
+
 This is the handout for setting up dependencies.
 
 INSTALLING LIBRARIES:

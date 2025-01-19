@@ -35,6 +35,7 @@ public:
     const std::string& GetServerUrl() const;
     int GetHealth() const;
     int GetMonkeyType()const;
+    int GetisAlive() const;
 
     // Mutators
     void SetGameId(int id);
@@ -45,6 +46,7 @@ public:
     void SetDirection(const Direction& direction);
     void SetHealth(int health);
     void SetMonkey(int monkeyType);
+    void SetisAlive(int isAlive);
 
 private:
     int m_id;                            // Player's unique ID
@@ -58,4 +60,5 @@ private:
     std::string m_serverUrl;             // Server URL for requests
     Position m_position;                 // Player's current position
     Direction m_direction;               // Player's current direction
+    int m_isAlive;                       // If the player is alive
 };

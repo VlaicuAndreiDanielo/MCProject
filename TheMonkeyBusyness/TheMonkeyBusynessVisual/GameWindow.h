@@ -13,6 +13,7 @@ struct PlayerData {
     Position position;
     Direction direction;
     int monkeyType;
+    int isAlive;
 };
 
 class GameWindow : public QWidget {

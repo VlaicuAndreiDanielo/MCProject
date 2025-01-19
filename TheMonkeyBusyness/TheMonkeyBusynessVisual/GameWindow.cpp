@@ -293,25 +293,29 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
     // Draw other players
     for (const auto& [name, data] : m_playersData) {
-        const auto& [health, position, direction, monkeyType] = data;
+        const auto& [health, position, direction, monkeyType, isAlive] = data;
 
         /*int x = position.first - m_player.GetPosition().first + (width() / 2);
         int y = position.second - m_player.GetPosition().second + (height() / 2);*/
 
         // Draw player rectangle
-        QRect playerRect(- RenderConfig::kPlayerSize / 2, - RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
-        painter.save();
-        QPixmap monkeyTexture = m_monkeyTextures[monkeyType];
-        painter.translate(position.first, position.second);
-        painter.rotate(CalculateAngle(direction));
-        painter.drawPixmap(playerRect, monkeyTexture);
-        painter.restore();
-        // Draw player's name above the rectangle
-        painter.setPen(Qt::white);
-        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 5, QString::fromStdString(name));
+        if (isAlive)
+        {
+            QRect playerRect(-RenderConfig::kPlayerSize / 2, -RenderConfig::kPlayerSize / 2, RenderConfig::kPlayerSize, RenderConfig::kPlayerSize);
 
-        // Draw player's health below the rectangle
-        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
+            painter.save();
+            QPixmap monkeyTexture = m_monkeyTextures[monkeyType];
+            painter.translate(position.first, position.second);
+            painter.rotate(CalculateAngle(direction));
+            painter.drawPixmap(playerRect, monkeyTexture);
+            painter.restore();
+            // Draw player's name above the rectangle
+            painter.setPen(Qt::white);
+            painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 5, QString::fromStdString(name));
+
+            // Draw player's health below the rectangle
+            painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
+        }
     }
 
 
@@ -350,9 +354,7 @@ void GameWindow::UpdatePlayerState(const crow::json::rvalue& playerData) {
     m_player.SetDirection(direction);
     m_player.SetHealth(playerData["hp"].i());
     m_player.SetMonkey(playerData["monkeyType"].i());
-    if (playerData["hp"].i() <= 0) {
-        // TODO: Handle player death
-    }
+    m_player.SetisAlive(playerData["isAlive"].i());
 }
 
 void GameWindow::UpdateOtherPlayers(const crow::json::rvalue& playerData) {
@@ -361,11 +363,8 @@ void GameWindow::UpdateOtherPlayers(const crow::json::rvalue& playerData) {
     Direction direction = { playerData["directionX"].d(), playerData["directionY"].d() };
     int health = playerData["hp"].i();
     int monkeyType = playerData["monkeyType"].i();
-    if (health <= 0) {
-        //TODO Handle other players death
-    }
-
-    m_playersData[name] = { health, position, direction, monkeyType};
+    int isAlive = playerData["isAlive"].i();
+    m_playersData[name] = { health, position, direction, monkeyType, isAlive};
 }
 
 

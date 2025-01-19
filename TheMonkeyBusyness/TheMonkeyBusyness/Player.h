@@ -32,7 +32,7 @@ public:
 	void UpdateRotation(const Vector2<float>& mousePos);
 	void Shoot(const Vector2<float>& mousePosition);
 	void Update(float deltaTime);
-	bool IsAlive() const;
+	bool IsAlive();
 	void Damage(int damageValue);
 	void ActivateAbility();
 	void SetScreenSize(const int screenWidth, const int screenHeight);
@@ -50,7 +50,7 @@ private:
 	int m_monkeyType;
 	std::string m_name;
 	int m_oldSpeed;
-	bool m_isSlowed = false;
+	bool m_isSlowed = { false };
 	Character* m_Character;
 	Vector2<float> m_position;
 	Vector2<float> m_direction;
@@ -61,4 +61,5 @@ private:
 	float m_dotDuration = 0; // DoT duration in seconds
 	Vector2<float> CalculateLookAtDirection(const Vector2<float>& mousePos);
 	Vector2<float> CalculateBulletSpawnPosition() const;
+	int m_isAlive = {1};
 };

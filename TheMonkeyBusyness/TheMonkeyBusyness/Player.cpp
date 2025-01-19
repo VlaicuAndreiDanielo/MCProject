@@ -154,9 +154,18 @@ void Player::Update(float deltaTime)
 	m_weapon.Update(deltaTime);
 }
 
-bool Player::IsAlive() const
+bool Player::IsAlive()
 {
-	return m_Character->GetHealth() > 0;
+	if (m_Character->GetHealth() < 0)
+	{
+		m_isAlive = 0;
+		return false;
+	}
+	else
+	{
+		m_isAlive = 1;
+		return true;
+	}
 }
 
 void Player::Damage(int damageValue)
@@ -192,6 +201,7 @@ crow::json::wvalue Player::ToJson() const
 	playerJson["hp"] = m_Character->GetHealth();
 	playerJson["monkeyType"] = m_monkeyType;
 	playerJson["weapon"] = m_weapon.ToJson();
+	playerJson["isAlive"] = m_isAlive;
 
 	return playerJson;
 }

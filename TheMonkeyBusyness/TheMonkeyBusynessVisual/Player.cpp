@@ -189,6 +189,11 @@ int Player::GetMonkeyType() const
     return m_monkeyType;
 }
 
+int Player::GetisAlive() const
+{
+    return m_isAlive;
+}
+
 void Player::SetGameId(int id) { m_gameId = id; }
 void Player::SetLobbyId(int newLobbyId) { m_lobbyId = newLobbyId; }
 void Player::SetHost(bool hostStatus) { m_isHost = hostStatus; }
@@ -200,4 +205,9 @@ void Player::SetHealth(int hp) { m_health = hp; }
 void Player::SetMonkey(int monkeyType)
 {
     m_monkeyType = monkeyType;
+}
+
+void Player::SetisAlive(int isAlive)
+{
+    m_isAlive = isAlive;
 }

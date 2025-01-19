@@ -63,8 +63,11 @@ GameObject* Cast::HandlePlayerHit(Vector2<float>& hitLocation, Player& sender)
         float dy = hitLocation.y - playerPosition.y;
         float distanceSquared = dx * dx + dy * dy;
         if (distanceSquared <= PlayerConfig::kPlayerSize * PlayerConfig::kPlayerSize && id != senderId) {
-            GameObject* playerRef = &player;
-            return playerRef;
+            if (player.IsAlive())
+            {
+                GameObject* playerRef = &player;
+                return playerRef;
+            }
         }
     }
     return nullptr;

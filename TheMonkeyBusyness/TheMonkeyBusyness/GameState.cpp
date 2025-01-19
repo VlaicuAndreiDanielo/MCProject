@@ -72,7 +72,10 @@ void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const 
 
     if (GameObject* hit = m_raycast.Raycast(player->GetPosition(), movement, GameConfig::kRaycastRange, *player); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
         if (tempTile->getType() != TileType::DestructibleWall && tempTile->getType() != TileType::IndestructibleWall && tempTile->getType() != TileType::FakeDestructibleWall) {
-            player->UpdatePosition(movement, deltaTime);
+            if (player->IsAlive())
+            {
+                player->UpdatePosition(movement, deltaTime);
+            }
         }
         Character* character = player->GetCharacter();
         if (!player->IsSlowed())
@@ -109,8 +112,9 @@ void GameState::ProcessShoot(int playerId, const Vector2<float>& mousePosition) 
     if (!player) {
         return; // Player not found
     }
-
-    player->Shoot(mousePosition);
+    if (player->IsAlive()) {
+        player->Shoot(mousePosition);
+    }
 }
 
 void GameState::SpecialAbility(int playerId)
@@ -127,6 +131,7 @@ void GameState::UpdateGame(float deltaTime)
     for (auto& [playerId, player] : *m_players) {
         player.Update(deltaTime);
         player.UpdateDot();
+        player.IsAlive();
     }
 
     UpdateBullets(deltaTime);
@@ -145,8 +150,8 @@ void GameState::UpdateBullets(float deltaTime) {
             bullet.Update(deltaTime);
             Vector2<float> RayCastLocation;
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player); Player * tempPlayer = dynamic_cast<Player*>(hit)) {
-                tempPlayer->Damage(bullet.GetDamage());
-                player.m_weapon.deactivateBullet(i);
+                    tempPlayer->Damage(bullet.GetDamage());
+                    player.m_weapon.deactivateBullet(i);
             }
             if (GameObject* hit = m_raycast.Raycast(bullet.GetPosition(), bullet.GetDirection(), GameConfig::kBulletRaycastRange, player, RayCastLocation); Tile * tempTile = dynamic_cast<Tile*>(hit)) {
                 TileType tempType = tempTile->getType();
@@ -187,7 +192,6 @@ void GameState::UpdateBullets(float deltaTime) {
                     else {
                         player.m_weapon.deactivateBullet(i);
                     }
-                    //TODO Rob transforma in arena de pe server tile de la perete care se poate distruge la tile in care se transforma un perete spart
                 }
                 else {
                     if (tempTile->getType() == TileType::IndestructibleWall) {

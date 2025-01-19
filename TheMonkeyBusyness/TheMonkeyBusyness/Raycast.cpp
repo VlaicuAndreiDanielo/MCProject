@@ -7,8 +7,6 @@ GameObject* Cast::Raycast(Vector2<float> origin, Vector2<float> direction, float
 {
     Vector2 hitLocation = origin + direction * maxDistance;
 
-    //TO DO: Cycle through all existing player positions and check if hitLocation is near any of them, and if so return a reference to the player
-
     if (HandlePlayerHit(hitLocation, sender) != nullptr) {
         return HandlePlayerHit(hitLocation, sender);
     }

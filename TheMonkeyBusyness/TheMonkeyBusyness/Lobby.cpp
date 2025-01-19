@@ -25,7 +25,6 @@ bool Lobby::RemovePlayer(int playerId) {
     // If host leaves, assign a new host
     if (playerId == m_hostId && !m_players.empty()) {
         m_hostId = m_players.begin()->first;
-        //TODO tell the clients who is the new host,the new host should know he is the new host. One idea is to periodically check the lobby status and send trough that the hostId and add a check in the client side for the host
     }
 
     return true;

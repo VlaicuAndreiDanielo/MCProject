@@ -111,7 +111,7 @@ LoginForm::LoginForm(QWidget* parent) : QDialog(parent) {
         std::string passwordStd = password.toUtf8().constData();
 
         // Communicate with the server using Player::LogIn
-        //std::string serverUrl = "http://localhost:8080"; // Update this to match your server's address
+        //std::string serverUrl = "http://localhost:8080";
         int playerId = Player::LogIn(gameserverUrl, usernameStd, passwordStd);
 
         if (playerId == -1) {

@@ -45,7 +45,7 @@ void GameWindow::startConnection() {
         ix::initNetSystem();
         // Set the URL to the WebSocket server you are trying to connect to
         m_webSocket.setUrl(m_player.GetServerUrl() + "/webSocket");
-       // m_webSocket.disableAutomaticReconnection();
+
         // Set up the 'on message' callback
         m_webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
             {
@@ -171,7 +171,7 @@ void GameWindow::LoadTextures()
     m_textures[6] = QPixmap(m_basePath + "lava.png");            // Lava
     m_textures[7] = QPixmap(m_basePath + "grass.png");      // Teleporter
     m_textures[8] = QPixmap(m_basePath + "crate.png");
-    banana = QPixmap(m_basePath + "banana.png");
+    m_banana = QPixmap(m_basePath + "banana.png");
 
     m_monkeyTextures[0] = QPixmap(m_basePath + "monke.png");           
     m_monkeyTextures[1] = QPixmap(m_basePath + "capucino.png");
@@ -215,7 +215,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     {
         if (iterator != m_playersData.end()) {
             const auto& [name, data] = *iterator;
-            if (!data.isAlive) {
+            if (!data.m_isAlive) {
                 iterator++;
             }
         }
@@ -249,9 +249,6 @@ void GameWindow::paintEvent(QPaintEvent* event) {
                 // Fallback for missing texture
                 painter.fillRect(square, Qt::black);
             }
-
-            // Draw the grid lines (optional)
-            //painter.drawRect(square);
         }
     }
 
@@ -349,7 +346,7 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     QRect bulletRect(-RenderConfig::kBulletSize / 2, -RenderConfig::kBulletSize / 2,
                      RenderConfig::kBulletSize, RenderConfig::kBulletSize);
 
-    painter.drawPixmap(bulletRect, banana.scaled(RenderConfig::kBulletSize, RenderConfig::kBulletSize, Qt::KeepAspectRatio));
+    painter.drawPixmap(bulletRect, m_banana.scaled(RenderConfig::kBulletSize, RenderConfig::kBulletSize, Qt::KeepAspectRatio));
 
     painter.restore();
    }

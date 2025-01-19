@@ -1,7 +1,8 @@
 #pragma once
-#include "Character.h"
+//#include "Character.h"
 #include <chrono>
-
+#include <iostream>
+import CharacterModule;
 
 class BasicMonkey : public Character
 {

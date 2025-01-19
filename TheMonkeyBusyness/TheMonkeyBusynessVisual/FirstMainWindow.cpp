@@ -80,59 +80,6 @@ void FirstMainWindow::ShowMainScreen() {
     connect(m_loginButton, &QPushButton::clicked, this, &FirstMainWindow::ShowLoginForm);
     connect(m_signInButton, &QPushButton::clicked, this, &FirstMainWindow::ShowSignInForm);
 }
-/*varianta anterioara*/
-//void FirstMainWindow::ShowLoginForm() {
-//    LoginForm* loginForm = new LoginForm(this); // Creează fereastra Login
-//    connect(loginForm, &LoginForm::backRequested, [=]() {
-//        loginForm->close(); // Închide fereastra Login
-//        ShowMainScreen();   // Reveniți la ecranul principal
-//        });
-//    loginForm->setModal(true);
-//    loginForm->show();
-//}
-//
-//void FirstMainWindow::ShowSignInForm() {
-//    SignInForm* signInForm = new SignInForm(this); // Creează fereastra Sign In
-//    connect(signInForm, &SignInForm::backRequested, [=]() {
-//        signInForm->close(); // Închide fereastra Sign In
-//        ShowMainScreen();    // Reveniți la ecranul principal
-//        });
-//    signInForm->setModal(true);
-//    signInForm->show();
-//}
-//void FirstMainWindow::ShowLoginForm() {
-//    if (!m_loginForm) { // Creează fereastra doar dacă nu există deja
-//        m_loginForm = new LoginForm(this);
-//        m_loginForm->setModal(false);
-//        m_loginForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
-//        connect(m_loginForm, &LoginForm::backRequested, [=]() {
-//            m_loginForm->close(); // Închide fereastra Login
-//            m_loginForm = nullptr; // Resetează pointerul
-//            ShowMainScreen(); // Reveniți la ecranul principal
-//            });
-//    }
-//
-//    // Setează poziția ferestrei copil în funcție de părintele său
-//    m_loginForm->move(geometry().x(), geometry().y());
-//    m_loginForm->show();
-//}
-//
-//void FirstMainWindow::ShowSignInForm() {
-//    if (!m_signInForm) { // Creează fereastra doar dacă nu există deja
-//        m_signInForm = new SignInForm(this);
-//        m_signInForm->setModal(false);
-//        m_signInForm->setAttribute(Qt::WA_DeleteOnClose); // Șterge automat fereastra la închidere
-//        connect(m_signInForm, &SignInForm::backRequested, [=]() {
-//            m_signInForm->close(); // Închide fereastra Sign In
-//            m_signInForm = nullptr; // Resetează pointerul
-//            ShowMainScreen(); // Reveniți la ecranul principal
-//            });
-//    }
-//
-//    // Setează poziția ferestrei copil în funcție de părintele său
-//    m_signInForm->move(geometry().x(), geometry().y());
-//    m_signInForm->show();
-//}
 
 void FirstMainWindow::ShowLoginForm() {
     if (!m_loginForm) { // Creează fereastra doar dacă nu există deja

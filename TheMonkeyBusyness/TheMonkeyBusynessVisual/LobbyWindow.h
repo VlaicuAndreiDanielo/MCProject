@@ -34,16 +34,15 @@ signals:
    
 private:
     QTimer* m_timer;
-    ix::WebSocket* webSocket;
-    bool startedGame = false;
-    bool host = false;
+
+    bool is_startingGame = false;
+    bool is_host = false;
     QLabel* m_titleLabel;
     QPushButton* m_playButton;
     QPushButton* m_createLobbyButton;
     QPushButton* m_quitButton;
     QListWidget* m_lobbyList;
     std::map<QListWidgetItem*, int> m_lobbyData;
-    //std::unordered_map<>
     //std::string serverUrl = "http://localhost:8080";
     Player* m_player;
     int m_playerId;

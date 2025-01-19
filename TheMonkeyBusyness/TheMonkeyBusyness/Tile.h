@@ -1,9 +1,8 @@
 #pragma once
-#include "TileType.h"
 #include <string>
 #include "GameObject.h"
 #include <crow.h>
-
+import TileTypeModule;
 class Tile : public GameObject
 {
 private:

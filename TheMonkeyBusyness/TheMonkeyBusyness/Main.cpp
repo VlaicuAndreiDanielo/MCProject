@@ -109,37 +109,7 @@ int main() {
         return crow::response(400, "The game hasn't started yet");
         });
 
-    // CROW_ROUTE(app, "/lobbysocket")
-    //     .websocket(&app)
-    //     .onopen([&](crow::websocket::connection& conn) {
-    //     std::cout << "WebSocket connection opened!" << std::endl;
-    //     // You can store the connection object if needed for broadcasting messages
-    //     })
-    //     .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
-    //             // Handle incoming messages
-    //             auto json = crow::json::load(data);
 
-    //             int playerId = json["playerId"].i();
-    //             
-    //             crow::json::wvalue startJson;
-
-    //             for (auto [gameId, gameState] : gameManager->GetAllGames()) {
-    //                 if (gameState->GetPlayer(playerId) != nullptr) {
-    //                     startJson["startCheck"] = 1;
-    //                     startJson["gameId"] = gameId;
-    //                     auto jsonResponse = startJson;
-    //                     conn.send_text(jsonResponse.dump());
-    //                 }
-    //             }
-
-    //             startJson["startCheck"] = 0;
-    //             auto jsonResponse = startJson;
-    //             conn.send_text(jsonResponse.dump());
-    //            
-    //             })
-    //             .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
-    //             std::cout << "WebSocket connection closed: " << reason << std::endl;
-    //     });
 
     CROW_ROUTE(app, "/get_active_lobbies").methods(crow::HTTPMethod::GET)([&]() {
         auto activeLobbies = lobbyManager->GetActiveLobbyIds();
@@ -166,22 +136,6 @@ int main() {
         int lobbyId = json["lobbyId"].i();
         int playerId = json["playerId"].i();
         bool isReady = json["isReady"].b();
-
-        /*auto* lobby = lobbyManager.GetLobby(lobbyId);
-
-        if (lobby) {
-
-            lobby->SetReady(playerId, isReady);
-
-            return crow::response(200, "Ready status updated");
-
-        }
-
-        else {
-
-            return crow::response(404, "Lobby not found");
-
-        }*/
 
         auto lobby = lobbyManager->GetLobby(lobbyId);
         if (!lobby) {

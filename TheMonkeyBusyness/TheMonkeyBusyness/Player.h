@@ -1,7 +1,7 @@
 #pragma once
 #include "Weapon.h"
 #include "ConstantValues.h"
-#include "Character.h"
+//#include "Character.h"
 #include "BasicMonkey.h"
 #include "Orangutan.h"
 #include "CapuchinMonkey.h"
@@ -11,7 +11,7 @@
 #include <chrono>
 #include <cstdlib> // Pentru rand() si srand()
 #include <ctime>   // Pentru time()
-
+import CharacterModule;
 class Player : public GameObject { // this is the player, he calls for input and other actions
 public:
 	explicit Player(float x = PlayerConfig::kDefaultPositionX, float y = PlayerConfig::kDefaultPositionY, 

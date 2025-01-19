@@ -206,16 +206,6 @@ crow::json::wvalue Player::ToJson() const
 	return playerJson;
 }
 
-//Vector2 Player::CalculateLookAtDirection(const Vector2& mousePos)
-//{
-//	int mouseOffsetX = mousePos.x - (m_screenWidth / 2 - m_position.x);
-//	int mouseOffsetY = mousePos.y - (m_screenHeight / 2 - m_position.y);
-//	m_direction.x = mouseOffsetX - m_position.x;
-//	m_direction.y = mouseOffsetY - m_position.y;
-//	m_direction.Normalize();
-//	return m_direction;
-//}
-// ^ that was needed
 
 Vector2<float> Player::CalculateLookAtDirection(const Vector2<float>& mousePos)
 {

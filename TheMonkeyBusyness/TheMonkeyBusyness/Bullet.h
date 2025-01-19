@@ -12,8 +12,8 @@ public:
 	Bullet(Bullet&& other) noexcept;
 	Bullet& operator=(Bullet&& other) noexcept;
 
-	Bullet(const Bullet& other) = default;  //TODO check if I can delete it
-	Bullet& operator=(const Bullet& other) = default; //TODO check if I can delete it
+	Bullet(const Bullet& other) = default;  
+	Bullet& operator=(const Bullet& other) = default; 
 
 	~Bullet() = default;
 

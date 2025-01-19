@@ -27,7 +27,7 @@ private:
     std::unordered_map<int, std::thread> m_gameThreads;
     std::unordered_map<int, bool> m_runningGames;
     std::mutex m_gameMutex;
-    float deltaTime;
+    float m_deltaTime;
     int m_nextGameId;
 
 private:

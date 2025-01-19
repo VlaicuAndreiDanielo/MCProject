@@ -6,8 +6,11 @@
 #include <random>
 #include "Tile.h"
 #include "TileType.h"
+#include <string>
+#include <crow.h>
 #include <cstdint>
 #include "ConstantValues.h"
+
 
 class Arena
 {
@@ -27,44 +30,29 @@ public:
 
     Arena(int dim = 50, int numSpawn = 10);
 
-    //no need for a singleton now
+    std::vector<std::vector<Tile>> GenerateMap(int dim, int numSpawns);
 
-    ////Forcing Singleton pattern, that means that only 1 arena can ever exist during runtime
-    //Arena(const Arena&) = delete;
-    //Arena& operator=(const Arena&) = delete;
+    void PrintMap() const;
 
-    //// Static function to get the single instance of Arena
-    //static Arena& Instance() {
-    //    static Arena instance; // The single instance
-    //    return instance;
-    //}
-
-
-
-    std::vector<std::vector<Tile>> generate_map(int dim, int numSpawns);
-
-    void print_map() const;
-
-    void generateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
-    void generateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
-    TileType getRandomLiquid();
-    std::pair<int, int> getConnectedTeleporter(int x, int y) const;
-    void generateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int dim, int numSpawns);
-    void generateGrass(std::vector<std::vector<Tile>>& mapa);
-    void pairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
-    void placeTeleporters(std::vector<std::vector<Tile>>& mapa);
-    std::pair<int, int> generateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
-    void applyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type);
-    void generateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability);
-    void transformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability);
-    void generateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
-    void generateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
-    void placeOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end);
-    //void draw(QPainter& painter)const;
+    void GenerateBigLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
+    void GenerateSmallLiquid(std::vector<std::vector<Tile>>& mapa, int dim);
+    TileType GetRandomLiquid();
+    std::pair<int, int> GetConnectedTeleporter(int x, int y) const;
+    void GenerateInitialSpawns(std::vector<std::vector<Tile>>& mapa, int dim, int numSpawns);
+    void GenerateGrass(std::vector<std::vector<Tile>>& mapa);
+    void PairTeleporters(const std::vector<std::pair<int, int>>& teleporters);
+    void PlaceTeleporters(std::vector<std::vector<Tile>>& mapa);
+    std::pair<int, int> GenerateTeleporterPosition(const std::vector<std::vector<Tile>>& mapa, int border, int offset, std::mt19937& gen);
+    void ApplyCellularAutomata(std::vector<std::vector<Tile>>& mapa, int dim, int iterations, TileType type);
+    void GenerateDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int probability);
+    void TransformDestructibleWalls(std::vector<std::vector<Tile>>& mapa, int dim, int indestructibleProbability, int fakeProbability);
+    void GenerateLake(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+    void GenerateRiver(std::vector<std::vector<Tile>>& mapa, int dim, TileType type);
+    void PlaceOppositeEdgeTeleporters(std::vector<std::vector<Tile>>& mapa, int dim, std::pair<int, int> start, std::pair<int, int> end);
 
     Tile& GetTile(int line, int col);
     std::pair<int, int> GetSpawn();
-    void triggerExplosion(int x, int y);
+    void TriggerExplosion(int x, int y);
 
     crow::json::wvalue ToJson() const;
 };

@@ -141,7 +141,6 @@ crow::json::wvalue Weapon::ToJson() const {
 		bulletsJson[bulletIndex++] = bullet.ToJson();
 	}
 	weaponJson["bullets"] = std::move(bulletsJson);
-	//TODO also return time left in powerups so it can be displayed on screen
 
 	return weaponJson;
 }
@@ -151,22 +150,3 @@ std::vector<Bullet>& Weapon::GetActiveBullets()
 {
 	return m_activeBullets;
 }
-
-/*
-Logic for bullet management
-
-the number of bullets that can exist at one time is limited by the fireRate
-It is more efficient to reserve and initialize all the possible bullets directly instead of creating them on the go
-Now using move semantics the bullets only need to be moved from active to inactive and vice versa
-
-Another idea was to have a single vector of bullets and a vector of indices for active/inactive bullets
-
-The complexity for the first method is
-- iterating over active bullets O(n)
-- moving a bullet from active to inactive std::move is O(1) pop_back is O(1) push_back is O(1) so final is O(1)
-
-The complexity for the second method is the same.The problem here is that indices will be mixed, if a player
-shoots 5 bullets,and the 3rd one hits something, then I will have active indices 1,2,4,5 and it will make bullet logic more complex
-In the first metod I always know where all the active/inactive bullets are.
-The first method is better because if offers a cleaner and more intuitive approach
-*/

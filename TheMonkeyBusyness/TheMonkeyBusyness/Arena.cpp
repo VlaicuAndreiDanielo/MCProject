@@ -3,7 +3,7 @@
 #include <queue>
 #include <iostream>
 #include <functional>
-
+import TileTypeModule;
 Arena::Arena(int dim, int numSpawns) : m_dim{ dim }, m_numSpawns{ numSpawns }
 {
     this->m_mapa = generate_map(dim, numSpawns);

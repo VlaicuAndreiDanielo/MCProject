@@ -1,7 +1,9 @@
 #pragma once
 #include <random>
-#include "Character.h"
-
+//#include "Character.h"
+#include <chrono>
+#include <iostream>
+import CharacterModule;
 class Orangutan : public Character
 {
 public:

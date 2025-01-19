@@ -8,8 +8,7 @@ CapuchinMonkey::CapuchinMonkey()
 void CapuchinMonkey::ActivateSpecialAbility() {
     auto now = std::chrono::steady_clock::now();
     if (m_remainingCooldown <= 0) {
-        std::cout << "Gorilla activates Shield!\n";
-
+        std::cout << "CapuchinMonkey heals!\n";
         m_HP += 5;
 
         m_abilityStartTime = now;

@@ -12,11 +12,11 @@
 #include <ixwebsocket/IXWebSocket.h>
 #include <ixwebsocket/IXNetSystem.h>
 struct PlayerData {
-    int health;
-    Position position;
-    Direction direction;
-    int monkeyType;
-    int isAlive;
+    int m_health;
+    Position m_position;
+    Direction m_direction;
+    int m_monkeyType;
+    int m_isAlive;
 };
 
 class GameWindow : public QWidget {
@@ -43,7 +43,7 @@ private:
     QMap<int, QPixmap> m_monkeyTextures;
     QMap<int, QPixmap> m_textures;
     //banana rendering
-    QPixmap banana;
+    QPixmap m_banana;
     float m_bulletRotationAngle = 0.0f;
     bool m_gameOver = { false };
     // Core Game Loop Methods

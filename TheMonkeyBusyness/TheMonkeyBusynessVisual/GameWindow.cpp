@@ -1,8 +1,11 @@
 #include "GameWindow.h"
+#include "EndGameWindow.h"
 #include <QPainter>
 #include <iostream>
 #include <fstream>
-
+#include <QtWidgets/qmessagebox.h>
+#include <thread>
+#include <QtWidgets/QApplication>
 GameWindow::GameWindow(Player& player, QWidget* parent)
     : QWidget(parent), m_player(player), m_playerInput(this) {
     LoadTextures();
@@ -24,7 +27,6 @@ GameWindow::GameWindow(Player& player, QWidget* parent)
         if (m_bulletRotationAngle >= 360.0f) {
             m_bulletRotationAngle -= 360.0f;
         }
-        //FetchGameState();  
         update();  
         });
 
@@ -38,46 +40,48 @@ GameWindow::~GameWindow()
 }
 
 void GameWindow::startConnection() {
-    ix::initNetSystem();
-    // Set the URL to the WebSocket server you are trying to connect to
-    webSocket.setUrl(m_player.GetServerUrl() + "/webSocket");
 
-    // Set up the 'on message' callback
-    webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
-        {
-            if (response->type == ix::WebSocketMessageType::Message)
+   
+        ix::initNetSystem();
+        // Set the URL to the WebSocket server you are trying to connect to
+        m_webSocket.setUrl(m_player.GetServerUrl() + "/webSocket");
+       // m_webSocket.disableAutomaticReconnection();
+        // Set up the 'on message' callback
+        m_webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& response)
             {
-                 //Extract the payload (JSON string) from the WebSocket response
-                const std::string& jsonPayload = response->str;
+                if (response->type == ix::WebSocketMessageType::Message)
+                {
+                    //Extract the payload (JSON string) from the WebSocket response
+                    const std::string& jsonPayload = response->str;
 
-                // Parse the JSON payload using crow::json::load
-                auto jsonResponse = crow::json::load(jsonPayload);
+                    // Parse the JSON payload using crow::json::load
+                    auto jsonResponse = crow::json::load(jsonPayload);
 
-                
-                UpdateGameState(jsonResponse);
-                
+
+                    UpdateGameState(jsonResponse);
+
+                }
+                else if (response->type == ix::WebSocketMessageType::Error)
+                {
+                    std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
+                }
             }
-            else if (response->type == ix::WebSocketMessageType::Error)
-            {
-                std::cerr << "WebSocket error: " << response->errorInfo.reason << std::endl;
-            }
-        }
-    );
-
-
-    webSocket.start();
+        ); 
+        m_webSocket.start();
 }
 
 
 
 void GameWindow::sendMessage(const std::string& message)
 {
-   webSocket.send(message);
+   m_webSocket.send(message);
 }
 
 void GameWindow::closeConnection()
 {
-    webSocket.stop();
+
+    m_webSocket.close();
+    ix::uninitNetSystem();
 }
 
 
@@ -107,23 +111,11 @@ void GameWindow::LoadArena(const crow::json::rvalue& arenaData) {
     }
 }
 
-void GameWindow::FetchGameState() {
-    cpr::Response response = cpr::Get(
-        cpr::Url{ m_player.GetServerUrl() + "/game_state" },
-        cpr::Parameters{ {"gameId", std::to_string(m_player.GetGameId())} }
-    );
 
-    if (response.status_code == 200) {
-        auto jsonResponse = crow::json::load(response.text);
-        if (jsonResponse) {
-            UpdateGameState(jsonResponse);
-        }
-    }
-}
 
 void GameWindow::UpdateGameState(const crow::json::rvalue& jsonResponse) {
 
-    if (jsonResponse["isGameOver"])
+    if (jsonResponse["isGameOver"].b())
         HandleGameOver();
 
     m_bulletsCoordinates.clear();
@@ -145,37 +137,7 @@ void GameWindow::UpdateGameState(const crow::json::rvalue& jsonResponse) {
 
 void GameWindow::SendInputToServer() {
     // Movement payload
-  /*  std::string payload = R"({
-        "playerId":)" + std::to_string(m_player.GetId()) + R"(,
-        "gameId":)" + std::to_string(m_player.GetGameId()) + R"(,
-        "deltaX":)" + std::to_string(m_playerInput.m_direction.x()) + R"(,
-        "deltaY":)" + std::to_string(m_playerInput.m_direction.y()) + R"(,
-        "mouseX":)" + std::to_string(m_playerInput.m_mousePosition.x()) + R"(,
-        "mouseY":)" + std::to_string(m_playerInput.m_mousePosition.y()) + R"(})";
-
-    cpr::Response response = cpr::Post(
-        cpr::Url{ m_player.GetServerUrl() + "/player_move" },
-        cpr::Header{ {"Content-Type", "application/json"} },
-        cpr::Body{ payload }
-    );
-
-    // Shooting payload
-    if (m_playerInput.is_shooting) {
-        std::string shootPayload = R"({
-            "playerId":)" + std::to_string(m_player.GetId()) + R"(,
-            "gameId":)" + std::to_string(m_player.GetGameId()) + R"(,
-            "mouseX":)" + std::to_string(m_playerInput.m_mousePosition.x()) + R"(,
-            "mouseY":)" + std::to_string(m_playerInput.m_mousePosition.y()) + R"(})";
-
-        cpr::Response shootResponse = cpr::Post(
-            cpr::Url{ m_player.GetServerUrl() + "/shoot_weapon" },
-            cpr::Header{ {"Content-Type", "application/json"} },
-            cpr::Body{ shootPayload }
-        );
-
-    } */
-    // will replace /is_shooting and /player_move with /webSocket
-    //will send a json w player movement and rotation at the same time.
+ 
 
     std::string payload = R"({
         "playerId":)" + std::to_string(m_player.GetId()) + R"(,
@@ -238,11 +200,40 @@ float CalculateAngle(const Direction direction) {
 void GameWindow::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    std::unordered_map<std::string, PlayerData>::iterator iterator;
+    if (!m_playersData.empty()) {
+        iterator = m_playersData.begin();
+    }
+    else {
+        if (!m_player.GetisAlive()) {
+            return;
+        }
+    }
+  
+
+    if (!m_player.GetisAlive()) 
+    {
+        if (iterator != m_playersData.end()) {
+            const auto& [name, data] = *iterator;
+            if (!data.isAlive) {
+                iterator++;
+            }
+        }
+    }
 
     // Center the viewport on the player
-    QPointF playerOffset(width() / 2.0 - m_player.GetPosition().first,
-        height() / 2.0 - m_player.GetPosition().second);
-    painter.translate(playerOffset);
+    if (m_player.GetisAlive()) {
+        QPointF playerOffset(width() / 2.0 - m_player.GetPosition().first,
+            height() / 2.0 - m_player.GetPosition().second);
+        painter.translate(playerOffset);
+    }
+    else {
+        const auto& [name, data] = *iterator;
+        const auto& [health, position, direction, monkeyType, isAlive] = data;
+        QPointF playerOffset(width() / 2.0 - position.first,
+            height() / 2.0 - position.second);
+        painter.translate(playerOffset);
+    }
 
     // Draw the map 
     for (int i = 0; i < m_map.size(); ++i) {
@@ -265,32 +256,58 @@ void GameWindow::paintEvent(QPaintEvent* event) {
     }
 
     painter.save();
-    QPixmap monkeyTexture = m_monkeyTextures[m_player.GetMonkeyType()];
 
-    // Draw the local player
-    QRect playerRect(
-        -RenderConfig::kPlayerSize / 2,
-        -RenderConfig::kPlayerSize / 2,
-        RenderConfig::kPlayerSize, RenderConfig::kPlayerSize
-    );
+    if (m_player.GetisAlive()) {
+        // Draw the local player
+        QPixmap monkeyTexture = m_monkeyTextures[m_player.GetMonkeyType()];
+        QRect playerRect(
+            -RenderConfig::kPlayerSize / 2,
+            -RenderConfig::kPlayerSize / 2,
+            RenderConfig::kPlayerSize, RenderConfig::kPlayerSize
+        );
 
-    painter.translate(m_player.GetPosition().first, m_player.GetPosition().second);
-    painter.rotate(CalculateAngle(m_player.GetDirection()));
-    painter.drawPixmap(playerRect, monkeyTexture);
-
-   
-    painter.restore();
-
-    // Set pen for text
-    painter.setPen(Qt::white);
-
-    // Draw local player's name above the rectangle
-    painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 5, QString::fromStdString(m_player.GetName()));
-
-    // Draw local player's health below the rectangle
-    painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(m_player.GetHealth()));
+        painter.translate(m_player.GetPosition().first, m_player.GetPosition().second);
+        painter.rotate(CalculateAngle(m_player.GetDirection()));
+        painter.drawPixmap(playerRect, monkeyTexture);
 
 
+        painter.restore();
+
+        // Set pen for text
+        painter.setPen(Qt::white);
+
+        // Draw local player's name above the rectangle
+        painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 5, QString::fromStdString(m_player.GetName()));
+
+        // Draw local player's health below the rectangle
+        painter.drawText(m_player.GetPosition().first - RenderConfig::kPlayerSize / 2, m_player.GetPosition().second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(m_player.GetHealth()));
+    }
+    else {
+        const auto& [name, data] = *iterator;
+        const auto& [health, position, direction, monkeyType, isAlive] = data;
+        QRect playerRect(
+            -RenderConfig::kPlayerSize / 2,
+            -RenderConfig::kPlayerSize / 2,
+            RenderConfig::kPlayerSize, RenderConfig::kPlayerSize
+        );
+        QPixmap monkeyTexture = m_monkeyTextures[monkeyType];
+        painter.translate(position.first, position.second);
+        painter.rotate(CalculateAngle(direction));
+        painter.drawPixmap(playerRect, monkeyTexture);
+
+
+        painter.restore();
+
+        // Set pen for text
+        painter.setPen(Qt::white);
+
+        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 5, QString::fromStdString(name));
+
+        // Draw player's health below the rectangle
+        painter.drawText(position.first - RenderConfig::kPlayerSize / 2, position.second + RenderConfig::kPlayerSize + 15, QString("HP: %1").arg(health));
+        
+       
+    }
     // Draw other players
     for (const auto& [name, data] : m_playersData) {
         const auto& [health, position, direction, monkeyType, isAlive] = data;
@@ -342,8 +359,21 @@ void GameWindow::paintEvent(QPaintEvent* event) {
 
 void GameWindow::HandleGameOver()
 {
-    //TODO implement what happens for gameover. I think it should transision to another window
+    if (!m_gameOver) {
+        m_gameOver = true;
+        m_timer->stop();
+        closeConnection();
+        m_endGameWindow = new EndGameWindow(&m_player);
+        connect(m_endGameWindow, &EndGameWindow::EndGameWindowClosed, this, &GameWindow::HandleEndGameWindowClosed);
+
+        m_endGameWindow->show();
+
+        //close();
+    }
     return;
+}
+
+void GameWindow::HandleEndGameWindowClosed(){
 }
 
 void GameWindow::UpdatePlayerState(const crow::json::rvalue& playerData) {

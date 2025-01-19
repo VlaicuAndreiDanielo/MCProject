@@ -1,7 +1,7 @@
 ﻿#include "BasicMonkey.h"
 
 BasicMonkey::BasicMonkey() 
-	: Character(75, 200, 15, 0)
+	: Character(100, 200, 10, 0)
 {}
 
 void BasicMonkey::ActivateSpecialAbility() 
@@ -10,7 +10,6 @@ void BasicMonkey::ActivateSpecialAbility()
     if (m_remainingCooldown <= 0) {
         std::cout << "BasicMonkey activates Speed Boost!\n";
 
-        // Temporar boost la viteză pentru 25 de secunde
         m_speed += 10;
         m_abilityStartTime = now;
 

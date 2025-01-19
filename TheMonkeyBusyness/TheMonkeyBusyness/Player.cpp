@@ -156,7 +156,7 @@ void Player::Update(float deltaTime)
 
 bool Player::IsAlive()
 {
-	if (m_Character->GetHealth() < 0)
+	if (m_Character->GetHealth() <= 0)
 	{
 		m_isAlive = 0;
 		return false;

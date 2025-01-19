@@ -61,7 +61,19 @@ std::string GameState::GetPlayerNameFromDatabase(int playerId) {
 }
 
 bool GameState::IsGameOver() const {
-    return m_players->size() <= 1; // Game is over when one or no players are left
+    int count=0;
+    for (auto& [playerId, player] : *m_players) {
+        if (player.IsAlive()) {
+            count++;
+        }
+    }
+    if (count < 2) {
+        std::cout << "Game Over!!!";
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void GameState::ProcessMove(int playerId, const Vector2<float>& movement, const Vector2<float>& lookDirection, float deltaTime) {

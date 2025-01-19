@@ -2,7 +2,7 @@
 #include <iostream>
 
 CapuchinMonkey::CapuchinMonkey()
-    : Character(60, 240, 5, 0)
+    : Character(80, 240, 5, 0)
 {}
 
 void CapuchinMonkey::ActivateSpecialAbility() {

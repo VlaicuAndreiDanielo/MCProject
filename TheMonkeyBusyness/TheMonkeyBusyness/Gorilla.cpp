@@ -1,7 +1,7 @@
 ﻿#include "Gorilla.h"
 
 Gorilla::Gorilla()
-	: Character(110, 135, 20, 0)
+	: Character(110, 150, 20, 0)
 {}
 
 void Gorilla::ActivateSpecialAbility() 
@@ -11,11 +11,11 @@ void Gorilla::ActivateSpecialAbility()
         std::cout << "Gorilla activates Shield!\n";
 
         // Activăm scutul de 30 de puncte
-        m_HP += 30;
+        m_HP += 50;
        
         m_abilityStartTime = now;
 
-        std::cout << "Gorilla ate a banana, +20 hp points!\n";
+        std::cout << "Gorilla ate a banana, +50 hp points!\n";
 
         // Setăm cooldown-ul abilității la 20 de secunde
         m_remainingCooldown = m_cooldownTime;

@@ -11,22 +11,23 @@
 #include <qtimer.h>
 #include "QtWidgets/qprogressbar.h"      
 #include <QtCore/QCoreApplication>
+#include <qobject.h>
 #include "Player.h"
 class EndGameWindow : public QWidget {
+	Q_OBJECT
 public:
-	EndGameWindow(Player* player, QWidget* parent);
+	EndGameWindow(Player* player, QWidget* parent = nullptr);
 
-private slots:
+public slots:
 
 	void OnButtonClicked();
 
-    void OnPointUpgradeClicked();
-
 	void UpdateCountdown();
+
+	void EndGameWindowClosed();
 
 private:
 	Player* m_player;
-	QProgressBar* m_pointBar;
 	QLabel* m_countdownLabel;
 	QPushButton* m_button;
 	QTimer* m_timer;

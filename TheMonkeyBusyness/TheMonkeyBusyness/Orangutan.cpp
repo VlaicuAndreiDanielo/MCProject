@@ -1,7 +1,7 @@
 ﻿#include "Orangutan.h"
 
 Orangutan::Orangutan() 
-	: Character(85, 180, 20, 0)
+	: Character(90, 180, 15, 0)
 {}
 
 void Orangutan::ActivateSpecialAbility() {

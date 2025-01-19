@@ -76,3 +76,21 @@ DEBUG:
 
 - Add the additional dependencies:
   Property > Linker > General > Additional Dependencies > ixwebsocket.lib; mbedtls.lib; mbedx509.lib; mbedcrypto.lib; Crypt32.lib; bcrypt.lib
+
+For Vector2 DLL elements, the following dependencies should be set:
+
+RELEASE:
+
+- Add the include directory for Vector2 DLL :
+  Property > Configuration Properties > VC++ Directories > Include Directories > C:\Computers\MCProject\TheMonkeyBusyness\Vector2
+
+- Add the library directory for Vector2 DLL :
+  Property > Configuration Properties > VC++ Directories > Library Directories > C:\Computers\MCProject\TheMonkeyBusyness\x64\Release
+
+DEBUG:
+
+- Add the include directory for Vector2 DLL :
+  Property > Configuration Properties > VC++ Directories > Include Directories > C:\Computers\MCProject\TheMonkeyBusyness\Vector2
+
+- Add the library directory for Vector2 DLL :
+  Property > Configuration Properties > VC++ Directories > Library Directories > C:\Computers\MCProject\TheMonkeyBusyness\x64\Debug

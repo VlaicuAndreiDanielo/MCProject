@@ -128,4 +128,4 @@ DEBUG:
   Property > Configuration Properties > VC++ Directories > Library Directories > C:\Computers\MCProject\TheMonkeyBusyness\x64\Debug
 
 ## 🎬▶️  Video Project
-  Video Project: https://youtu.be/u4TCsvCAms
+  Video Project: [https://youtu.be/u4TCsvCAms](https://youtu.be/u4TCsvCAmss)

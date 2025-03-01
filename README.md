@@ -16,6 +16,16 @@ MC Project. Team name: Echipa
 ## 🔥 Objective  
 The goal is to be the last monkey standing! Players must use their agility, special abilities, and well-aimed banana throws to outplay their opponents.  
 
+## 🔧⚙️ Technologies & Components Used  
+**MonkeyBusyness** is a **multiplayer** game designed with modern C++ and various powerful frameworks, supporting **multigaming** functionality for seamless player interactions.  
+
+- **Modern C++ (C++17/20)** – Efficient, high-performance code with modern practices.  
+- **Template DLL Architecture** – Enhances modularity and reusability.  
+- **Qt Framework** – Provides a smooth and intuitive graphical interface.  
+- **SQLite** – Used for managing player data, game statistics, and settings.  
+- **WebSockets (ixwebsocket)** – Enables real-time multiplayer gameplay.  
+- **Crow & CPR Libraries** – Used for handling HTTP requests and networking. 
+
 ## 🚀 How to Play  
 1. Select your monkey and special ability.  
 2. Move through the arena, avoiding attacks and finding the best angles to strike.  

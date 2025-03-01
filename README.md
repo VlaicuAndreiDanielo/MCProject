@@ -2,7 +2,37 @@
 
 MC Project. Team name: Echipa
 
-Video Project: https://youtu.be/u4TCsvCAmss
+# MonkeyBusyness (also known as Monkey Madness)  
+
+## 🐵 Overview  
+**MonkeyBusyness** is a fast-paced 2D multiplayer game inspired by classic arcade-style battles, similar to *Battle City*. In this chaotic and fun-filled game, each player takes control of a monkey engaged in combat against three other players, using bananas as their primary weapons.  
+
+## 🎮 Gameplay & Features  
+- **Multiplayer Action** – Up to four players compete against each other in an intense battle.  
+- **Banana Warfare** – Players throw bananas at their opponents to eliminate them and gain an advantage.  
+- **Unique Special Abilities** – Each monkey possesses a special power that can be used strategically to turn the tide of battle.  
+- **2D Battle Arena** – The game features dynamic levels with obstacles, hiding spots, and strategic points that players can use to their advantage.  
+
+## 🔥 Objective  
+The goal is to be the last monkey standing! Players must use their agility, special abilities, and well-aimed banana throws to outplay their opponents.  
+
+## 🚀 How to Play  
+1. Select your monkey and special ability.  
+2. Move through the arena, avoiding attacks and finding the best angles to strike.  
+3. Use your bananas wisely to eliminate enemies.  
+4. Take advantage of the environment for cover and strategic plays.  
+5. The last monkey remaining wins the round!  
+
+## 🛠️ Future Improvements  
+- **A dedicated interface for choosing monkeys**, as the selection is currently random.  
+- **A replay system** to review and analyze past matches.  
+- **New monkeys with unique abilities** to add variety and strategy.  
+- **New weapons with special powers** to enhance gameplay.  
+- **New game modes** such as *Single Player* and *Team Battles* for a richer experience.  
+
+Are you ready to embrace the madness and prove you're the ultimate monkey warrior? 🍌🐵  
+
+## ⚙️ Setting Up Dependencies
 
 This is the handout for setting up dependencies.
 
@@ -96,3 +126,6 @@ DEBUG:
 
 - Add the library directory for Vector2 DLL :
   Property > Configuration Properties > VC++ Directories > Library Directories > C:\Computers\MCProject\TheMonkeyBusyness\x64\Debug
+
+## 🎬▶️  Video Project
+  Video Project: https://youtu.be/u4TCsvCAms
